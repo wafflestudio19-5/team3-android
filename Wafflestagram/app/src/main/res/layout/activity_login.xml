@@ -6,4 +6,139 @@
     android:layout_height="match_parent"
     tools:context=".ui.login.LoginActivity">
 
+    <ImageView
+        android:id="@+id/imageView_logo"
+        android:layout_width="193dp"
+        android:layout_height="59dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/wafflestagram_logo" />
+
+    <EditText
+        android:id="@+id/edit_username"
+        android:layout_width="360dp"
+        android:layout_height="52dp"
+        android:layout_margin = "12dp"
+        android:background="@drawable/edittext_rounded_corner"
+        android:ems="10"
+        android:hint="이메일 주소 또는 사용자 이름"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:text=""
+        android:textColor="@color/black"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/edit_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_logo" />
+
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_width="360dp"
+        android:layout_height="52dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/edittext_rounded_corner"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:minHeight="52dp"
+        android:text=""
+        android:textColor="@color/black"
+        android:hint="비밀번호"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="360dp"
+        android:layout_height="52dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/button_rounded_corner"
+        android:text="로그인"
+        android:textColor="#EAEAEA"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_password" />
+
+    <Button
+        android:id="@+id/button_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="계정이 없으신가요? 가입하기."
+        android:background="@drawable/border_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#00ff0000"
+        app:layout_constraintBottom_toTopOf="@+id/button_social_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:layout_marginLeft="28dp"
+            android:layout_weight="1"
+            android:background="#A6A6A6" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:layout_weight="1.5"
+            android:text="또는"
+            android:textAlignment="center"
+            android:textColor="#A6A6A6"
+            android:textSize="16dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:layout_marginRight="28dp"
+            android:layout_weight="1"
+            android:background="#A6A6A6" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_social_login"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:text="Facebook으로 로그인"
+        android:textColor="#368AFF"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:background="#00ff0000"
+        app:layout_constraintBottom_toTopOf="@+id/button_signup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_password" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="460dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="274dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
