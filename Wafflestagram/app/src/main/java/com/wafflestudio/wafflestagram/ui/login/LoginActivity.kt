@@ -78,7 +78,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         viewModel.fetchResponse.observe(this,{
-            Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
             showDialog(it)
         })
     }

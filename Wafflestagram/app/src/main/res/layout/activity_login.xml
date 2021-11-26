@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border_top"
         android:text="계정이 없으신가요? 가입하기."
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
