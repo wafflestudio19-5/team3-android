@@ -18,13 +18,14 @@ class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ): ViewModel(){
 
-    var fetchResponse: String = ""
+    private val _fetchResponse = MutableLiveData<String>()
+    var fetchResponse: LiveData<String> = _fetchResponse
 
     fun getResponseByLogin() {
         viewModelScope.launch {
             try {
                 val data = loginRepository.getResponseByLogin()
-                fetchResponse = data.string()
+                _fetchResponse.value = data.string()
             } catch (e: IOException) {
                 Timber.e(e)
             }
