@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.ui.login
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
+import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
@@ -75,6 +77,12 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonLogin.setOnClickListener {
             viewModel.getResponseByLogin()
             currentFocus?.hideKeyboard()
+        }
+
+        //signup 버튼
+        binding.buttonSignup.setOnClickListener{
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
         }
 
         viewModel.fetchResponse.observe(this,{
