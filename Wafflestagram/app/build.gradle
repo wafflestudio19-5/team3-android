@@ -48,15 +48,17 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //custom
     // Room DB
-    implementation "androidx.room:room-runtime:2.3.0"
-    implementation "androidx.room:room-ktx:2.3.0"
-    kapt "androidx.room:room-compiler:2.3.0"
+    implementation "androidx.room:room-runtime:2.4.0"
+    implementation "androidx.room:room-ktx:2.4.0"
+    kapt "androidx.room:room-compiler:2.4.0"
 
     // Jetpack Activity
     implementation "androidx.activity:activity-ktx:1.4.0"
@@ -81,5 +83,14 @@ dependencies {
 
     // Dagger
     implementation "com.google.dagger:hilt-android:2.39.1"
-    kapt 'com.google.dagger:hilt-compiler:2.39.1'
+    kapt 'com.google.dagger:hilt-compiler:2.40.1'
+
+    // Circle indicator
+    implementation 'me.relex:circleindicator:2.1.6'
+
+    // Jetpack fragment
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
+
+    // Circle Image View
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
