@@ -6,15 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import com.wafflestudio.wafflestagram.databinding.ActivityAuthenticationBinding
-import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import com.wafflestudio.wafflestagram.databinding.ActivityAuthenticationByEmailBinding
 
-class AuthenticationActivity : AppCompatActivity() {
-    lateinit var binding: ActivityAuthenticationBinding
+
+class AuthenticationByEmailActivity : AppCompatActivity() {
+    lateinit var binding: ActivityAuthenticationByEmailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAuthenticationBinding.inflate(layoutInflater)
+        binding = ActivityAuthenticationByEmailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.editCode.addTextChangedListener(object : TextWatcher {
