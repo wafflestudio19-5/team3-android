@@ -32,6 +32,13 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.buttonLogo.setOnClickListener{
+            binding.recyclerViewFeed.smoothScrollToPosition(0)
+        }
+    }
+
+    fun setRecyclerviewPosition(position: Int){
+        binding.recyclerViewFeed.smoothScrollToPosition(position)
     }
 
 }

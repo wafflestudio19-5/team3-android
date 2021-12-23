@@ -59,7 +59,7 @@ class SignUpDetailActivity : AppCompatActivity() {
         })
 
         binding.buttonContinue.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, AddBirthdayActivity::class.java)
             startActivity(intent)
         }
     }
