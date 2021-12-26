@@ -10,13 +10,16 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
@@ -29,6 +32,9 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val viewModel: LoginViewModel by viewModels()
+
+    private lateinit var loginManager: LoginManager
+    private lateinit var callbackManager: CallbackManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +94,32 @@ class LoginActivity : AppCompatActivity() {
         viewModel.fetchResponse.observe(this,{
             showDialog(it)
         })
+
+        // Facebook Login
+
+        callbackManager = CallbackManager.Factory.create()
+        binding.buttonSocialLoginFacebook.setReadPermissions("email")
+        // Callback registration
+        binding.buttonSocialLoginFacebook.registerCallback(callbackManager, object :
+            FacebookCallback<LoginResult> { // callback 함수 등록
+            override fun onSuccess(result: LoginResult?) { // 로그인 성공 시
+                Timber.d("facebook:onSuccess")
+            }
+
+            override fun onCancel() { // 로그인 취소 시
+                Timber.d("facebook:onCancel")
+            }
+
+            override fun onError(error: FacebookException?) { // 로그인 에러 시
+                Timber.d("facebook:onError")
+            }
+        })
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        callbackManager.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showDialog(contents: String){

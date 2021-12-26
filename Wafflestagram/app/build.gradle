@@ -93,4 +93,7 @@ dependencies {
 
     // Circle Image View
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // Facebook Login
+    implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
 }
