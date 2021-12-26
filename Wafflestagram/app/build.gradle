@@ -95,5 +95,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     // Facebook Login
-    implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
+    implementation 'com.facebook.android:facebook-android-sdk:12.1.0'
+
+    // Google Login
+    implementation 'com.google.android.gms:play-services-auth:20.0.0'
 }
