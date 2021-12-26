@@ -10,8 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.wafflestudio.wafflestagram.databinding.FragmentSignupByEmailBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SignupByEmailFragment : Fragment() {
     private lateinit var binding: FragmentSignupByEmailBinding
 

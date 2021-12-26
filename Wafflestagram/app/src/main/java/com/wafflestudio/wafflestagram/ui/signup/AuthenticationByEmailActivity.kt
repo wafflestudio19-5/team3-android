@@ -7,8 +7,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import com.wafflestudio.wafflestagram.databinding.ActivityAuthenticationByEmailBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AuthenticationByEmailActivity : AppCompatActivity() {
     lateinit var binding: ActivityAuthenticationByEmailBinding
 
@@ -25,7 +26,7 @@ class AuthenticationByEmailActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                if(p0?.length!! > 0){
+                if(p0?.length!! == 6){
                     binding.buttonNext.isClickable = true
                     binding.buttonNext.isEnabled = true
                     binding.buttonNext.setTextColor(Color.parseColor("#FFFFFFFF"))
