@@ -2,6 +2,7 @@ package com.wafflestudio.wafflestagram.ui.login
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -12,14 +13,33 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
@@ -33,8 +53,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private val viewModel: LoginViewModel by viewModels()
 
-    private lateinit var loginManager: LoginManager
+    private lateinit var auth: FirebaseAuth
+
+    // for Facebook Login
     private lateinit var callbackManager: CallbackManager
+
+    // for Google Login
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val RC_SIGN_IN = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,32 +121,71 @@ class LoginActivity : AppCompatActivity() {
             showDialog(it)
         })
 
-        // Facebook Login
+        // Initialize Firebase Auth
+        auth = Firebase.auth
 
+        // Facebook Login
         callbackManager = CallbackManager.Factory.create()
+
+        // TODO: Replace deprecated code
+        // TODO: 로그인 상태 체크 코드 작성(로그인 여부 등 판단)
         binding.buttonSocialLoginFacebook.setReadPermissions("email")
-        // Callback registration
         binding.buttonSocialLoginFacebook.registerCallback(callbackManager, object :
-            FacebookCallback<LoginResult> { // callback 함수 등록
-            override fun onSuccess(result: LoginResult?) { // 로그인 성공 시
-                Timber.d("facebook:onSuccess")
+            FacebookCallback<LoginResult> { // Callback registration
+            override fun onSuccess(result: LoginResult) { // 로그인 성공 시
+                Timber.d("facebook:onSuccess:$result")
+                handleFacebookAccessToken(result.accessToken)
             }
 
             override fun onCancel() { // 로그인 취소 시
                 Timber.d("facebook:onCancel")
             }
 
-            override fun onError(error: FacebookException?) { // 로그인 에러 시
-                Timber.d("facebook:onError")
+            override fun onError(error: FacebookException) { // 로그인 에러 시
+                Timber.d("facebook:onError", error)
             }
         })
 
-    }
+        // Google Login
+        createGoogleRequest()
 
+        binding.buttonSocialLoginGoogle.setOnClickListener(object: View.OnClickListener {
+            override fun onClick(p0: View?) {
+                signIn()
+            }
+        })
+    }
+    
+    // get social Login Result
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // TODO: distinguish Facebook and Google
+
+        // Pass the activity result back to the Facebook SDK
         // TODO: replace deprecated code with Activity Result APIs
         callbackManager.onActivityResult(requestCode, resultCode, data)
-        super.onActivityResult(requestCode, resultCode, data)
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)!!
+                Timber.d("firebaseAuthWithGoogle:" + account.id)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+                Timber.w("Google sign in failed", e)
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        updateUI(currentUser)
     }
 
     private fun showDialog(contents: String){
@@ -166,5 +231,69 @@ class LoginActivity : AppCompatActivity() {
     private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    private fun handleFacebookAccessToken(token: AccessToken) {
+        Timber.d("handleFacebookAccessToken:$token")
+
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task -> 
+                if(task.isSuccessful) {
+                    // Facebook Login 성공
+                    Timber.d("signInWithCredential:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // Facebook Login 실패
+                    Timber.w("signInwithCredential:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    updateUI(null)
+                }
+            }
+
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if(task.isSuccessful) {
+                    // Google Login 성공
+                    Timber.d("signInWithCredential:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // Google Login 실패
+                    Timber.w("signInwithCredential:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    updateUI(null)
+                }
+            }
+    }
+
+    private fun createGoogleRequest() {
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
+
+    private fun signIn() {
+        // (google) Login
+        val signInIntent = googleSignInClient.signInIntent
+        // TODO: Replace deprecated code
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    private fun updateUI(user: FirebaseUser?){
+        // Login 상태에 따라 UI update
+        // TODO: Not Yer Implemented
+        if(user!=null){ // user data 있는 경우(로그인 되어있는 경우)
+
+        }
     }
 }

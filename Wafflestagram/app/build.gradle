@@ -97,6 +97,13 @@ dependencies {
     // Facebook Login
     implementation 'com.facebook.android:facebook-android-sdk:12.1.0'
 
+    // Firebase dependencies for social login
+    implementation 'com.google.firebase:firebase-core:9.6.1'
+    implementation platform('com.google.firebase:firebase-bom:29.0.2')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
     // Google Login
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
 }
+
+apply plugin: "com.google.gms.google-services"
