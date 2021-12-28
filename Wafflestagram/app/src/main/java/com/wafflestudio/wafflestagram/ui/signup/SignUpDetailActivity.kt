@@ -8,7 +8,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpDetailBinding
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpDetailActivity : AppCompatActivity() {
     lateinit var binding: ActivitySignUpDetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +61,7 @@ class SignUpDetailActivity : AppCompatActivity() {
         })
 
         binding.buttonContinue.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, AddBirthdayActivity::class.java)
             startActivity(intent)
         }
     }

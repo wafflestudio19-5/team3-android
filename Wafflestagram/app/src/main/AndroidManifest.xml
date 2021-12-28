@@ -13,10 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wafflestagram">
         <activity
+            android:name=".ui.signup.AddBirthdayActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.signup.SignUpDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.signup.AuthenticationActivity"
+            android:name=".ui.signup.AuthenticationByPhoneActivity"
             android:exported="false" />
         <activity
             android:name=".ui.signup.SignUpActivity"

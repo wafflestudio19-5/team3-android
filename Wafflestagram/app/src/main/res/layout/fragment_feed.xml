@@ -14,17 +14,18 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:paddingVertical="10dp"
+            android:paddingVertical="0dp"
             android:paddingHorizontal="2dp">
 
 
             <ImageButton
                 android:id="@+id/button_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:adjustViewBounds="true"
                 android:background="@color/transparent"
                 android:paddingRight="70dp"
+                android:paddingVertical="10dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/wafflestagram_logo"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -41,7 +42,8 @@
                 android:src="@drawable/icon_plus"
                 android:background="@color/transparent"
                 android:scaleType="fitCenter"
-                android:padding="6dp"
+                android:paddingVertical="16dp"
+                android:paddingHorizontal="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button_like"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +55,8 @@
                 android:src="@drawable/icon_heart"
                 android:scaleType="fitCenter"
                 android:background="@color/transparent"
-                android:padding="3dp"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="13dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button_DM"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +68,8 @@
                 android:src="@drawable/icon_send"
                 android:scaleType="fitCenter"
                 android:background="@color/transparent"
-                android:padding="6dp"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

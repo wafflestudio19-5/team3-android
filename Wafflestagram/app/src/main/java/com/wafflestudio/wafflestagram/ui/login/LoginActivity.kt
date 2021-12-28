@@ -197,7 +197,7 @@ class LoginActivity : AppCompatActivity() {
         val dialog = dialogBuilder.create()
         dialog.show()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        resizeDialog(this, dialog, 0.65F, 0.3F)
+        resizeDialog(this, dialog, 0.65F, 0.35F)
         dialogBinding.textDialogContents.text = contents
         dialogBinding.buttonDialog.setOnClickListener {
             dialog.dismiss()
