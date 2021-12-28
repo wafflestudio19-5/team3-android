@@ -9,11 +9,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentSignupByEmailBinding
-import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SignupByEmailFragment : Fragment() {
     private lateinit var binding: FragmentSignupByEmailBinding
 
@@ -50,7 +49,7 @@ class SignupByEmailFragment : Fragment() {
 
         })
         binding.buttonNext.setOnClickListener{
-            val intent = Intent(context, AuthenticationActivity::class.java)
+            val intent = Intent(context, AuthenticationByPhoneActivity::class.java)
             startActivity(intent)
         }
     }

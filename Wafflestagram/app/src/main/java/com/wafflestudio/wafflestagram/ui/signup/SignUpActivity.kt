@@ -13,8 +13,8 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
 
-    private val fragmentSignupByPhoneFragment = SignupByPhoneFragment()
-    private val fragmentSignupByEmailFragment = SignupByEmailFragment()
+    private val signupByPhoneFragment = SignupByPhoneFragment()
+    private val signupByEmailFragment = SignupByEmailFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +49,10 @@ class SignUpActivity : AppCompatActivity() {
         val fb = supportFragmentManager.beginTransaction()
         when(fragmentNum){
             0 -> {
-                fb.replace(binding.fragmentContainerViewSignup.id, fragmentSignupByPhoneFragment).commit()
+                fb.replace(binding.fragmentContainerViewSignup.id, signupByPhoneFragment).commit()
             }
             1 ->{
-                fb.replace(binding.fragmentContainerViewSignup.id, fragmentSignupByEmailFragment).commit()
+                fb.replace(binding.fragmentContainerViewSignup.id, signupByEmailFragment).commit()
             }
         }
     }

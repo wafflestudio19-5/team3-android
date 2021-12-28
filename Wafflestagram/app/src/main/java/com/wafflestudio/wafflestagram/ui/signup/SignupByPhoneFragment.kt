@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentSignupByPhoneBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SignupByPhoneFragment : Fragment() {
     private lateinit var binding: FragmentSignupByPhoneBinding
 
@@ -49,8 +49,13 @@ class SignupByPhoneFragment : Fragment() {
 
         })
         binding.buttonNext.setOnClickListener{
-            val intent = Intent(context, AuthenticationActivity::class.java)
-            startActivity(intent)
+            if(binding.editPhone.text.length == 11 && binding.editPhone.text[0] == '0'){
+                val intent = Intent(context, AuthenticationByPhoneActivity::class.java)
+                intent.putExtra("phoneNumber", binding.editPhone.text.toString())
+                startActivity(intent)
+            }else{
+                binding.textInputLayoutPhone.error = "유효하지 않은 형식입니다. 올바른 형식 예시:010XXXXXXXX"
+            }
         }
     }
 }

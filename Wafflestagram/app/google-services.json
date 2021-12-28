@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "940468021904",
+    "project_id": "wafflestagram-335614",
+    "storage_bucket": "wafflestagram-335614.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940468021904:android:63fc0b1c391b61203cc615",
+        "android_client_info": {
+          "package_name": "com.wafflestudio.wafflestagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940468021904-3athk88nvhh0um3kl6j7o45us87nad57.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wafflestudio.wafflestagram",
+            "certificate_hash": "47384a606b172e062581de5a838e99ce15b71b6b"
+          }
+        },
+        {
+          "client_id": "940468021904-sdnvg317c7og17e5s6qhu1elj7j6pc78.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9gSgw4SnHG-yst7tYxMFinrR8KAh6uEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940468021904-sdnvg317c7og17e5s6qhu1elj7j6pc78.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

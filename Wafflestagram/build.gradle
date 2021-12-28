@@ -11,7 +11,7 @@ buildscript {
         // Dagger Hilt
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.40.1'
 
-        // firebase
+        // Google service
         classpath 'com.google.gms:google-services:4.3.10'
 
         // NOTE: Do not place your application dependencies here; they belong
