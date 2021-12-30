@@ -149,11 +149,7 @@ class LoginActivity : AppCompatActivity() {
         // Google Login
         createGoogleRequest()
 
-        binding.buttonSocialLoginGoogle.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(p0: View?) {
-                signIn()
-            }
-        })
+        binding.buttonSocialLoginGoogle.setOnClickListener { signIn() }
     }
     
     // get social Login Result
