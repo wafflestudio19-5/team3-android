@@ -10,4 +10,5 @@ class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository
 ) : ViewModel(){
     // TODO: Implement the ViewModel
+
 }
