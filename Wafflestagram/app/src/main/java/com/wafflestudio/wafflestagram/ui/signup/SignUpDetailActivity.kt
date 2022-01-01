@@ -12,11 +12,15 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SignUpDetailActivity : AppCompatActivity() {
+
     lateinit var binding: ActivitySignUpDetailBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val phoneNumber = intent.getStringExtra("phoneNumber")
 
         binding.editName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -62,6 +66,9 @@ class SignUpDetailActivity : AppCompatActivity() {
 
         binding.buttonContinue.setOnClickListener{
             val intent = Intent(this, AddBirthdayActivity::class.java)
+            intent.putExtra("phoneNumber", phoneNumber)
+            intent.putExtra("name", binding.editName.text.toString())
+            intent.putExtra("password", binding.editPassword.text.toString())
             startActivity(intent)
         }
     }
