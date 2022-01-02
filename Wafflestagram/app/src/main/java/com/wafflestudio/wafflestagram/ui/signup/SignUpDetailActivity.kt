@@ -2,12 +2,11 @@ package com.wafflestudio.wafflestagram.ui.signup
 
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.appcompat.app.AppCompatActivity
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpDetailBinding
-import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,7 +19,7 @@ class SignUpDetailActivity : AppCompatActivity() {
         binding = ActivitySignUpDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val phoneNumber = intent.getStringExtra("phoneNumber")
+        val phoneNumber = intent.getStringExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER)
 
         binding.editName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -66,10 +65,16 @@ class SignUpDetailActivity : AppCompatActivity() {
 
         binding.buttonContinue.setOnClickListener{
             val intent = Intent(this, AddBirthdayActivity::class.java)
-            intent.putExtra("phoneNumber", phoneNumber)
-            intent.putExtra("name", binding.editName.text.toString())
-            intent.putExtra("password", binding.editPassword.text.toString())
+            intent.putExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER, phoneNumber)
+            intent.putExtra(SIGNUP_ACTIVITY_EXTRA_NAME, binding.editName.text.toString())
+            intent.putExtra(SIGNUP_ACTIVITY_EXTRA_PASSWORD, binding.editPassword.text.toString())
             startActivity(intent)
         }
+    }
+
+    companion object{
+        const val SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER = "phoneNumber"
+        const val SIGNUP_ACTIVITY_EXTRA_NAME = "name"
+        const val SIGNUP_ACTIVITY_EXTRA_PASSWORD = "password"
     }
 }
