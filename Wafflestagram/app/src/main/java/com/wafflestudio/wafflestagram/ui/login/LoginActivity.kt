@@ -188,6 +188,10 @@ class LoginActivity : AppCompatActivity() {
         updateUI(currentUser)
     }
 
+    override fun onBackPressed() {
+        finish()
+    }
+
     private fun showDialog(contents: String){
         val dialogBinding = DialogBinding.inflate(layoutInflater)
         val dialogBuilder = AlertDialog.Builder(this)

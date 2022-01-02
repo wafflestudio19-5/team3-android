@@ -20,10 +20,10 @@ class SignUpCompleteActivity : AppCompatActivity() {
         binding = ActivitySignUpCompleteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val phoneNumber = intent.getStringExtra("phoneNumber")!!
-        val name = intent.getStringExtra("name")!!
-        val password = intent.getStringExtra("password")!!
-        val birthday = intent.getStringExtra("birthday")!!
+        val phoneNumber = intent.getStringExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER)!!
+        val name = intent.getStringExtra(SIGNUP_ACTIVITY_EXTRA_NAME)!!
+        val password = intent.getStringExtra(SIGNUP_ACTIVITY_EXTRA_PASSWORD)!!
+        val birthday = intent.getStringExtra(SIGNUP_ACTIVITY_EXTRA_BIRTHDAY)!!
 
         binding.editEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -85,5 +85,12 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 //에러 메시지
             }
         })
+    }
+
+    companion object{
+        const val SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER = "phoneNumber"
+        const val SIGNUP_ACTIVITY_EXTRA_NAME = "name"
+        const val SIGNUP_ACTIVITY_EXTRA_PASSWORD = "password"
+        const val SIGNUP_ACTIVITY_EXTRA_BIRTHDAY = "birthday"
     }
 }

@@ -1,6 +1,5 @@
 package com.wafflestudio.wafflestagram.ui.signup
 
-import android.media.ToneGenerator
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

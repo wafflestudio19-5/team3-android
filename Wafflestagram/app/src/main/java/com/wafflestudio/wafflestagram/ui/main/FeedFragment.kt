@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,9 +33,24 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        feedAdapter = FeedAdapter()
+        feedLayoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        binding.recyclerViewFeed.apply {
+            adapter = feedAdapter
+            layoutManager = feedLayoutManager
+        }
         binding.buttonLogo.setOnClickListener{
             binding.recyclerViewFeed.smoothScrollToPosition(0)
         }
+
+        //더미 데이터
+        viewModel.loadData()
+
+        viewModel.feedList.observe(viewLifecycleOwner, {
+            feedAdapter.updateData(it)
+        })
+
+
     }
 
     fun setRecyclerviewPosition(position: Int){

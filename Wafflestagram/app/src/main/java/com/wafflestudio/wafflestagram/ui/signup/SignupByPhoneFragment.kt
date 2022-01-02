@@ -51,11 +51,15 @@ class SignupByPhoneFragment : Fragment() {
         binding.buttonNext.setOnClickListener{
             if(binding.editPhone.text.length == 11 && binding.editPhone.text[0] == '0'){
                 val intent = Intent(context, AuthenticationByPhoneActivity::class.java)
-                intent.putExtra("phoneNumber", binding.editPhone.text.toString())
+                intent.putExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER, binding.editPhone.text.toString())
                 startActivity(intent)
             }else{
                 binding.textInputLayoutPhone.error = "유효하지 않은 형식입니다. 올바른 형식 예시:010XXXXXXXX"
             }
         }
+    }
+
+    companion object{
+        const val SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER = "phoneNumber"
     }
 }
