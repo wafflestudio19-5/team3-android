@@ -56,7 +56,9 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.append(" " + data.content)
                     textContent.text = spannable
+
                     viewPagerImage.apply {
+
                         adapter = imageAdapter
                         imageAdapter.updateData(data.photos)
                     }
@@ -99,5 +101,6 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     fun updateData(feeds : List<Feed>){
         this.feeds = feeds
+        notifyDataSetChanged()
     }
 }

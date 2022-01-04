@@ -19,7 +19,7 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout_main"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:tabIconTint="@color/black"
         app:tabIndicatorColor="@color/transparent"

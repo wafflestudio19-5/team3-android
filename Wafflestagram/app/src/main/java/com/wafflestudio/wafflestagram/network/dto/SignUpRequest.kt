@@ -4,7 +4,8 @@ data class SignUpRequest(
     val email:String,
     val password: String,
     val name: String,
-    val username: String,
+    val nickname: String,
     val birthday: String,
-    val phoneNumber: String
+    val phoneNumber: String,
+    val public: Boolean = true
 )
