@@ -1,7 +1,10 @@
 package com.wafflestudio.wafflestagram.ui.main
 
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 
 import android.view.LayoutInflater
@@ -45,6 +48,15 @@ class FeedFragment : Fragment() {
 
         //더미 데이터
         viewModel.loadData()
+
+        binding.refreshLayoutFeed.setColorSchemeColors(*intArrayOf(Color.parseColor("#F6F6F6"),Color.parseColor("#D5D5D5"),Color.parseColor("#A6A6A6"),Color.parseColor("#D5D5D5")))
+        binding.refreshLayoutFeed.setOnRefreshListener {
+            viewModel.loadData()
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.refreshLayoutFeed.setRefreshing(false)
+            }, 1000)
+
+        }
 
         viewModel.feedList.observe(viewLifecycleOwner, {
             feedAdapter.updateData(it)

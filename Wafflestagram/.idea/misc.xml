@@ -11,8 +11,10 @@
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/button_rounded_corner.xml" value="0.10092592592592593" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/button_rounded_corner_blue.xml" value="0.2234375" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/button_rounded_corner_blue2.xml" value="0.1" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/button_rounded_corner_blue3.xml" value="0.16927083333333334" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/dialog_rounded_corner.xml" value="0.1" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/edittext_rounded_corner.xml" value="0.10092592592592593" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/effect_pressed.xml" value="0.175" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/facebook_logo.xml" value="0.14074074074074075" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/facebook_logo_resize.xml" value="0.14074074074074075" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/google_logo_resize.xml" value="0.14074074074074075" />
@@ -23,6 +25,7 @@
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/indicator_blue.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/indicator_gray.xml" value="0.1361111111111111" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/indicator_rounded_corner_black.xml" value="0.38229166666666664" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/search_rounded_corner.xml" value="0.1" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/selector_icon_home.xml" value="0.11481481481481481" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/selector_icon_search.xml" value="0.11481481481481481" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/drawable/selector_icon_user.xml" value="0.11481481481481481" />
@@ -30,18 +33,26 @@
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_authentication.xml" value="0.5" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_authentication_by_email.xml" value="0.20364583333333333" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_authentication_by_phone.xml" value="0.25" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_comment.xml" value="0.33" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_detail_feed.xml" value="0.25" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_like.xml" value="0.25" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_sign_up.xml" value="0.29775280898876405" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_sign_up_complete.xml" value="0.36614583333333334" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/activity_sign_up_detail.xml" value="0.23703703703703705" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/dialog.xml" value="0.33" />
-        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/fragment_feed.xml" value="0.1" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/fragment_feed.xml" value="0.33" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/fragment_search.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/fragment_signup_by_email.xml" value="0.17603850050658562" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/fragment_signup_by_phone.xml" value="0.6309696092619392" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/fragment_user.xml" value="0.17134831460674158" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/icon_user_profile.xml" value="4.0" />
-        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/item_feed.xml" value="0.5" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/item_comment.xml" value="0.3602015113350126" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/item_content.xml" value="0.17603850050658562" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/item_feed.xml" value="0.33" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/item_like.xml" value="0.22" />
+        <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/item_search.xml" value="0.17603850050658562" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/pager_item_image.xml" value="0.1671195652173913" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/layout/pager_photo_image.xml" value="0.1" />
         <entry key="..\:/Users/rlaal/team3-android/Wafflestagram/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.34629629629629627" />

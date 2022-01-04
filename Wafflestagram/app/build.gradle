@@ -107,6 +107,11 @@ dependencies {
 
     // Google Login
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
+
+    // Zoom Helper
+    implementation 'io.github.aghajari:ZoomHelper:1.1.0'
+
+    api 'com.baoyz.pullrefreshlayout:library:1.2.0'
 }
 
 apply plugin: "com.google.gms.google-services"

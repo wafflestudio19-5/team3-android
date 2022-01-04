@@ -3,9 +3,11 @@ package com.wafflestudio.wafflestagram.ui.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.aghajari.zoomhelper.ZoomHelper
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.PagerItemImageBinding
 import com.wafflestudio.wafflestagram.model.Photo
+
 
 class ViewPagerImageAdapter : RecyclerView.Adapter<ViewPagerImageAdapter.ImageViewHolder>() {
 
@@ -20,8 +22,10 @@ class ViewPagerImageAdapter : RecyclerView.Adapter<ViewPagerImageAdapter.ImageVi
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val data = photos[position]
+
+        ZoomHelper.addZoomableView(holder.binding.imagePhoto)
         holder.apply {
-            Glide.with(itemView.context).load(data.path).optionalFitCenter().into(binding.imagePhoto)
+            Glide.with(itemView.context).load(data.path).centerCrop().into(binding.imagePhoto)
         }
     }
 

@@ -8,8 +8,10 @@ import android.text.TextWatcher
 import androidx.activity.viewModels
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpCompleteBinding
 import com.wafflestudio.wafflestagram.network.dto.SignUpRequest
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.regex.Pattern
 
+@AndroidEntryPoint
 class SignUpCompleteActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySignUpCompleteBinding
@@ -79,10 +81,16 @@ class SignUpCompleteActivity : AppCompatActivity() {
 
         viewModel.tokenResponse.observe(this, {response ->
             if(response.isSuccessful){
+                binding.textInputLayoutUsername.error = null
                 //token 저장
+                //response.headers().get("Authentication") 를 이용
                 //메인으로 이동
-            }else{
+
+            }else if(response.code() == 409){
                 //에러 메시지
+                binding.textInputLayoutUsername.error = "이메일 또는 사용자 이름이 이미 사용 중입니다. 다시 입력해주세요."
+            }else{
+                binding.textInputLayoutUsername.error = "잘못된 접근입니다."
             }
         })
     }
