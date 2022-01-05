@@ -1,5 +1,6 @@
 package com.wafflestudio.wafflestagram.ui.main
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
+import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,8 +44,14 @@ class FeedFragment : Fragment() {
             adapter = feedAdapter
             layoutManager = feedLayoutManager
         }
+
         binding.buttonLogo.setOnClickListener{
             binding.recyclerViewFeed.smoothScrollToPosition(0)
+        }
+
+        binding.buttonAdd.setOnClickListener{
+            val intent = Intent(context, AddPostActivity::class.java)
+            startActivity(intent)
         }
 
         //더미 데이터
