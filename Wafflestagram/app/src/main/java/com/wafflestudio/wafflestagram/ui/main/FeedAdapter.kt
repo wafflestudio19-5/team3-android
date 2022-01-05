@@ -4,18 +4,16 @@ import android.animation.ObjectAnimator
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
 import com.wafflestudio.wafflestagram.model.Feed
-import java.time.Duration
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
@@ -24,7 +22,6 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     inner class FeedViewHolder(val binding: ItemFeedBinding) : RecyclerView.ViewHolder(binding.root){
         fun onViewAppear(){
             binding.numberIndicatorPager.alpha = 1.0f
-
             fadeAwayIndicatorWithDelay(2000, 2000)
         }
 
@@ -46,7 +43,6 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         val data = feeds[position]
 
         var imageAdapter : ViewPagerImageAdapter = ViewPagerImageAdapter()
-        var imageLayoutManager : LinearLayoutManager = LinearLayoutManager(holder.itemView.context, RecyclerView.HORIZONTAL, false)
 
         when(holder){
             is FeedViewHolder ->{
@@ -54,6 +50,14 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     buttonUsername.text = data.writer
                     val spannable = SpannableStringBuilder(data.writer)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannable.setSpan(object : ClickableSpan(){
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.isUnderlineText = false
+                        }
+                        override fun onClick(p0: View) {
+                            // user page
+                        }
+                    }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.append(" " + data.content)
                     textContent.text = spannable
 

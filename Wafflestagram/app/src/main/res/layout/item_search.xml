@@ -12,5 +12,5 @@
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/search_rounded_corner"
         app:iconifiedByDefault="false"
-        app:queryHint="검색" />
+        app:queryHint="검색"/>
 </LinearLayout>
