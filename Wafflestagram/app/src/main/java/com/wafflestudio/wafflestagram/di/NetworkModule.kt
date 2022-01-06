@@ -6,6 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.wafflestagram.BuildConfig
 import com.wafflestudio.wafflestagram.network.FeedService
 import com.wafflestudio.wafflestagram.network.LoginService
+import com.wafflestudio.wafflestagram.network.SignUpService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,6 +55,12 @@ object NetworkModule {
     @Singleton
     fun provideLoginService(retrofit: Retrofit): LoginService {
         return retrofit.create(LoginService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSignUpService(retrofit: Retrofit): SignUpService {
+        return retrofit.create(SignUpService::class.java)
     }
 
     @Provides

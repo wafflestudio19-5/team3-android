@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,11 +13,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import com.wafflestudio.wafflestagram.databinding.ActivityAuthenticationByPhoneBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,10 +62,10 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
         auth.useAppLanguage()
-        phoneNumber = intent.getStringExtra("phoneNumber")!!
-        binding.textInput.text = intent.getStringExtra("phoneNumber")
+        phoneNumber = intent.getStringExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER)!!
+        binding.textInput.text = phoneNumber
 
-        startPhoneVerification("+82"+phoneNumber!!.substring(1))
+        startPhoneVerification("+82"+ phoneNumber.substring(1))
 
         binding.editCode.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -94,7 +92,7 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
             verifyPhoneWithCode(phoneAuthCredential)
         }
         binding.buttonResend.setOnClickListener{
-            resendVerificationCode("+82"+phoneNumber!!.substring(1), resendToken)
+            resendVerificationCode("+82"+ phoneNumber.substring(1), resendToken)
         }
     }
 
@@ -126,7 +124,7 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
                 if(task.isSuccessful){
                     auth.signOut()
                     val intent = Intent(this, SignUpDetailActivity::class.java)
-                    intent.putExtra("phoneNumber", phoneNumber)
+                    intent.putExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER, phoneNumber)
                     startActivity(intent)
                 }else{
                     showDialog("  코드가 유효하지 않습니다. 새 코드를 요청하세요.")
@@ -172,5 +170,9 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
 
             window?.setLayout(x, y)
         }
+    }
+
+    companion object{
+        const val SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER = "phoneNumber"
     }
 }

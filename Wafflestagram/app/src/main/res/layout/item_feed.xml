@@ -8,15 +8,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/button_user_image"
             android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:paddingLeft="15dp"
             android:paddingRight="10dp"
+            android:paddingVertical="5dp"
             android:src="@drawable/default_profile"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +27,6 @@
             android:id="@+id/button_username"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="0.3"
             android:background="@color/transparent"
             android:gravity="center_vertical"
             android:text="username"
@@ -40,7 +40,7 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="@color/transparent"
-            android:padding="13dp"
+            android:padding="15dp"
             android:scaleType="fitCenter"
             android:src="@drawable/icon_more"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -51,26 +51,67 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="4:3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/number_indicator_pager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:paddingHorizontal="7dp"
+            android:paddingVertical="3dp"
+            android:background="@drawable/indicator_rounded_corner_black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <TextView
+                android:id="@+id/text_current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textSize="12sp"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/text_slash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:textSize="12sp"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/text_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textSize="12sp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="40dp"
         android:paddingHorizontal="3dp">
 
         <me.relex.circleindicator.CircleIndicator3
             android:id="@+id/indicator_image"
             android:layout_width="110dp"
-            android:layout_height="45dp"
+            android:layout_height="40dp"
             android:layout_margin="4dp"
             app:ci_drawable="@drawable/indicator_blue"
             app:ci_drawable_unselected="@drawable/indicator_gray"
@@ -148,8 +189,9 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:text="좋아요 0개"
-            android:textSize="16sp"
-            android:textColor="@color/black"/>
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/text_content"
@@ -157,7 +199,7 @@
             android:layout_height="wrap_content"
             android:text="Username  Content example, Content example, Content example, Content example, Content example"
             android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:textSize="15sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -178,7 +220,7 @@
                 android:text="댓글 달기..."
                 android:background="@color/transparent"
                 android:gravity="center_vertical"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textColor="@color/grey"/>
 
         </LinearLayout>
@@ -187,7 +229,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="3일 전"
-            android:textSize="12sp"/>
+            android:textSize="11sp"/>
 
     </LinearLayout>
 
