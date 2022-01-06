@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
+import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
+import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,12 +47,18 @@ class UserFragment: Fragment() {
             layoutManager = userLayoutManager
         }
 
+        binding.buttonAdd.setOnClickListener{
+            val intent = Intent(context, AddPostActivity::class.java)
+            startActivity(intent)
+        }
+
         // 더미 데이터 불러오기
         viewModel.loadData()
         
         // 데이터 저장
         viewModel.feedList.observe(viewLifecycleOwner, {
             userPhotoAdapter.updatePhotos(it, _context)
+            binding.posts.text = userPhotoAdapter.itemCount.toString()
         })
     }
 }
