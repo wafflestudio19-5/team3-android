@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor(
 ): ViewModel(){
 
     @Inject
-    private lateinit var sharedPreferences: SharedPreferences
+    lateinit var sharedPreferences: SharedPreferences
 
     private val _fetchPingResponse = MutableLiveData<String>()
     var fetchPingResponse: LiveData<String> = _fetchPingResponse
