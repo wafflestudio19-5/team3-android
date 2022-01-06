@@ -24,7 +24,8 @@
         app:tabIconTint="@color/black"
         app:tabIndicatorColor="@color/transparent"
         app:tabPadding="-10dp"
-        app:tabRippleColor="@color/transparent">
+        app:tabRippleColor="@color/transparent"
+        tools:layout_editor_absoluteX="0dp">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="60dp"

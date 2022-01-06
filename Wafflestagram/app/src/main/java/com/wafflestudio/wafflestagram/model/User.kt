@@ -4,10 +4,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class Photo (
+class User(
     @Json(name = "id")
     val id: Int,
-    @Json(name = "s3path")
-    val path: String
-){
-}
+    @Json(name = "username")
+    val username: String,
+    @Json(name = "email")
+    val email: String
+)

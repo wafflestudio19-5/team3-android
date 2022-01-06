@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 fb.replace(binding.fragmentContainerViewMain.id, searchFragment).commit()
             }
             USER_FRAGMENT -> {
-                //fb.replace(binding.fragmentContainerViewMain.id, userFragment).commit()
+                fb.replace(binding.fragmentContainerViewMain.id, userFragment).commit()
             }
         }
     }

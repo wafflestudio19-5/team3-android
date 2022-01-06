@@ -2,7 +2,6 @@ package com.wafflestudio.wafflestagram.ui.login
 
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -21,18 +20,11 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.CommonStatusCodes
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -44,7 +36,6 @@ import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -107,7 +98,12 @@ class LoginActivity : AppCompatActivity() {
 
         //login 버튼 클릭 이벤트
         binding.buttonLogin.setOnClickListener {
-            viewModel.getResponseByLogin()
+            val username = binding.editUsername.text.toString().trim()
+            val password = binding.editPassword.text.toString().trim()
+
+            viewModel.getResponseByPing()
+            // Backend 구현 완료시 활성화
+            // viewModel.getResponseByLogin(username, password)
             currentFocus?.hideKeyboard()
         }
 
@@ -117,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        viewModel.fetchResponse.observe(this,{
+        viewModel.fetchPingResponse.observe(this,{
             showDialog(it)
         })
 
@@ -156,8 +152,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // TODO: distinguish Facebook and Google
-
         // Pass the activity result back to the Facebook SDK
         // TODO: replace deprecated code with Activity Result APIs
         callbackManager.onActivityResult(requestCode, resultCode, data)
@@ -172,7 +166,7 @@ class LoginActivity : AppCompatActivity() {
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-                Timber.w("Google sign in failed", e)
+                Timber.e(e)
             }
         }
     }
