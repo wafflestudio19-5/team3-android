@@ -1,15 +1,18 @@
 package com.wafflestudio.wafflestagram.di
 
+import android.content.Context
 import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.wafflestagram.BuildConfig
 import com.wafflestudio.wafflestagram.network.FeedService
 import com.wafflestudio.wafflestagram.network.LoginService
+import com.wafflestudio.wafflestagram.network.UserService
 import com.wafflestudio.wafflestagram.network.SignUpService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -51,6 +54,16 @@ object NetworkModule {
             .build()
     }
 
+    @InstallIn(SingletonComponent::class)
+    @Module
+    object PreferenceModule {
+        @Provides
+        @Singleton
+        fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+            return context.getSharedPreferences("sharedpreference", Context.MODE_PRIVATE)
+        }
+    }
+
     @Provides
     @Singleton
     fun provideLoginService(retrofit: Retrofit): LoginService {
@@ -67,5 +80,11 @@ object NetworkModule {
     @Singleton
     fun provideFeedService(retrofit: Retrofit): FeedService {
         return retrofit.create(FeedService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserService(retrofit: Retrofit): UserService {
+        return retrofit.create(UserService::class.java)
     }
 }

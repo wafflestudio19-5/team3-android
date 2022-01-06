@@ -15,6 +15,5 @@ class Feed (
     val photos: List<Photo>,
     @Json(name = "comments")
     val comments: List<Comment>
-    // createdAt, updateAt
-    ){
+){
 }
