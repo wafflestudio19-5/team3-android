@@ -37,4 +37,7 @@ class UserViewModel @Inject constructor(
             _feedList.value = list
         }
     }
+
+    // TODO: User 관련 정보 받아오기(ID, bio, posts, followers, followings, ...)
+    // TODO(선택): followers, followings 누르면 나오는 유저 목록 불러오는 함수 구현
 }
