@@ -87,7 +87,7 @@
             android:paddingHorizontal="2dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/button_user_image"
+                android:id="@+id/user_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:paddingLeft="15dp"
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/area_posts"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/button_user_image"
+                app:layout_constraintStart_toEndOf="@+id/user_image"
                 app:layout_constraintEnd_toStartOf="@+id/area_followers"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" >
@@ -203,6 +203,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
+            android:id="@+id/text_bio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="5dp"

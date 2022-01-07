@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.repository
 
 import com.wafflestudio.wafflestagram.model.User
+import com.wafflestudio.wafflestagram.network.FeedService
 import com.wafflestudio.wafflestagram.network.UserService
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import okhttp3.ResponseBody
