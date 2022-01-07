@@ -6,9 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.Photo
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,6 +21,9 @@ class UserViewModel @Inject constructor(
 
     private val _feedList = MutableLiveData<List<Feed>>()
     val feedList: LiveData<List<Feed>> = _feedList
+
+    private val _fetchUserInfo = MutableLiveData<User>()
+    val fetchUserInfo: LiveData<User> = _fetchUserInfo
 
     // 더미 데이터 불러오기
     fun loadData(){
@@ -35,6 +41,30 @@ class UserViewModel @Inject constructor(
                 list.add(Feed(n, writer, content, photos, emptyList()))
             }
             _feedList.value = list
+        }
+    }
+
+    // 내 정보 가져오기
+    fun getMyInfo(){
+        viewModelScope.launch {
+            try{
+                val data = userRepository.getMyInfo()
+                _fetchUserInfo.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    // username으로 다른 사람 정보 가져오기
+    fun getInfoByUsername(username: String){
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getInfoByUsername(username)
+                _fetchUserInfo.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
         }
     }
 
