@@ -1,7 +1,7 @@
 package com.wafflestudio.wafflestagram.repository
 
+import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
-import com.wafflestudio.wafflestagram.network.FeedService
 import com.wafflestudio.wafflestagram.network.UserService
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import okhttp3.ResponseBody
@@ -45,5 +45,9 @@ class UserRepository @Inject constructor(private val userService: UserService){
 
     fun updateUser(updateUserRequest: UpdateUserRequest): Response<ResponseBody> {
         return userService.updateUser(updateUserRequest)
+    }
+
+    suspend fun getMyFeeds(offset :Int, number: Int): Response<Page>{
+        return userService.getMyFeeds(offset, number)
     }
 }

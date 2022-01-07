@@ -7,11 +7,11 @@ import java.time.LocalDateTime
 @JsonClass(generateAdapter = true)
 class Comment (
     @Json(name = "id")
-    val id: Long,
+    val id: Long = 0,
     @Json(name = "writer")
     val writer: User,
     @Json(name = "text")
-    val text: String,
+    val text: String = "",
     @Json(name = "replies")
     val replies: List<Reply>,
     val createdAt : LocalDateTime = LocalDateTime.now(),

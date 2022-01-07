@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wafflestudio.wafflestagram.model.Feed
-import com.wafflestudio.wafflestagram.model.Photo
+import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +20,8 @@ class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
 ): ViewModel() {
 
-    private val _feedList = MutableLiveData<List<Feed>>()
-    val feedList: LiveData<List<Feed>> = _feedList
+    private val _page = MutableLiveData<Response<Page>>()
+    val page: LiveData<Response<Page>> = _page
 
     private val _fetchUserInfo = MutableLiveData<Response<User>>()
     val fetchUserInfo: LiveData<Response<User>> = _fetchUserInfo
@@ -121,6 +120,17 @@ class UserViewModel @Inject constructor(
                 val data = userRepository.getFeedCountByUserId(userId)
                 _fetchFeedCount.value = data
             } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getMyFeeds(offset : Int, number: Int){
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getMyFeeds(offset, number)
+                _page.value = data
+            }catch (e: IOException){
                 Timber.e(e)
             }
         }

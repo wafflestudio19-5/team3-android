@@ -6,8 +6,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 class Photo (
     @Json(name = "id")
-    val id: Long,
+    val id: Long = 0,
     @Json(name = "s3path")
-    val path: String
+    val path: String = ""
 ){
 }

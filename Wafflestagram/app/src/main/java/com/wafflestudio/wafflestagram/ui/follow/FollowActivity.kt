@@ -1,13 +1,15 @@
 package com.wafflestudio.wafflestagram.ui.follow
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.wafflestagram.databinding.ActivityFollowBinding
-import retrofit2.Response
+import dagger.hilt.android.AndroidEntryPoint
 
-class FollowActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class FollowActivity : AppCompatActivity(), FollowInter {
 
     private lateinit var binding : ActivityFollowBinding
     private val viewModel: FollowViewModel by viewModels()
@@ -19,12 +21,16 @@ class FollowActivity : AppCompatActivity() {
         binding = ActivityFollowBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        followAdapter = FollowAdapter()
+        followAdapter = FollowAdapter(this)
         followLayoutManager = LinearLayoutManager(this)
 
         binding.recyclerViewFollow.apply {
             adapter = followAdapter
             layoutManager = followLayoutManager
+        }
+
+        binding.buttonBack.setOnClickListener {
+            onBackPressed()
         }
 
         val id = intent.getIntExtra("id", 0)
@@ -43,25 +49,25 @@ class FollowActivity : AppCompatActivity() {
         viewModel.page.observe(this, {response ->
             if(response.isSuccessful){
                 followAdapter.updateData(response.body()!!.content)
-            }else if(response.code() == 401){
+            }else if(response.code() == 404){
                 // 토큰 삭제
             }else{
-
+                Toast.makeText(this, response.errorBody()?.string()!!, Toast.LENGTH_SHORT)
             }
         })
 
 
     }
 
-    fun checkFollowing(id: Int) : Response<Boolean> {
+    /*fun checkFollowing(id: Int) : Response<Boolean> {
         return viewModel.checkFollowing(id)
-    }
+    }*/
 
-    fun follow(id: Int){
+    override fun follow(id: Int){
         viewModel.follow(id)
     }
 
-    fun unfollow(id: Int){
+    override fun unfollow(id: Int){
         viewModel.unfollow(id)
     }
 }

@@ -109,6 +109,12 @@ object NetworkModule {
         return retrofit.create(CommentService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideSearchService(retrofit: Retrofit): SearchService {
+        return retrofit.create(SearchService::class.java)
+    }
+
 
     class LocalDateTimeAdapter : JsonAdapter<LocalDateTime>(){
         override fun toJson(writer: JsonWriter, value: LocalDateTime?) {

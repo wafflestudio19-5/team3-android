@@ -21,6 +21,7 @@ import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.Like
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
+import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import java.time.format.DateTimeFormatter
 
@@ -77,6 +78,9 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                         }
                         override fun onClick(p0: View) {
                             // user page
+                            val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                            intent.putExtra("id", data.author?.id)
+                            ContextCompat.startActivity(holder.itemView.context,intent, null)
                         }
                     }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.append(" " + data.content)
@@ -115,6 +119,18 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     textLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id)
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    buttonUserImage.setOnClickListener{
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.author?.id)
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    buttonUsername.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.author?.id)
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 

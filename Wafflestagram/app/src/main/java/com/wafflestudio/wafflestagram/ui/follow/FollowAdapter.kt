@@ -7,11 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.databinding.ItemLikeBinding
 import com.wafflestudio.wafflestagram.databinding.ItemSearchBinding
 import com.wafflestudio.wafflestagram.model.Follow
-import com.wafflestudio.wafflestagram.model.Like
 import com.wafflestudio.wafflestagram.model.User
-import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 
-class FollowAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var follows: List<Follow> = listOf()
     private lateinit var currUser: User
@@ -40,11 +38,11 @@ class FollowAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                 textUsername.text = data.user.username
 
                 //팔로우 확인 로직
-                if(FollowActivity().checkFollowing(data.user.id.toInt()).body()!!){
+                /*if(follow.checkFollowing(data.user.id.toInt()).body()!!){
                     buttonFollow.isSelected = true
                 }else{
                     buttonFollow.isSelected = false
-                }
+                }*/
 
                 buttonFollow.setOnClickListener{
                     if(buttonFollow.isSelected){
@@ -52,12 +50,12 @@ class FollowAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                         buttonFollow.setTextColor(Color.parseColor("#FFFFFFFF"))
                         buttonFollow.text = "팔로우"
                         //언팔로우
-                        FollowActivity().unfollow(data.user.id.toInt())
+                        followInter.unfollow(data.user.id.toInt())
                     }else{
                         buttonFollow.isSelected = true
                         buttonFollow.setTextColor(Color.parseColor("#FF000000"))
                         buttonFollow.text = "팔로잉"
-                        FollowActivity().follow(data.user.id.toInt())
+                        followInter.follow(data.user.id.toInt())
                     }
                 }
             }

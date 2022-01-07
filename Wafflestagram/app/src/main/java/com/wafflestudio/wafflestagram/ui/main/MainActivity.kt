@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.aghajari.zoomhelper.ZoomHelper
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.wafflestudio.wafflestagram.databinding.ActivityMainBinding
 import com.wafflestudio.wafflestagram.databinding.IconUserProfileBinding
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         // set max zoom scale
         ZoomHelper.getInstance().maxScale = 3f
+
 
         setFragment(FEED_FRAGMENT)
         binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root

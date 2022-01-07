@@ -4,9 +4,9 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class FollowPage(
+class UserPage(
     @Json(name = "content")
-    val content : List<Follow> = emptyList(),
+    val content : List<User>,
     @Json(name = "last")
     val last: Boolean,
     @Json(name = "first")

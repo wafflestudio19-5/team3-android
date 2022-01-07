@@ -63,7 +63,9 @@ class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                             ds.isUnderlineText = false
                         }
                         override fun onClick(p0: View) {
-                            // user page
+                            val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                            intent.putExtra("id", data.author?.id)
+                            ContextCompat.startActivity(holder.itemView.context, intent, null)
                         }
                     }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.append(" " + data.content)
@@ -114,6 +116,19 @@ class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                             FeedFragment().like(data.id.toInt(), position)
                         }
                     }
+
+                    buttonUserImage.setOnClickListener{
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.author?.id)
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    buttonUsername.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.author?.id)
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
                 }
 
             }

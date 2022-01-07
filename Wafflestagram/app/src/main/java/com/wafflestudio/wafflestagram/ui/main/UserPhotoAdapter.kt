@@ -1,12 +1,8 @@
 package com.wafflestudio.wafflestagram.ui.main
 
 import android.content.Context
-import android.content.res.Resources
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemUserPhotoBinding
@@ -35,8 +31,9 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
 
         // 각 feed의 첫 사진 띄우기
         try {
-            Glide.with(context)
+            Glide.with(holder.itemView.context)
                 .load(data.photos[0].path)
+                .centerCrop()
                 .into(holder.binding.userPhoto)
         } catch(e: Throwable) {
             Timber.e(e)

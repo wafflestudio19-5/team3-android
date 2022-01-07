@@ -15,7 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
+import com.wafflestudio.wafflestagram.databinding.IconUserProfileBinding
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
@@ -33,6 +35,8 @@ class FeedFragment : Fragment() {
     private var pageNumber: Int = 0
     private var totalPage: Int = 1
 
+    private lateinit var userProfileBinding: IconUserProfileBinding
+
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
@@ -41,6 +45,7 @@ class FeedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFeedBinding.inflate(inflater, container, false)
+        userProfileBinding = IconUserProfileBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -118,6 +123,7 @@ class FeedFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
                 feedAdapter.updateData(response.body()!!)
+                Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
             }else if(response.code() == 401){
 
             }

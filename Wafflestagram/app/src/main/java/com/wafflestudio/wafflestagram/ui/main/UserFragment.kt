@@ -105,13 +105,9 @@ class UserFragment: Fragment() {
             adapter = userPhotoAdapter
             layoutManager = userLayoutManager
         }
+        viewModel.getMyFeeds(0, 100)
         
         // 데이터 저장
-        viewModel.feedList.observe(viewLifecycleOwner, {
-            userPhotoAdapter.updatePhotos(it, _context)
-            // save post count
-            binding.feeds.text = userPhotoAdapter.itemCount.toString()
-        })
 
         viewModel.fetchFollowingCount.observe(viewLifecycleOwner, { response ->
                 val data = response.body()!!
@@ -138,6 +134,15 @@ class UserFragment: Fragment() {
             } else {
                 Toast.makeText(context, "피드 정보를 불러 올 수 없습니다", Toast.LENGTH_SHORT).show()
             }
+        })
+
+        viewModel.page.observe(viewLifecycleOwner, {response ->
+            if(response.isSuccessful){
+                userPhotoAdapter.updatePhotos(response.body()!!.content, context!!)
+            }else{
+
+            }
+
         })
 
         viewModel.fetchUserInfo.observe(viewLifecycleOwner, { response ->

@@ -1,13 +1,11 @@
 package com.wafflestudio.wafflestagram.network
 
+import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface UserService {
 
@@ -47,4 +45,10 @@ interface UserService {
     fun updateUser(
         @Body updateUserRequest: UpdateUserRequest
     ): Response<ResponseBody>
+
+    @GET("api/v1/feed/self/")
+    suspend fun getMyFeeds(@Query("offset")offset : Int, @Query("number") number:Int):Response<Page>
+
+    @GET("api/v1/feed/other/{user_id}/")
+    suspend fun getFeedsById(@Path("user_id") id: Int, @Query("offset")offset : Int, @Query("number") number:Int):Response<Page>
 }

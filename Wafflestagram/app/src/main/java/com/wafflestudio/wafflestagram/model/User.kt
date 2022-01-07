@@ -6,21 +6,21 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 class User(
     @Json(name = "bio")
-    val bio: String?,
+    val bio: String? = null,
     @Json(name = "email")
-    val email: String?,
+    val email: String? = null,
     @Json(name = "id")
     val id: Long,
     @Json(name = "name")
-    val name: String?,
+    val name: String? = null,
     @Json(name = "nickname")
-    val username: String,
+    val username: String? = null,
     @Json(name = "profilePhotoURL")
-    val profilePhotoURL: String?,
+    val profilePhotoURL: String? = null,
     @Json(name = "public")
-    val public: Boolean,
+    val public: Boolean = true,
     @Json(name = "website")
-    val website: String?
+    val website: String? = null
 ){
     override fun equals(other: Any?): Boolean {
         return if(other is User)
