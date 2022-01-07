@@ -34,6 +34,7 @@ class LikeAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val data = likes[position - 1]
             holder.binding.apply {
                 textUsername.text = data.writer.username
+                
                 buttonFollow.setOnClickListener{
                     //팔로우
                 }
@@ -54,6 +55,11 @@ class LikeAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }else{
             VIEW_TYPE_LIKE
         }
+    }
+
+    fun updateData(likes : List<Like>){
+        this.likes = likes
+        notifyDataSetChanged()
     }
 
     companion object{

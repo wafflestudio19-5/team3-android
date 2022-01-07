@@ -108,10 +108,10 @@ class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
-                            FeedFragment().unlike(data.id.toInt())
+                            FeedFragment().unlike(data.id.toInt(), position)
                         }else{
                             buttonLike.isSelected = true
-                            FeedFragment().like(data.id.toInt())
+                            FeedFragment().like(data.id.toInt(), position)
                         }
                     }
                 }

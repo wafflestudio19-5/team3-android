@@ -127,10 +127,10 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
-                            FeedFragment().unlike(data.id.toInt())
+                            FeedFragment().unlike(data.id.toInt(), position)
                         }else{
                             buttonLike.isSelected = true
-                            FeedFragment().like(data.id.toInt())
+                            FeedFragment().like(data.id.toInt(), position)
                         }
                     }
                 }
@@ -164,6 +164,11 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     fun updateData(user: User){
         this.currUser = user
         notifyDataSetChanged()
+    }
+
+    fun changeData(feed: Feed, position: Int){
+        this.feeds[position] = feed
+        notifyItemChanged(position)
     }
 
     fun addData(feeds: MutableList<Feed>){

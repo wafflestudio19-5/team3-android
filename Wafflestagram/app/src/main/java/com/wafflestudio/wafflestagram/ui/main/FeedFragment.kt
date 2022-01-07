@@ -3,20 +3,17 @@ package com.wafflestudio.wafflestagram.ui.main
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.fragment.app.Fragment
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
@@ -31,6 +28,7 @@ class FeedFragment : Fragment() {
     private val viewModel: FeedViewModel by activityViewModels()
     private lateinit var feedAdapter: FeedAdapter
     private lateinit var feedLayoutManager: LinearLayoutManager
+    private var itemPosition : Int = -1
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -38,7 +36,7 @@ class FeedFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentFeedBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -110,18 +108,26 @@ class FeedFragment : Fragment() {
 
             }
         })
+
+        viewModel.likeResponse.observe(viewLifecycleOwner, {response ->
+            if(response.isSuccessful){
+                feedAdapter.changeData(response.body()!!, itemPosition)
+            }
+        })
     }
 
     fun setRecyclerviewPosition(position: Int){
         binding.recyclerViewFeed.smoothScrollToPosition(position)
     }
 
-    fun like(id:Int){
+    fun like(id:Int ,position: Int){
         viewModel.like(id)
+        itemPosition = position
     }
 
-    fun unlike(id: Int){
+    fun unlike(id: Int, position: Int){
         viewModel.unlike(id)
+        itemPosition = position
     }
 
     companion object{

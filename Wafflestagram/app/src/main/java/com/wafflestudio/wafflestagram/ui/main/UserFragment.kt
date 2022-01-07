@@ -54,7 +54,7 @@ class UserFragment: Fragment() {
 
         // change UI and get info according to user ID
         currentUserId = sharedPreferences.getLong(CURRENT_USER_ID, -1)
-        val userId = arguments!!.getLong(USER_ID, -1)
+        val userId = arguments?.getLong(USER_ID, -1)
         if(userId == currentUserId){
             // the user is me
             viewModel.getMyInfo()
@@ -75,7 +75,7 @@ class UserFragment: Fragment() {
             }
         } else {
             // the user is other one
-            viewModel.getInfoByUserId(userId)
+            viewModel.getInfoByUserId(userId!!.toLong())
             binding.buttonAdd.visibility = View.GONE
             binding.buttonMenu.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_more))
             checkFollowingStatus()
