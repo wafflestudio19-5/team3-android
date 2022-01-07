@@ -11,7 +11,7 @@ class UserRepository @Inject constructor(private val userService: UserService){
         return userService.getMyInfo()
     }
 
-    suspend fun getInfoByUsername(username: String): User {
-        return userService.getInfoByUsername(username)
+    suspend fun getInfoByUserId(userId: Long): User {
+        return userService.getInfoByUserId(userId)
     }
 }
