@@ -9,6 +9,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,6 +30,8 @@ class FeedFragment : Fragment() {
     private lateinit var feedAdapter: FeedAdapter
     private lateinit var feedLayoutManager: LinearLayoutManager
     private var itemPosition : Int = -1
+    private var pageNumber: Int = 0
+    private var totalPage: Int = 1
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -59,9 +62,13 @@ class FeedFragment : Fragment() {
             val intent = Intent(context, AddPostActivity::class.java)
             startActivity(intent)
         }
+        if(pageNumber < totalPage){
+            val request = FeedPageRequest(pageNumber, 10)
+            pageNumber++
+            viewModel.getFeeds(request)
+        }
 
-        val request = FeedPageRequest(feedAdapter.itemCount, 10)
-        viewModel.getFeeds(request)
+
 
         viewModel.getMe()
 
@@ -71,7 +78,9 @@ class FeedFragment : Fragment() {
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.refreshLayoutFeed.setRefreshing(false)
             }, 1000)
-            val request = FeedPageRequest(feedAdapter.itemCount, 10)
+            pageNumber = 0
+            val request = FeedPageRequest(pageNumber, 10)
+            pageNumber++
             viewModel.getFeeds(request)
         }
 
@@ -79,21 +88,26 @@ class FeedFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                if(!binding.recyclerViewFeed.canScrollVertically(1)){
+                if(!binding.recyclerViewFeed.canScrollVertically(1) && feedAdapter.itemCount > 9){
                     feedAdapter.deleteLoading()
-                    val request = FeedPageRequest(feedAdapter.itemCount, 10)
+                    val request = FeedPageRequest(pageNumber, 10)
+                    pageNumber++
                     viewModel.getFeeds(request)
                 }
             }
         })
 
-        viewModel.feedList.observe(viewLifecycleOwner, {response ->
+        viewModel.page.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
-                feedAdapter.addData(response.body()!!.toMutableList())
+                feedAdapter.addData(response.body()!!.content.toMutableList())
+                totalPage = response.body()!!.totalPages
             }else if(response.code() == 401){
                 // 토큰 만료시 토큰 삭제
+
+                    Toast.makeText(context,sharedPreferences.getString(MainActivity.TOKEN, ""),Toast.LENGTH_LONG ).show()
                 sharedPreferences.edit {
                     putString(TOKEN, "")
+
                 }
                 val intent = Intent(context, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)

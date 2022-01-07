@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.wafflestagram.databinding.ActivityLikeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Response
 
 @AndroidEntryPoint
 class LikeActivity : AppCompatActivity() {
@@ -19,5 +20,40 @@ class LikeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLikeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        likeAdapter = LikeAdapter()
+        likeLayoutManager = LinearLayoutManager(this)
+
+        binding.recyclerViewLike.apply {
+            adapter = likeAdapter
+            layoutManager = likeLayoutManager
+        }
+
+        val id = intent.getIntExtra("id", 0)
+
+        viewModel.getMe()
+        viewModel.getFeedById(id)
+
+        viewModel.feed.observe(this, {response ->
+            if(response.isSuccessful){
+                likeAdapter.updateData(response.body()!!.likes)
+            }else if(response.code() == 401){
+                // 토큰 삭제
+            }else{
+
+            }
+        })
+    }
+
+    fun checkFollowing(id: Int) : Response<Boolean> {
+        return viewModel.checkFollowing(id)
+    }
+
+    fun follow(id: Int){
+        viewModel.follow(id)
+    }
+
+    fun unfollow(id: Int){
+        viewModel.unfollow(id)
     }
 }

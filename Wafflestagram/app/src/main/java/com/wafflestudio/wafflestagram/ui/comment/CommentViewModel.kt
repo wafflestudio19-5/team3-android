@@ -23,6 +23,9 @@ class CommentViewModel @Inject constructor(
     private val _feed = MutableLiveData<Response<Feed>>()
     val feed: LiveData<Response<Feed>> = _feed
 
+    private val _comment = MutableLiveData<Response<Comment>>()
+    val comment: LiveData<Response<Comment>> = _comment
+
 
     fun getFeedById(id: Int){
         viewModelScope.launch {
@@ -38,7 +41,8 @@ class CommentViewModel @Inject constructor(
     fun addComment(id: Int, addCommentRequest: AddCommentRequest){
         viewModelScope.launch {
             try {
-                commentRepository.addComment(id, addCommentRequest)
+                val data = commentRepository.addComment(id, addCommentRequest)
+                _comment.value = data
             }catch (e : IOException){
                 Timber.e(e)
             }

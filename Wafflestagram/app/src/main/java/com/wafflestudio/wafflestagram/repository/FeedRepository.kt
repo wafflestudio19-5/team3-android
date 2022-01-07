@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.repository
 
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.FeedService
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
@@ -11,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class FeedRepository @Inject constructor(private val feedService: FeedService){
 
-    suspend fun getFeeds(feedPageRequest: FeedPageRequest): Response<List<Feed>>{
+    suspend fun getFeeds(feedPageRequest: FeedPageRequest): Response<Page>{
         return feedService.getFeeds(feedPageRequest.offset, feedPageRequest.limit)
     }
 
