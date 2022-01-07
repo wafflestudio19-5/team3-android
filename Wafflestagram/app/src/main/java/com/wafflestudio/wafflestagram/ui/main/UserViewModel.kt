@@ -27,11 +27,14 @@ class UserViewModel @Inject constructor(
     private val _fetchUserInfo = MutableLiveData<Response<User>>()
     val fetchUserInfo: LiveData<Response<User>> = _fetchUserInfo
 
-    private val _fetchFollower = MutableLiveData<Response<ResponseBody>>()
-    val fetchFollower: LiveData<Response<ResponseBody>> = _fetchFollower
+    private val _fetchFollowerCount = MutableLiveData<Response<ResponseBody>>()
+    val fetchFollowerCount: LiveData<Response<ResponseBody>> = _fetchFollowerCount
 
-    private val _fetchFollowing = MutableLiveData<Response<ResponseBody>>()
-    val fetchFollowing: LiveData<Response<ResponseBody>> = _fetchFollowing
+    private val _fetchFollowingCount = MutableLiveData<Response<ResponseBody>>()
+    val fetchFollowingCount: LiveData<Response<ResponseBody>> = _fetchFollowingCount
+
+    private val _fetchFeedCount = MutableLiveData<Response<ResponseBody>>()
+    val fetchFeedCount: LiveData<Response<ResponseBody>> = _fetchFeedCount
 
     // 내 정보 가져오기
     fun getMyInfo(){
@@ -45,22 +48,33 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun getMyFollower(){
+    fun getMyFollowerCount(){
         viewModelScope.launch {
             try {
                 val data = userRepository.getMyFollower()
-                _fetchFollower.value = data
+                _fetchFollowerCount.value = data
             } catch (e: IOException) {
                 Timber.e(e)
             }
         }
     }
 
-    fun getMyFollowing(){
+    fun getMyFollowingCount(){
         viewModelScope.launch {
             try {
                 val data = userRepository.getMyFollowing()
-                _fetchFollowing.value = data
+                _fetchFollowingCount.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getMyFeedCount(){
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getMyFeedCount()
+                _fetchFeedCount.value = data
             } catch (e: IOException) {
                 Timber.e(e)
             }
@@ -79,22 +93,33 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun getFollowerByUserId(userId: Int) {
+    fun getFollowerCountByUserId(userId: Int) {
         viewModelScope.launch {
             try {
                 val data = userRepository.getFollowerByUserId(userId)
-                _fetchFollower.value = data
+                _fetchFollowerCount.value = data
             } catch (e: IOException) {
                 Timber.e(e)
             }
         }
     }
 
-    fun getFollowingByUserId(userId: Int) {
+    fun getFollowingCountByUserId(userId: Int) {
         viewModelScope.launch {
             try {
                 val data = userRepository.getFollowingByUserId(userId)
-                _fetchFollowing.value = data
+                _fetchFollowingCount.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getFeedCountByUserId(userId: Int){
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getFeedCountByUserId(userId)
+                _fetchFeedCount.value = data
             } catch (e: IOException) {
                 Timber.e(e)
             }

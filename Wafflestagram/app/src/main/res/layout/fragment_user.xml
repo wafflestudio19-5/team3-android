@@ -100,7 +100,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/area_posts"
+                android:id="@+id/area_feeds"
                 app:layout_constraintHorizontal_weight="1"
                 app:layout_constraintStart_toEndOf="@+id/user_image"
                 app:layout_constraintEnd_toStartOf="@+id/area_followers"
@@ -110,7 +110,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/posts"
+                    android:id="@+id/feeds"
                     android:textColor="@color/black"
                     android:layout_gravity="center"
                     android:text="10"
@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:text="게시물"
-                    app:layout_constraintTop_toBottomOf="@+id/posts"
+                    app:layout_constraintTop_toBottomOf="@+id/feeds"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -136,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/area_followers"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@+id/area_posts"
+                app:layout_constraintStart_toEndOf="@+id/area_feeds"
                 app:layout_constraintEnd_toStartOf="@+id/area_followings"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" >

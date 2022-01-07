@@ -16,11 +16,15 @@ class UserRepository @Inject constructor(private val userService: UserService){
     }
 
     suspend fun getMyFollower(): Response<ResponseBody> {
-        return userService.getMyFollower()
+        return userService.getMyFollowerCount()
     }
 
     suspend fun getMyFollowing(): Response<ResponseBody> {
-        return userService.getMyFollowing()
+        return userService.getMyFollowingCount()
+    }
+
+    suspend fun getMyFeedCount(): Response<ResponseBody> {
+        return userService.getMyFeedsCount()
     }
 
     suspend fun getInfoByUserId(userId: Int): Response<User> {
@@ -28,11 +32,15 @@ class UserRepository @Inject constructor(private val userService: UserService){
     }
 
     suspend fun getFollowerByUserId(userId: Int): Response<ResponseBody> {
-        return userService.getFollowerByUserId(userId)
+        return userService.getFollowerCountByUserId(userId)
     }
 
     suspend fun getFollowingByUserId(userId: Int): Response<ResponseBody> {
-        return userService.getFollowingByUserId(userId)
+        return userService.getFollowingCountByUserId(userId)
+    }
+
+    suspend fun getFeedCountByUserId(userId: Int): Response<ResponseBody> {
+        return userService.getFeedCountByUserId(userId)
     }
 
     fun updateUser(updateUserRequest: UpdateUserRequest): Response<ResponseBody> {
