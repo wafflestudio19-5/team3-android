@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SignUpRepository @Inject constructor(private val signUpService: SignUpService){
-    suspend fun signUp(signUpRequest: SignUpRequest): Response<TokenResponse>{
+    suspend fun signUp(signUpRequest: SignUpRequest): Response<Long>{
         return signUpService.signUp(signUpRequest)
     }
 }

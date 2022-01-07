@@ -9,5 +9,5 @@ import retrofit2.http.POST
 
 interface SignUpService {
     @POST("/api/v1/users/signup/")
-    suspend fun signUp(@Body signUpRequest: SignUpRequest): Response<TokenResponse>
+    suspend fun signUp(@Body signUpRequest: SignUpRequest): Response<Long>
 }

@@ -5,16 +5,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.R
+import com.wafflestudio.wafflestagram.databinding.FragmentImageDialogBinding
 
 class ImageDialogFragment : DialogFragment() {
+
+    private lateinit var binding: FragmentImageDialogBinding
+    private lateinit var imageDialogAdapter: ImageDialogAdapter
+    private lateinit var imageDialogLayoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_image_dialog, container, false)
+
+        binding = FragmentImageDialogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val array = arguments?.getStringArray("images")
+
+        imageDialogAdapter = ImageDialogAdapter()
+        imageDialogLayoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+
+        binding.viewPagerImage.apply {
+            adapter = imageDialogAdapter
+        }
+
+        imageDialogAdapter.updateData(array?.toList()!!)
     }
 
 
