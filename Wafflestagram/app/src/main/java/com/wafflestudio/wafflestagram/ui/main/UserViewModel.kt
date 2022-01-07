@@ -22,11 +22,8 @@ class UserViewModel @Inject constructor(
     private val _feedList = MutableLiveData<List<Feed>>()
     val feedList: LiveData<List<Feed>> = _feedList
 
-
     private val _fetchUserInfo = MutableLiveData<User>()
     val fetchUserInfo: LiveData<User> = _fetchUserInfo
-
-
 
     // 내 정보 가져오기
     fun getMyInfo(){

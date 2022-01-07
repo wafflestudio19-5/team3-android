@@ -93,7 +93,6 @@ class UserFragment: Fragment() {
             adapter = userPhotoAdapter
             layoutManager = userLayoutManager
         }
-
         
         // 데이터 저장
         viewModel.feedList.observe(viewLifecycleOwner, {
