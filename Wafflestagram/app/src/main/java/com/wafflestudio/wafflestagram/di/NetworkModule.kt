@@ -34,14 +34,26 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(
+    fun provideOkHttpClient(sharedPreferences: SharedPreferences): OkHttpClient {
+        val builder = OkHttpClient.Builder().addInterceptor(
             HttpLoggingInterceptor().apply {
                 level =
                     if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                     else HttpLoggingInterceptor.Level.NONE
             }
-        ).build()
+        )
+
+        val token = sharedPreferences.getString("token", "")
+        if(token != "") {
+            builder.addInterceptor { chain ->
+                val newRequest = chain.request().newBuilder().addHeader(
+                    "Authentication", "$token"
+                ).build()
+                chain.proceed(newRequest)
+            }
+        }
+
+        return builder.build()
     }
 
     @Provides
