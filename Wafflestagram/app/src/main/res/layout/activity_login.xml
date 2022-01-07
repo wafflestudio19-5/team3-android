@@ -159,7 +159,6 @@
 
         </LinearLayout>
 
-        <!--
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_social_login_facebook"
             android:layout_width="360dp"
@@ -176,19 +175,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="TouchTargetSizeCheck" />
-            -->
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/button_social_login_facebook"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="80dp"
-            android:layout_gravity="center_horizontal"
-            app:layout_constraintBottom_toTopOf="@id/button_social_login_google"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <!--
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_social_login_google"
             android:layout_width="360dp"
@@ -205,15 +192,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="TouchTargetSizeCheck"/>
-        -->
-
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/button_social_login_google"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline9"
