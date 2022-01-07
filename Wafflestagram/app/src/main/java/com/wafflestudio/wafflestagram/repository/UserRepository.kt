@@ -15,8 +15,24 @@ class UserRepository @Inject constructor(private val userService: UserService){
         return userService.getMyInfo()
     }
 
-    suspend fun getInfoByUserId(userId: Long): Response<User> {
+    suspend fun getMyFollower(): Response<ResponseBody> {
+        return userService.getMyFollower()
+    }
+
+    suspend fun getMyFollowing(): Response<ResponseBody> {
+        return userService.getMyFollowing()
+    }
+
+    suspend fun getInfoByUserId(userId: Int): Response<User> {
         return userService.getInfoByUserId(userId)
+    }
+
+    suspend fun getFollowerByUserId(userId: Int): Response<ResponseBody> {
+        return userService.getFollowerByUserId(userId)
+    }
+
+    suspend fun getFollowingByUserId(userId: Int): Response<ResponseBody> {
+        return userService.getFollowingByUserId(userId)
     }
 
     fun updateUser(updateUserRequest: UpdateUserRequest): Response<ResponseBody> {

@@ -34,7 +34,7 @@ class UserFragment: Fragment() {
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
-    private var currentUserId: Long = -1 // -1: default value
+    private var currentUserId: Int = -1 // -1: default value
 
     private lateinit var userPhotoAdapter: UserPhotoAdapter
     private lateinit var userLayoutManager: GridLayoutManager
@@ -54,11 +54,14 @@ class UserFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // change UI and get info according to user ID
-        currentUserId = sharedPreferences.getLong(CURRENT_USER_ID, -1)
-        val userId = arguments?.getLong(USER_ID, -1)
+        currentUserId = sharedPreferences.getInt(CURRENT_USER_ID, -1)
+        val userId = arguments?.getInt(USER_ID, -1)
         if(userId == currentUserId){
             // the user is me
             viewModel.getMyInfo()
+            viewModel.getMyFollower()
+            viewModel.getMyFollowing()
+
             binding.buttonBack.visibility = View.GONE
             binding.buttonDM.visibility = View.GONE
 
@@ -80,7 +83,10 @@ class UserFragment: Fragment() {
             }
         } else {
             // the user is other one
-            viewModel.getInfoByUserId(userId!!.toLong())
+            viewModel.getInfoByUserId(userId!!)
+            viewModel.getFollowerByUserId(userId)
+            viewModel.getFollowingByUserId(userId)
+
             binding.buttonAdd.visibility = View.GONE
             binding.buttonMenu.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_more))
             checkFollowingStatus()
@@ -104,7 +110,6 @@ class UserFragment: Fragment() {
             userPhotoAdapter.updatePhotos(it, _context)
             // save post count
             binding.posts.text = userPhotoAdapter.itemCount.toString()
-            // TODO: save Followers, Followings count
         })
 
         viewModel.fetchUserInfo.observe(viewLifecycleOwner, { response ->

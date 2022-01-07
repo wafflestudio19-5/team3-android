@@ -25,6 +25,6 @@ interface FeedService {
     @DELETE("api/v1/feed/like/{feed_id}/")
     suspend fun unlike(@Path("feed_id") id: Int): Response<Feed>
 
-    @GET("api/v1/users/me")
+    @GET("api/v1/users/me/")
     suspend fun getMe() : Response<User>
 }
