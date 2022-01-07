@@ -1,22 +1,28 @@
 package com.wafflestudio.wafflestagram.ui.main
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.aghajari.zoomhelper.ZoomHelper
 import com.google.android.material.tabs.TabLayout
 import com.wafflestudio.wafflestagram.databinding.ActivityMainBinding
 import com.wafflestudio.wafflestagram.databinding.IconUserProfileBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var userProfileBinding: IconUserProfileBinding
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     private val feedFragment = FeedFragment()
     private val searchFragment = SearchFragment()
@@ -27,10 +33,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         userProfileBinding = IconUserProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        /*
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        */
+
+        // LogOut 상태인 경우 LoginActivity로 이동
+        if(sharedPreferences.getString(TOKEN, "") == "") {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
 
         // set max zoom scale
         ZoomHelper.getInstance().maxScale = 3f
@@ -91,5 +99,7 @@ class MainActivity : AppCompatActivity() {
         const val FEED_FRAGMENT = 0
         const val SEARCH_FRAGMENT = 1
         const val USER_FRAGMENT = 2
+
+        const val TOKEN = "token"
     }
 }
