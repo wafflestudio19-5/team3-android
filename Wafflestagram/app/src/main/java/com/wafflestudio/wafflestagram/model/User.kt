@@ -15,6 +15,8 @@ class User(
     val name: String?,
     @Json(name = "nickname")
     val username: String,
+    @Json(name = "profilePhotoURL")
+    val profilePhotoURL: String?,
     @Json(name = "public")
     val public: Boolean,
     @Json(name = "website")

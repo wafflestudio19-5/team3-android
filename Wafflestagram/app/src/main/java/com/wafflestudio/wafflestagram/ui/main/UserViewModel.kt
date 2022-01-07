@@ -10,6 +10,7 @@ import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -22,8 +23,8 @@ class UserViewModel @Inject constructor(
     private val _feedList = MutableLiveData<List<Feed>>()
     val feedList: LiveData<List<Feed>> = _feedList
 
-    private val _fetchUserInfo = MutableLiveData<User>()
-    val fetchUserInfo: LiveData<User> = _fetchUserInfo
+    private val _fetchUserInfo = MutableLiveData<Response<User>>()
+    val fetchUserInfo: LiveData<Response<User>> = _fetchUserInfo
 
     // 내 정보 가져오기
     fun getMyInfo(){

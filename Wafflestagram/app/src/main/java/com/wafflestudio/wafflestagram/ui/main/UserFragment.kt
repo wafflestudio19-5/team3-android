@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,6 +19,7 @@ import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
 import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.internal.wait
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -70,7 +71,11 @@ class UserFragment: Fragment() {
             // profile 편집 버튼
             binding.buttonEditProfile.setOnClickListener {
                 val intent = Intent(context, EditProfileActivity::class.java)
-                // TODO: put Extra data using viewModel variables
+                val userInfo = viewModel.fetchUserInfo.value!!.body()
+                intent.putExtra("name", userInfo!!.name)
+                    .putExtra("username", userInfo.username)
+                    .putExtra("website", userInfo.website)
+                    .putExtra("bio", userInfo.bio)
                 startActivity(intent)
             }
         } else {
@@ -101,6 +106,33 @@ class UserFragment: Fragment() {
             binding.posts.text = userPhotoAdapter.itemCount.toString()
             // TODO: save Followers, Followings count
         })
+
+        viewModel.fetchUserInfo.observe(viewLifecycleOwner, { response ->
+            if(response.isSuccessful){
+                val data = response.body()!!
+                binding.userImage.setImageURI(Uri.parse(data.profilePhotoURL))
+                binding.buttonUsername.text = data.username
+                binding.textBio.text = data.bio
+            } else {
+                Toast.makeText(context, "유저 정보를 불러올 수 없습니다", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val inflater = MenuInflater(context)
+        inflater.inflate(R.menu.menu_user, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_settings ->
+                Toast.makeText(context, "settings select", Toast.LENGTH_SHORT).show()
+
+            R.id.menu_logout ->
+                Toast.makeText(context, "logout select", Toast.LENGTH_SHORT).show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun checkFollowingStatus() {

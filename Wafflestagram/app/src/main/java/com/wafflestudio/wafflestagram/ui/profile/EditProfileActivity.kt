@@ -2,6 +2,7 @@ package com.wafflestudio.wafflestagram.ui.profile
 
 import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.*
@@ -19,6 +20,8 @@ import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
 import com.wafflestudio.wafflestagram.databinding.ActivityEditProfileBinding
+import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
+import com.wafflestudio.wafflestagram.ui.main.UserFragment
 import dagger.hilt.android.AndroidEntryPoint
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.classes.SingleListener
@@ -56,6 +59,24 @@ class EditProfileActivity: AppCompatActivity() {
         }
 
         // UserFragment에서 진입할 때 Extra로 유저정보 받아오기
+        binding.inputName.setText(intent.getStringExtra("name"))
+        binding.inputUsername.setText(intent.getStringExtra("username"))
+        binding.inputWebsite.setText(intent.getStringExtra("website"))
+        binding.inputBio.setText(intent.getStringExtra("bio"))
+
+        binding.buttonCheck.setOnClickListener{
+            val updateUserRequest = UpdateUserRequest(
+            binding.inputName.text.toString(), binding.inputUsername.text.toString(),
+            binding.inputWebsite.text.toString(), binding.inputBio.text.toString()
+            )
+
+            viewModel.updateUser(updateUserRequest)
+
+            // Return to UserFragment
+            val intent = Intent(this, UserFragment::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+        }
     }
 
     private fun upload(image : String){
