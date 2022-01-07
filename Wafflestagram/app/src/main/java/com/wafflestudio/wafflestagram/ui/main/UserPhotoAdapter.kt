@@ -1,9 +1,12 @@
 package com.wafflestudio.wafflestagram.ui.main
 
 import android.content.Context
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemUserPhotoBinding
@@ -29,6 +32,7 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
 
     override fun onBindViewHolder(holder: UserPhotoViewHolder, position: Int) {
         val data = photos[position]
+
         // 각 feed의 첫 사진 띄우기
         try {
             Glide.with(context)
@@ -41,6 +45,7 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
         holder.itemView.setOnClickListener{
             onSelectClickListener(data.id.toInt())
         }
+
     }
 
     override fun getItemCount(): Int {
@@ -50,6 +55,7 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
     fun updatePhotos(photos: List<Feed>, context: Context){
         this.photos = photos
         this.context = context
+        this.notifyDataSetChanged()
     }
 }
 

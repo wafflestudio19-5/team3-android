@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:paddingHorizontal="2dp"
-            android:paddingVertical="0dp">
+            android:paddingVertical="2dp">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_username"
@@ -199,7 +199,7 @@
             android:textColor="@color/black"/>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_next"
+            android:id="@+id/button_edit_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
