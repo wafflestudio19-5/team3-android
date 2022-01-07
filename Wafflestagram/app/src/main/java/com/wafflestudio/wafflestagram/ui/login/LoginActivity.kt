@@ -134,6 +134,7 @@ class LoginActivity : AppCompatActivity() {
             if(response.isSuccessful){
                 sharedPreferences.edit {
                     putString(TOKEN, response.headers()["Authentication"])
+                    putInt(CURRENT_USER_ID, response.body()!!.string().toInt())
                 }
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -205,6 +206,7 @@ class LoginActivity : AppCompatActivity() {
 
     companion object{
         const val TOKEN = "token"
+        const val CURRENT_USER_ID = "currentUserId"
         const val FACEBOOK = "facebook"
         const val GOOGLE = "google"
     }
