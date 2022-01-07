@@ -7,12 +7,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <queries>
-        <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" />
-        </intent>
-    </queries>
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -26,6 +20,12 @@
             android:exported="false"
             android:label="@string/title_activity_detail_user"
             android:theme="@style/Theme.Wafflestagram.NoActionBar" />
+        <activity
+            android:name=".ui.follow.FollowActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.follow.FollowerActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.follow.FollowActivity"
             android:exported="false" />
@@ -109,6 +109,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
         <activity android:name="ir.shahabazimi.instagrampicker.gallery.SelectActivity" />
         <activity android:name="ir.shahabazimi.instagrampicker.filter.FilterActivity" />
         <activity android:name="ir.shahabazimi.instagrampicker.gallery.MultiSelectActivity" />
@@ -121,5 +122,11 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
 </manifest>

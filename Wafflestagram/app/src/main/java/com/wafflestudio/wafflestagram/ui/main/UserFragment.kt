@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
@@ -57,8 +58,9 @@ class UserFragment: Fragment() {
         if(userId == currentUserId){
             // the user is me
             viewModel.getMyInfo()
-            viewModel.getMyFollower()
-            viewModel.getMyFollowing()
+            viewModel.getMyFollowerCount()
+            viewModel.getMyFollowingCount()
+            viewModel.getMyFeedCount()
 
             binding.buttonBack.visibility = View.GONE
             binding.buttonDM.visibility = View.GONE
@@ -82,8 +84,9 @@ class UserFragment: Fragment() {
         } else {
             // the user is other one
             viewModel.getInfoByUserId(userId!!)
-            viewModel.getFollowerByUserId(userId)
-            viewModel.getFollowingByUserId(userId)
+            viewModel.getFollowerCountByUserId(userId)
+            viewModel.getFollowingCountByUserId(userId)
+            viewModel.getFeedCountByUserId(userId)
 
             binding.buttonAdd.visibility = View.GONE
             binding.buttonMenu.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_more))
@@ -107,13 +110,42 @@ class UserFragment: Fragment() {
         viewModel.feedList.observe(viewLifecycleOwner, {
             userPhotoAdapter.updatePhotos(it, _context)
             // save post count
-            binding.posts.text = userPhotoAdapter.itemCount.toString()
+            binding.feeds.text = userPhotoAdapter.itemCount.toString()
+        })
+
+        viewModel.fetchFollowingCount.observe(viewLifecycleOwner, { response ->
+                val data = response.body()!!
+                if(response.isSuccessful){
+                    binding.followings.text = data.string()
+                } else {
+                    Toast.makeText(context, "팔로잉 정보를 불러 올 수 없습니다", Toast.LENGTH_SHORT).show()
+                }
+        })
+
+        viewModel.fetchFollowerCount.observe(viewLifecycleOwner, { response ->
+            val data = response.body()!!
+            if(response.isSuccessful){
+                binding.followers.text = data.string()
+            } else {
+                Toast.makeText(context, "팔로워 정보를 불러 올 수 없습니다", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.fetchFeedCount.observe(viewLifecycleOwner, { response ->
+            val data = response.body()!!
+            if(response.isSuccessful){
+                binding.feeds.text = data.string()
+            } else {
+                Toast.makeText(context, "피드 정보를 불러 올 수 없습니다", Toast.LENGTH_SHORT).show()
+            }
         })
 
         viewModel.fetchUserInfo.observe(viewLifecycleOwner, { response ->
             if(response.isSuccessful){
                 val data = response.body()!!
-                binding.userImage.setImageURI(Uri.parse(data.profilePhotoURL))
+                Glide.with(_context)
+                    .load(data.profilePhotoURL)
+                    .into(binding.userImage)
                 binding.buttonUsername.text = data.username
                 binding.textBio.text = data.bio
             } else {

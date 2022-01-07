@@ -1,10 +1,12 @@
 package com.wafflestudio.wafflestagram.network
 
+import androidx.room.Delete
 import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.FollowPage
 import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.AddPostRequest
+import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import retrofit2.Response
 import retrofit2.http.*
 
