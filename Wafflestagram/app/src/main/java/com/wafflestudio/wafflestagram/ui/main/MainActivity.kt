@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setFragment(fragmentNum : Int){
         val fb = supportFragmentManager.beginTransaction()
+        val currentUserId = sharedPreferences.getInt(CURRENT_USER_ID, -1)
         when(fragmentNum){
             FEED_FRAGMENT -> {
                 fb.replace(binding.fragmentContainerViewMain.id, feedFragment).commit()
@@ -86,7 +87,12 @@ class MainActivity : AppCompatActivity() {
                 fb.replace(binding.fragmentContainerViewMain.id, searchFragment).commit()
             }
             USER_FRAGMENT -> {
-                fb.replace(binding.fragmentContainerViewMain.id, userFragment).commit()
+                fb.replace(binding.fragmentContainerViewMain.id,
+                    userFragment.apply {
+                        arguments = Bundle().apply {
+                            putInt(USER_ID, currentUserId)
+                        }
+                    }).commit()
             }
         }
     }
@@ -99,7 +105,8 @@ class MainActivity : AppCompatActivity() {
         const val FEED_FRAGMENT = 0
         const val SEARCH_FRAGMENT = 1
         const val USER_FRAGMENT = 2
-
         const val TOKEN = "token"
+        const val CURRENT_USER_ID = "currentUserId"
+        const val USER_ID = "userId"
     }
 }
