@@ -10,6 +10,7 @@ import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
@@ -26,6 +27,12 @@ class UserViewModel @Inject constructor(
     private val _fetchUserInfo = MutableLiveData<Response<User>>()
     val fetchUserInfo: LiveData<Response<User>> = _fetchUserInfo
 
+    private val _fetchFollower = MutableLiveData<Response<ResponseBody>>()
+    val fetchFollower: LiveData<Response<ResponseBody>> = _fetchFollower
+
+    private val _fetchFollowing = MutableLiveData<Response<ResponseBody>>()
+    val fetchFollowing: LiveData<Response<ResponseBody>> = _fetchFollowing
+
     // 내 정보 가져오기
     fun getMyInfo(){
         viewModelScope.launch {
@@ -38,12 +45,56 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun getMyFollower(){
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getMyFollower()
+                _fetchFollower.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getMyFollowing(){
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getMyFollowing()
+                _fetchFollowing.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
     // user id로 다른 사람 정보 가져오기
-    fun getInfoByUserId(userId: Long){
+    fun getInfoByUserId(userId: Int) {
         viewModelScope.launch {
             try {
                 val data = userRepository.getInfoByUserId(userId)
                 _fetchUserInfo.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getFollowerByUserId(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getFollowerByUserId(userId)
+                _fetchFollower.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getFollowingByUserId(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getFollowingByUserId(userId)
+                _fetchFollowing.value = data
             } catch (e: IOException) {
                 Timber.e(e)
             }

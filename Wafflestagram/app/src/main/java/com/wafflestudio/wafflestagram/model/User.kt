@@ -10,7 +10,7 @@ class User(
     @Json(name = "email")
     val email: String?,
     @Json(name = "id")
-    val id: Long,
+    val id: Int,
     @Json(name = "name")
     val name: String?,
     @Json(name = "nickname")
