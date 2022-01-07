@@ -56,11 +56,11 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    // username으로 다른 사람 정보 가져오기
-    fun getInfoByUsername(username: String){
+    // user id로 다른 사람 정보 가져오기
+    fun getInfoByUserId(userId: Long){
         viewModelScope.launch {
             try {
-                val data = userRepository.getInfoByUsername(username)
+                val data = userRepository.getInfoByUserId(userId)
                 _fetchUserInfo.value = data
             } catch (e: IOException) {
                 Timber.e(e)
