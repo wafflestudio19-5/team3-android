@@ -2,9 +2,11 @@ package com.wafflestudio.wafflestagram.ui.login
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -34,9 +37,12 @@ import com.google.firebase.ktx.Firebase
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
+import com.wafflestudio.wafflestagram.network.dto.LoginRequest
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -46,12 +52,8 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
 
-    // for Facebook Login
-    private lateinit var callbackManager: CallbackManager
-
-    // for Google Login
-    private lateinit var googleSignInClient: GoogleSignInClient
-    private val RC_SIGN_IN = 2
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,11 +102,20 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonLogin.setOnClickListener {
             val username = binding.editUsername.text.toString().trim()
             val password = binding.editPassword.text.toString().trim()
+            Timber.d(username, password)
 
-            viewModel.getResponseByPing()
-            // Backend 구현 완료시 활성화
-            // viewModel.getResponseByLogin(username, password)
+            viewModel.getResponseByLogin(LoginRequest(username, password))
             currentFocus?.hideKeyboard()
+        }
+
+        // facebook login
+        binding.buttonSocialLoginFacebook.setOnClickListener {
+            viewModel.getResponseBySocialLogin(FACEBOOK)
+        }
+
+        // google login
+        binding.buttonSocialLoginGoogle.setOnClickListener {
+            viewModel.getResponseBySocialLogin(GOOGLE)
         }
 
         //signup 버튼
@@ -113,69 +124,37 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // fetch Responses
+
         viewModel.fetchPingResponse.observe(this,{
             showDialog(it)
         })
 
-        // Initialize Firebase Auth
-        auth = Firebase.auth
-
-        // Facebook Login
-        callbackManager = CallbackManager.Factory.create()
-
-        // TODO: Replace deprecated code
-        // TODO: 로그인 상태 체크 코드 작성(로그인 여부 등 판단)
-        binding.buttonSocialLoginFacebook.setReadPermissions("email")
-        binding.buttonSocialLoginFacebook.registerCallback(callbackManager, object :
-            FacebookCallback<LoginResult> { // Callback registration
-            override fun onSuccess(result: LoginResult) { // 로그인 성공 시
-                Timber.d("facebook:onSuccess:$result")
-                handleFacebookAccessToken(result.accessToken)
-            }
-
-            override fun onCancel() { // 로그인 취소 시
-                Timber.d("facebook:onCancel")
-            }
-
-            override fun onError(error: FacebookException) { // 로그인 에러 시
-                Timber.d("facebook:onError", error)
+        viewModel.fetchLoginResponse.observe(this, { response ->
+            if(response.isSuccessful){
+                sharedPreferences.edit {
+                    putString(TOKEN, response.headers()["Authentication"])
+                    // TODO: MainActivity에서 sharedPreferences.getString(TOKEN, "") 이용해서 로그인 여부 검토하기
+                    // TODO: Logout시 sharedPreferences에 저장된 TOKEN 값 ""로 바꿔서 지우기
+                }
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+            } else {
+                // TODO: 에러 메세지 다른 형태로 띄우기
+                Toast.makeText(this, "이메일 또는 비밀번호가 잘못되었습니다.", Toast.LENGTH_SHORT).show()
             }
         })
 
-        // Google Login
-        createGoogleRequest()
-
-        binding.buttonSocialLoginGoogle.setOnClickListener { signIn() }
-    }
-    
-    // get social Login Result
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Pass the activity result back to the Facebook SDK
-        // TODO: replace deprecated code with Activity Result APIs
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)!!
-                Timber.d("firebaseAuthWithGoogle:" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Timber.e(e)
+        viewModel.fetchSocialLoginUrl.observe(this, { response ->
+            if(response.isSuccessful){
+                val intent =  Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(response.raw().request.url.toString())
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show()
             }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
+        })
     }
 
     override fun onBackPressed() {
@@ -227,67 +206,9 @@ class LoginActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    private fun handleFacebookAccessToken(token: AccessToken) {
-        Timber.d("handleFacebookAccessToken:$token")
-
-        val credential = FacebookAuthProvider.getCredential(token.token)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task -> 
-                if(task.isSuccessful) {
-                    // Facebook Login 성공
-                    Timber.d("signInWithCredential:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // Facebook Login 실패
-                    Timber.w("signInwithCredential:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                    updateUI(null)
-                }
-            }
-
-    }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if(task.isSuccessful) {
-                    // Google Login 성공
-                    Timber.d("signInWithCredential:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // Google Login 실패
-                    Timber.w("signInwithCredential:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                    updateUI(null)
-                }
-            }
-    }
-
-    private fun createGoogleRequest() {
-        // Configure Google Sign In
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.google_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
-    private fun signIn() {
-        // (google) Login
-        val signInIntent = googleSignInClient.signInIntent
-        // TODO: Replace deprecated code
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    private fun updateUI(user: FirebaseUser?){
-        // Login 상태에 따라 UI update
-        // TODO: Not Yer Implemented
-        if(user!=null){ // user data 있는 경우(로그인 되어있는 경우)
-
-        }
+    companion object{
+        const val TOKEN = "token"
+        const val FACEBOOK = "facebook"
+        const val GOOGLE = "google"
     }
 }
