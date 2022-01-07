@@ -19,4 +19,11 @@ class User(
     val public: Boolean,
     @Json(name = "website")
     val website: String?
-)
+){
+    override fun equals(other: Any?): Boolean {
+        return if(other is User)
+            other.id == this.id
+        else
+            false
+    }
+}

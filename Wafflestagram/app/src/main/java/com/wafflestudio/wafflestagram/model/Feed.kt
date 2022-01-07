@@ -8,14 +8,22 @@ import java.time.LocalDateTime
 class Feed (
     @Json(name = "id")
     val id: Long,
-    @Json(name = "writer")
-    val writer: String = "",
+    @Json(name = "author")
+    val author: User? = null,
     @Json(name = "content")
     val content: String = "",
     @Json(name = "photos")
     val photos: List<Photo> = emptyList(),
     @Json(name = "comments")
     val comments: List<Comment> = emptyList(),
+    @Json(name = "likes")
+    val likes: List<Like> = emptyList(),
+    @Json(name = "likeSum")
+    val likeSum: Int = 0,
+    @Json(name = "tags")
+    val tags: List<String> = emptyList(),
+    @Json(name = "user_tags")
+    val user_tags: List<String> = emptyList(),
     @Json(name = "createdAt")
     val createdAt : LocalDateTime = LocalDateTime.now(),
     @Json(name = "updatedAt")

@@ -15,12 +15,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
-import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
+import java.time.format.DateTimeFormatter
 
 class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
@@ -55,8 +55,8 @@ class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         when(holder){
             is FeedViewHolder ->{
                 holder.binding.apply {
-                    buttonUsername.text = data.writer
-                    val spannable = SpannableStringBuilder(data.writer)
+                    buttonUsername.text = data.author?.username
+                    val spannable = SpannableStringBuilder(data.author?.username)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.setSpan(object : ClickableSpan(){
                         override fun updateDrawState(ds: TextPaint) {
@@ -89,6 +89,9 @@ class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                             holder.onViewAppear()
                         }
                     })
+
+                    textDateCreated.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    textLike.text = "좋아요 " + data.likeSum + "개"
 
                     buttonComment.setOnClickListener {
                         val intent = Intent(holder.itemView.context, CommentActivity::class.java)

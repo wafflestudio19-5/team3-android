@@ -17,6 +17,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
 import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.Like
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import java.time.format.DateTimeFormatter
@@ -24,6 +26,7 @@ import java.time.format.DateTimeFormatter
 class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var feeds: MutableList<Feed> = mutableListOf()
+    private lateinit var currUser: User
 
     inner class LoadingViewHolder(val binding: ItemLoadingBinding) : RecyclerView.ViewHolder(binding.root)
     inner class FeedViewHolder(val binding: ItemFeedBinding) : RecyclerView.ViewHolder(binding.root){
@@ -64,8 +67,8 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         when(holder){
             is FeedViewHolder ->{
                 holder.binding.apply {
-                    buttonUsername.text = data.writer
-                    val spannable = SpannableStringBuilder(data.writer)
+                    buttonUsername.text = data.author?.username
+                    val spannable = SpannableStringBuilder(data.author?.username)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.setSpan(object : ClickableSpan(){
                         override fun updateDrawState(ds: TextPaint) {
@@ -101,6 +104,7 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
 
                     textDateCreated.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    textLike.text = "좋아요 " + data.likeSum + "개"
 
                     buttonComment.setOnClickListener {
                         val intent = Intent(holder.itemView.context, CommentActivity::class.java)
@@ -112,6 +116,12 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id)
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    if(data.likes.contains(Like(NULL.toLong(), currUser))){
+                        buttonLike.isSelected = true
+                    }else{
+                        buttonLike.isSelected = false
                     }
 
                     buttonLike.setOnClickListener {
@@ -151,8 +161,8 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         super.onViewAttachedToWindow(holder)
     }
 
-    fun updateData(feeds : MutableList<Feed>){
-        this.feeds = feeds
+    fun updateData(user: User){
+        this.currUser = user
         notifyDataSetChanged()
     }
 

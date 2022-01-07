@@ -14,6 +14,7 @@ import com.wafflestudio.wafflestagram.databinding.ItemCommentBinding
 import com.wafflestudio.wafflestagram.databinding.ItemContentBinding
 import com.wafflestudio.wafflestagram.model.Comment
 import com.wafflestudio.wafflestagram.model.Feed
+import java.time.format.DateTimeFormatter
 
 class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -43,7 +44,7 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val data = feed!!
             if(holder is ContentViewHolder){
                 holder.binding.apply {
-                    val spannable = SpannableStringBuilder(data.writer)
+                    val spannable = SpannableStringBuilder(data.author?.username)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.setSpan(object : ClickableSpan(){
                         override fun updateDrawState(ds: TextPaint) {
@@ -55,6 +56,8 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.append(" " + data.content)
                     textContent.text = spannable
+
+                    textTime.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
 
                     //프로필 사진
                 }

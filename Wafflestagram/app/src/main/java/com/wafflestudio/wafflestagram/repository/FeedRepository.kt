@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.repository
 
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.FeedService
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import retrofit2.Response
@@ -24,5 +25,9 @@ class FeedRepository @Inject constructor(private val feedService: FeedService){
 
     suspend fun unlike(id: Int): Response<Feed>{
         return feedService.unlike(id)
+    }
+
+    suspend fun getMe() : Response<User> {
+        return feedService.getMe()
     }
 }
