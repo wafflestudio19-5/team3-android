@@ -4,9 +4,16 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class Like (
+class Like(
     @Json(name = "id")
     val id: Long,
     @Json(name = "writer")
-    val writer: String
-    )
+    val writer: User
+    ){
+    override fun equals(other: Any?): Boolean {
+        return if(other is Like)
+            other.writer == this.writer
+        else
+            false
+    }
+}

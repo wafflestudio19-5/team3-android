@@ -33,7 +33,7 @@ class LikeAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         if(position > 0 && holder is LikeViewHolder){
             val data = likes[position - 1]
             holder.binding.apply {
-                textUsername.text = data.writer
+                textUsername.text = data.writer.username
                 buttonFollow.setOnClickListener{
                     //팔로우
                 }

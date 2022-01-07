@@ -94,8 +94,6 @@ class UserFragment: Fragment() {
             layoutManager = userLayoutManager
         }
 
-        // 더미 데이터 불러오기
-        viewModel.loadData()
         
         // 데이터 저장
         viewModel.feedList.observe(viewLifecycleOwner, {

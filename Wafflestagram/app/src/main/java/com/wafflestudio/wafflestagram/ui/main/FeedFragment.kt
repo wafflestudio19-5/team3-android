@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.ui.main
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -11,14 +12,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FeedFragment : Fragment() {
@@ -27,6 +31,9 @@ class FeedFragment : Fragment() {
     private val viewModel: FeedViewModel by activityViewModels()
     private lateinit var feedAdapter: FeedAdapter
     private lateinit var feedLayoutManager: LinearLayoutManager
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +65,8 @@ class FeedFragment : Fragment() {
         val request = FeedPageRequest(feedAdapter.itemCount, 10)
         viewModel.getFeeds(request)
 
+        viewModel.getMe()
+
         binding.refreshLayoutFeed.setColorSchemeColors(*intArrayOf(Color.parseColor("#F6F6F6"),Color.parseColor("#D5D5D5"),Color.parseColor("#A6A6A6"),Color.parseColor("#D5D5D5")))
         binding.refreshLayoutFeed.setOnRefreshListener {
             feedAdapter.clearData()
@@ -84,11 +93,23 @@ class FeedFragment : Fragment() {
             if(response.isSuccessful){
                 feedAdapter.addData(response.body()!!.toMutableList())
             }else if(response.code() == 401){
-                // 토큰 지우고 로그인 화면
+                // 토큰 만료시 토큰 삭제
+                sharedPreferences.edit {
+                    putString(TOKEN, "")
+                }
+                val intent = Intent(context, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
             }
         })
 
+        viewModel.user.observe(viewLifecycleOwner, {response ->
+            if(response.isSuccessful){
+                feedAdapter.updateData(response.body()!!)
+            }else if(response.code() == 401){
 
+            }
+        })
     }
 
     fun setRecyclerviewPosition(position: Int){
@@ -101,6 +122,10 @@ class FeedFragment : Fragment() {
 
     fun unlike(id: Int){
         viewModel.unlike(id)
+    }
+
+    companion object{
+        const val TOKEN = "token"
     }
 
 }

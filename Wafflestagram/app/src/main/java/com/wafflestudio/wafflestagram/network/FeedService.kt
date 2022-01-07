@@ -2,6 +2,7 @@ package com.wafflestudio.wafflestagram.network
 
 import androidx.room.Delete
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.AddPostRequest
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import retrofit2.Response
@@ -23,4 +24,7 @@ interface FeedService {
 
     @DELETE("api/v1/feed/like/{feed_id}/")
     suspend fun unlike(@Path("feed_id") id: Int): Response<Feed>
+
+    @GET("api/v1/users/me")
+    suspend fun getMe() : Response<User>
 }
