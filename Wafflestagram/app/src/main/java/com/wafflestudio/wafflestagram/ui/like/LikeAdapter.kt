@@ -1,16 +1,18 @@
 package com.wafflestudio.wafflestagram.ui.like
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.databinding.ItemLikeBinding
 import com.wafflestudio.wafflestagram.databinding.ItemSearchBinding
 import com.wafflestudio.wafflestagram.model.Like
-import java.lang.IllegalStateException
+import com.wafflestudio.wafflestagram.model.User
 
 class LikeAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var likes: List<Like> = listOf()
+    private lateinit var currUser: User
 
     inner class LikeViewHolder(val binding: ItemLikeBinding) : RecyclerView.ViewHolder(binding.root)
     inner class SearchViewHolder(val binding: ItemSearchBinding) : RecyclerView.ViewHolder(binding.root)
@@ -34,9 +36,27 @@ class LikeAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val data = likes[position - 1]
             holder.binding.apply {
                 textUsername.text = data.writer.username
-                
+
+                //팔로우 확인 로직
+                if(LikeActivity().checkFollowing(data.writer.id.toInt()).body()!!){
+                    buttonFollow.isSelected = true
+                }else{
+                    buttonFollow.isSelected = false
+                }
+
                 buttonFollow.setOnClickListener{
-                    //팔로우
+                    if(buttonFollow.isSelected){
+                        buttonFollow.isSelected = false
+                        buttonFollow.setTextColor(Color.parseColor("#FFFFFFFF"))
+                        buttonFollow.text = "팔로우"
+                        //언팔로우
+                        LikeActivity().unfollow(data.writer.id.toInt())
+                    }else{
+                        buttonFollow.isSelected = true
+                        buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                        buttonFollow.text = "팔로잉"
+                        LikeActivity().follow(data.writer.id.toInt())
+                    }
                 }
             }
             holder.itemView.setOnClickListener {
@@ -60,6 +80,10 @@ class LikeAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun updateData(likes : List<Like>){
         this.likes = likes
         notifyDataSetChanged()
+    }
+
+    fun updateUser(user: User){
+        this.currUser = user
     }
 
     companion object{

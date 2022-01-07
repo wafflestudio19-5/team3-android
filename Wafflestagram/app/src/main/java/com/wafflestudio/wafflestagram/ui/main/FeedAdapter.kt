@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
 import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
@@ -102,7 +103,6 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                         }
                     })
 
-
                     textDateCreated.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
                     textLike.text = "좋아요 " + data.likeSum + "개"
 
@@ -133,6 +133,8 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                             FeedFragment().like(data.id.toInt(), position)
                         }
                     }
+
+                    Glide.with(holder.itemView.context).load(data.author?.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
                 }
 
             }
@@ -174,8 +176,10 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     fun addData(feeds: MutableList<Feed>){
         val size = this.feeds.size
         this.feeds.addAll(feeds)
-        this.feeds.add(Feed(NULL.toLong()))
-        notifyItemRangeInserted(size, 10)
+        if(size > 9){
+            this.feeds.add(Feed(NULL.toLong()))
+        }
+        notifyDataSetChanged()
     }
 
     fun clearData(){

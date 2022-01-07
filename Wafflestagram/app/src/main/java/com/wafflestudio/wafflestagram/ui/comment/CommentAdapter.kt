@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemCommentBinding
 import com.wafflestudio.wafflestagram.databinding.ItemContentBinding
 import com.wafflestudio.wafflestagram.model.Comment
@@ -60,6 +61,7 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     textTime.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
 
                     //프로필 사진
+                    Glide.with(holder.itemView.context).load(data.author?.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
                 }
             }
         }else{
@@ -69,6 +71,7 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     textContent.text = data.text
                     textReplyNumber.text = data.replies.size.toString()
                 }
+                Glide.with(holder.itemView.context).load(data.writer.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
             }
         }
 

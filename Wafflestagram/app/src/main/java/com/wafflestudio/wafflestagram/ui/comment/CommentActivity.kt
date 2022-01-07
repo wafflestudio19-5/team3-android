@@ -1,14 +1,15 @@
 package com.wafflestudio.wafflestagram.ui.comment
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.wafflestagram.databinding.ActivityCommentBinding
+import com.wafflestudio.wafflestagram.network.dto.AddCommentRequest
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,9 +57,24 @@ class CommentActivity : AppCompatActivity() {
             }
         })
 
+        binding.buttonComment.setOnClickListener {
+            val request = AddCommentRequest(binding.editComment.text.toString())
+            viewModel.addComment(id, request)
+        }
+
         viewModel.feed.observe(this, {response ->
             if(response.isSuccessful){
                 commentAdapter.updateData(response.body()!!)
+            }else if(response.code() == 401){
+
+            }else{
+                Toast.makeText(this, response.errorBody()?.string()!!, Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.comment.observe(this , {response ->
+            if(response.isSuccessful){
+                viewModel.getFeedById(id)
             }else if(response.code() == 401){
 
             }else{

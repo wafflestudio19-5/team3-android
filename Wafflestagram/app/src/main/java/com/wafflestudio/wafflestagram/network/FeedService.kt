@@ -1,10 +1,9 @@
 package com.wafflestudio.wafflestagram.network
 
-import androidx.room.Delete
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.AddPostRequest
-import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -14,7 +13,7 @@ interface FeedService {
     suspend fun addPost(@Body addPostRequest: AddPostRequest): Response<Feed>
 
     @GET("api/v1/feed/")
-    suspend fun getFeeds(@Query("offset") offset: Int, @Query("limit") limit: Int) : Response<List<Feed>>
+    suspend fun getFeeds(@Query("offset") offset: Int, @Query("limit") limit: Int) : Response<Page>
 
     @GET("api/v1/feed/{feed_id}/")
     suspend fun getFeedById(@Path("feed_id") id: Int): Response<Feed>
@@ -27,4 +26,16 @@ interface FeedService {
 
     @GET("api/v1/users/me/")
     suspend fun getMe() : Response<User>
+
+    @GET("api/v1/users/following/{user_id}/")
+    fun checkFollowing(@Path("user_id") id: Int): Response<Boolean>
+
+    @POST("api/v1/users/follow/{user_id}/")
+    suspend fun follow(@Path("user_id") id: Int)
+
+    @DELETE("api/v1/users/unfollow/{user_id}/")
+    suspend fun unfollow(@Path("user_id") id: Int)
+
+    @GET("api/v1/feed/other/{user_id}/")
+    suspend fun getFeedsByUserId(@Path("user_id")id: Int, @Query("offset") offset: Int, @Query("limit") limit: Int): Response<Page>
 }

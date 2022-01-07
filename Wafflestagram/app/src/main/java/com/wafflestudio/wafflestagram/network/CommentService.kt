@@ -18,5 +18,5 @@ interface CommentService {
     suspend fun getFeedById(@Path("feed_id") id: Int): Response<Feed>
 
     @POST("api/v1/comment/{feed_id}/")
-    suspend fun addComment(@Path("feed_id") id: Int, @Body addCommentRequest: AddCommentRequest)
+    suspend fun addComment(@Path("feed_id") id: Int, @Body addCommentRequest: AddCommentRequest) : Response<Comment>
 }

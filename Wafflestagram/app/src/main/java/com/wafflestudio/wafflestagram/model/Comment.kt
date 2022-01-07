@@ -9,7 +9,7 @@ class Comment (
     @Json(name = "id")
     val id: Long,
     @Json(name = "writer")
-    val writer: String,
+    val writer: User,
     @Json(name = "text")
     val text: String,
     @Json(name = "replies")

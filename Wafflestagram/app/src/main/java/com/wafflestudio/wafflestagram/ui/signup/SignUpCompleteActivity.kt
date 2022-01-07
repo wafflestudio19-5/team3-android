@@ -97,6 +97,7 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 //메인으로 이동
                 sharedPreferences.edit {
                     putString(LoginActivity.TOKEN, response.headers()["Authentication"])
+                    putInt(LoginActivity.CURRENT_USER_ID, response.body()!!.id.toInt())
                 }
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -116,5 +117,6 @@ class SignUpCompleteActivity : AppCompatActivity() {
         const val SIGNUP_ACTIVITY_EXTRA_PASSWORD = "password"
         const val SIGNUP_ACTIVITY_EXTRA_BIRTHDAY = "birthday"
         const val TOKEN = "token"
+        const val CURRENT_USER_ID = "currentUserId"
     }
 }

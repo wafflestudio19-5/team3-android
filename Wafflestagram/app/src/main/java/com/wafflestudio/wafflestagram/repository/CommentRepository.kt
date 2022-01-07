@@ -14,7 +14,7 @@ class CommentRepository @Inject constructor(private val commentService: CommentS
     suspend fun getComments(id : Int) : Response<List<Comment>>{
         return commentService.getComments(id)
     }
-    suspend fun addComment(id: Int, addCommentRequest: AddCommentRequest){
+    suspend fun addComment(id: Int, addCommentRequest: AddCommentRequest) : Response<Comment>{
         return commentService.addComment(id, addCommentRequest)
     }
     suspend fun getFeedById(id : Int): Response<Feed>{

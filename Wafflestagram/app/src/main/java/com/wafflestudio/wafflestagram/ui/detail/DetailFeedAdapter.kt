@@ -136,7 +136,7 @@ class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         super.onViewAttachedToWindow(holder)
     }
 
-    fun updateData(feeds : MutableList<Feed>){
+    fun updateData(feeds : List<Feed>){
         this.feeds = feeds
         notifyDataSetChanged()
     }
