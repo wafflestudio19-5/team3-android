@@ -1,8 +1,10 @@
 package com.wafflestudio.wafflestagram.repository
 
 import com.wafflestudio.wafflestagram.network.LoginService
-import com.wafflestudio.wafflestagram.network.dto.LoginResponse
+import com.wafflestudio.wafflestagram.network.dto.LoginRequest
+import com.wafflestudio.wafflestagram.network.dto.TokenResponse
 import okhttp3.ResponseBody
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +14,11 @@ class LoginRepository @Inject constructor(private val loginService: LoginService
         return loginService.getResponseByPing()
     }
 
-    suspend fun getResponseByLogin(username: String, password: String): LoginResponse {
-        return loginService.getResponseByLogin(username, password)
+    suspend fun getResponseByLogin(loginRequest: LoginRequest): Response<ResponseBody> {
+        return loginService.getResponseByLogin(loginRequest)
+    }
+
+    suspend fun getResponseBySocialLogin(provider: String): Response<ResponseBody> {
+        return loginService.getResponseBySocialLogin(provider)
     }
 }
