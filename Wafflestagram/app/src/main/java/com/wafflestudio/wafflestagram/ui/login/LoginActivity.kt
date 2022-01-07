@@ -134,14 +134,11 @@ class LoginActivity : AppCompatActivity() {
             if(response.isSuccessful){
                 sharedPreferences.edit {
                     putString(TOKEN, response.headers()["Authentication"])
-                    // TODO: MainActivity에서 sharedPreferences.getString(TOKEN, "") 이용해서 로그인 여부 검토하기
-                    // TODO: Logout시 sharedPreferences에 저장된 TOKEN 값 ""로 바꿔서 지우기
                 }
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)
             } else {
-                // TODO: 에러 메세지 다른 형태로 띄우기
                 Toast.makeText(this, "이메일 또는 비밀번호가 잘못되었습니다.", Toast.LENGTH_SHORT).show()
             }
         })
