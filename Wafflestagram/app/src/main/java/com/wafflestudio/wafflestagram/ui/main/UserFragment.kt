@@ -5,10 +5,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings.Global.putString
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +19,7 @@ import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
 import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,6 +67,7 @@ class UserFragment: Fragment() {
 
             binding.buttonBack.visibility = View.GONE
             binding.buttonDM.visibility = View.GONE
+            binding.buttonMenu.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_close))
 
             // post 작성 버튼
             binding.buttonAdd.setOnClickListener{
@@ -79,6 +83,14 @@ class UserFragment: Fragment() {
                     .putExtra("username", userInfo.username)
                     .putExtra("website", userInfo.website)
                     .putExtra("bio", userInfo.bio)
+                startActivity(intent)
+            }
+
+            binding.buttonMenu.setOnClickListener {
+                sharedPreferences.edit {
+                    putString("token", "")
+                }
+                val intent = Intent(context, LoginActivity::class.java)
                 startActivity(intent)
             }
         } else {
