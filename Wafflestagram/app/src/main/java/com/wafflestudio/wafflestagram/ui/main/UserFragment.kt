@@ -70,6 +70,10 @@ class UserFragment: Fragment() {
             // profile 편집 버튼
             binding.buttonEditProfile.setOnClickListener {
                 val intent = Intent(context, EditProfileActivity::class.java)
+                intent.putExtra("name", "")
+                    .putExtra("username", "")
+                    .putExtra("website", "")
+                    .putExtra("bio", "")
                 // TODO: put Extra data using viewModel variables
                 startActivity(intent)
             }
