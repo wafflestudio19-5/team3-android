@@ -3,24 +3,22 @@ package com.wafflestudio.wafflestagram.ui.main
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
-import com.wafflestudio.wafflestagram.databinding.ItemUserPhotoBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
+import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
 import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.internal.wait
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -122,6 +120,20 @@ class UserFragment: Fragment() {
                 Toast.makeText(context, "유저 정보를 불러올 수 없습니다", Toast.LENGTH_SHORT).show()
             }
         })
+
+        binding.areaFollowers.setOnClickListener {
+            val intent = Intent(context, FollowActivity::class.java)
+            intent.putExtra("id", currentUserId)
+            intent.putExtra("activity", 0)
+            startActivity(intent)
+        }
+
+        binding.areaFollowings.setOnClickListener {
+            val intent = Intent(context, FollowActivity::class.java)
+            intent.putExtra("id", currentUserId)
+            intent.putExtra("activity", 1)
+            startActivity(intent)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

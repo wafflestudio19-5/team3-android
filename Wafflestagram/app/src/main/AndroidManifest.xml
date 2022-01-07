@@ -22,6 +22,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wafflestagram">
         <activity
+            android:name=".ui.detail.DetailUserActivity"
+            android:exported="false"
+            android:label="@string/title_activity_detail_user"
+            android:theme="@style/Theme.Wafflestagram.NoActionBar" />
+        <activity
             android:name=".ui.follow.FollowActivity"
             android:exported="false" />
         <activity
