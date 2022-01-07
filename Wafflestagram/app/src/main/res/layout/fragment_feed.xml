@@ -87,14 +87,13 @@
             android:id="@+id/refresh_layout_feed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:refreshType="ring"
-            >
+            app:refreshType="ring">
 
             <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_feed"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_feed"/>
+                android:id="@+id/recycler_view_feed"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_feed" />
 
         </com.baoyz.widget.PullRefreshLayout>
 
