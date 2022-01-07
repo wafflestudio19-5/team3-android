@@ -10,5 +10,5 @@ interface UserService {
     suspend fun getMyInfo(): User
 
     @POST("/api/v1/users/profile/")
-    suspend fun getInfoByUsername(username: String): User
+    suspend fun getInfoByUserId(userId: Long): User
 }
