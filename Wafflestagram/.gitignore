@@ -35,4 +35,4 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-app/java/com/amazonaws
+/app/src/main/java/com/amazonaws/

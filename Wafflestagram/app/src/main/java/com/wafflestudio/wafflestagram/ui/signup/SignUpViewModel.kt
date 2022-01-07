@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.SignUpRequest
 import com.wafflestudio.wafflestagram.network.dto.TokenResponse
 import com.wafflestudio.wafflestagram.repository.SignUpRepository
@@ -20,14 +21,14 @@ class SignUpViewModel @Inject constructor(
     private val signUpRepository: SignUpRepository
 ): ViewModel(){
 
-    private val _tokenResponse = MutableLiveData<Response<TokenResponse>>()
-    val tokenResponse : LiveData<Response<TokenResponse>> = _tokenResponse
+    private val _idResponse = MutableLiveData<Response<Long>>()
+    val idResponse : LiveData<Response<Long>> = _idResponse
 
     fun signUp(signUpRequest: SignUpRequest){
         viewModelScope.launch {
             try {
                 val response = signUpRepository.signUp(signUpRequest)
-                _tokenResponse.value = response
+                _idResponse.value = response
             }catch (e: IOException){
                 Timber.e(e)
             }

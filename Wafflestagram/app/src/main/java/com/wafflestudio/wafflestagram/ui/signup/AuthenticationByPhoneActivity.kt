@@ -75,7 +75,7 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                if(p0?.length!! == 6){
+                if(p0?.length!! > 0){
                     binding.buttonNext.isClickable = true
                     binding.buttonNext.isEnabled = true
                     binding.buttonNext.setTextColor(Color.parseColor("#FFFFFFFF"))
