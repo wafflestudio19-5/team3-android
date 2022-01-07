@@ -8,7 +8,7 @@ import com.wafflestudio.wafflestagram.databinding.PagerItemImageBinding
 
 class ImageDialogAdapter(): RecyclerView.Adapter<ImageDialogAdapter.ImageViewHolder>() {
 
-    private var imageUris : List<Uri> = listOf()
+    private var imageUris : List<String> = listOf()
 
     inner class ImageViewHolder(val binding: PagerItemImageBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -19,17 +19,16 @@ class ImageDialogAdapter(): RecyclerView.Adapter<ImageDialogAdapter.ImageViewHol
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val data = imageUris[position]
-        holder.binding.imagePhoto.setImageURI(data)
+        holder.binding.imagePhoto.setImageURI(Uri.parse(data))
     }
 
     override fun getItemCount(): Int {
         return imageUris.size
     }
 
-    fun updateData(imageUris : List<Uri>){
+    fun updateData(imageUris : List<String>){
         this.imageUris = imageUris
         notifyDataSetChanged()
     }
-
 
 }

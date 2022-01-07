@@ -39,7 +39,7 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
         }
         // 사진 클릭 시 해당하는 feed로 이동
         holder.itemView.setOnClickListener{
-            onSelectClickListener(data.id)
+            onSelectClickListener(data.id.toInt())
         }
     }
 

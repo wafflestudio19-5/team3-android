@@ -31,6 +31,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -115,16 +116,22 @@ dependencies {
     api 'com.baoyz.pullrefreshlayout:library:1.2.0'
 
     // S3
-    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.22.1'
     implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
-    implementation 'com.amazonaws:aws-android-sdk-s3:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.22.1'
+
+    // amplify
+    implementation 'com.amplifyframework:core:1.31.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    implementation 'com.amplifyframework:aws-storage-s3:1.6.11'
+    implementation 'com.amplifyframework:aws-auth-cognito:1.6.11'
 
     // Image picker
-    implementation 'com.sangcomz:FishBun:1.0.0-alpha05'
-
     implementation 'com.github.ShahabGT:InstagramPicker:2.2.0'
 
-    implementation 'com.github.yalantis:ucrop:2.2.6-native'
+    implementation 'com.github.yalantis:ucrop:2.2.6'
+
+    implementation 'br.com.simplepass:loading-button-android:2.2.0'
 
     // Jsoup
     implementation 'org.jsoup:jsoup:1.14.3'

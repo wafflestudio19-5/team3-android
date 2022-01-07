@@ -1,21 +1,30 @@
 package com.wafflestudio.wafflestagram.ui.signup
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.viewModels
+import androidx.core.content.edit
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpCompleteBinding
 import com.wafflestudio.wafflestagram.network.dto.SignUpRequest
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SignUpCompleteActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySignUpCompleteBinding
     private val viewModel: SignUpViewModel by viewModels()
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +77,7 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 val request = SignUpRequest(
                     binding.editEmail.text.toString(),
                     password,
+                    true,
                     name,
                     binding.editUsername.text.toString(),
                     birthday,
@@ -79,13 +89,18 @@ class SignUpCompleteActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.tokenResponse.observe(this, {response ->
+        viewModel.idResponse.observe(this, {response ->
             if(response.isSuccessful){
                 binding.textInputLayoutUsername.error = null
                 //token 저장
                 //response.headers().get("Authentication") 를 이용
                 //메인으로 이동
-
+                sharedPreferences.edit {
+                    putString(LoginActivity.TOKEN, response.headers()["Authentication"])
+                }
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
             }else if(response.code() == 409){
                 //에러 메시지
                 binding.textInputLayoutUsername.error = "이메일 또는 사용자 이름이 이미 사용 중입니다. 다시 입력해주세요."
@@ -100,5 +115,6 @@ class SignUpCompleteActivity : AppCompatActivity() {
         const val SIGNUP_ACTIVITY_EXTRA_NAME = "name"
         const val SIGNUP_ACTIVITY_EXTRA_PASSWORD = "password"
         const val SIGNUP_ACTIVITY_EXTRA_BIRTHDAY = "birthday"
+        const val TOKEN = "token"
     }
 }

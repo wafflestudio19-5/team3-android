@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 class Like (
     @Json(name = "id")
-    val id: Int,
+    val id: Long,
     @Json(name = "writer")
     val writer: String
     )
