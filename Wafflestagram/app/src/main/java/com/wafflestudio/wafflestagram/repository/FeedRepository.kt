@@ -1,10 +1,28 @@
 package com.wafflestudio.wafflestagram.repository
 
+import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.network.FeedService
+import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
+import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class FeedRepository @Inject constructor(private val feedService: FeedService){
 
+    suspend fun getFeeds(feedPageRequest: FeedPageRequest): Response<List<Feed>>{
+        return feedService.getFeeds(feedPageRequest.offset, feedPageRequest.limit)
+    }
+
+    suspend fun getFeedById(id : Int): Response<Feed>{
+        return feedService.getFeedById(id)
+    }
+
+    suspend fun like(id: Int): Response<Feed>{
+        return feedService.like(id)
+    }
+
+    suspend fun unlike(id: Int): Response<Feed>{
+        return feedService.unlike(id)
+    }
 }

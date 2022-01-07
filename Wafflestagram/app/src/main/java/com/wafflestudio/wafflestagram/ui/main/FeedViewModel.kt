@@ -6,9 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.Photo
+import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.repository.FeedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.Response
+import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,10 +20,46 @@ class FeedViewModel @Inject constructor(
     private val feedRepository: FeedRepository
 ) : ViewModel(){
 
-    private val _feedList = MutableLiveData<List<Feed>>()
-    val feedList: LiveData<List<Feed>> = _feedList
+    private val _feedList = MutableLiveData<Response<List<Feed>>>()
+    val feedList: LiveData<Response<List<Feed>>> = _feedList
 
+    private val _likeRespone = MutableLiveData<Response<Feed>>()
+    val likeResponse: LiveData<Response<Feed>> = _likeRespone
+
+    fun getFeeds(feedPageRequest: FeedPageRequest){
+        viewModelScope.launch {
+            try {
+                val data = feedRepository.getFeeds(feedPageRequest)
+                _feedList.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun like(id: Int){
+        viewModelScope.launch {
+            try {
+                val data = feedRepository.like(id)
+                _likeRespone.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun unlike(id: Int){
+        viewModelScope.launch {
+            try {
+                val data = feedRepository.like(id)
+                _likeRespone.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
     // 더미 데이터 불러오기
+    /*
     fun loadData(){
         viewModelScope.launch {
             var list = mutableListOf<Feed>()
@@ -36,8 +76,6 @@ class FeedViewModel @Inject constructor(
             }
             _feedList.value = list
         }
-    }
-
-
+    }*/
 
 }

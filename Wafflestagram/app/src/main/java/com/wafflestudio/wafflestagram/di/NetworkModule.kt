@@ -5,10 +5,7 @@ import android.content.SharedPreferences
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.wafflestagram.BuildConfig
-import com.wafflestudio.wafflestagram.network.FeedService
-import com.wafflestudio.wafflestagram.network.LoginService
-import com.wafflestudio.wafflestagram.network.UserService
-import com.wafflestudio.wafflestagram.network.SignUpService
+import com.wafflestudio.wafflestagram.network.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -98,5 +95,11 @@ object NetworkModule {
     @Singleton
     fun provideUserService(retrofit: Retrofit): UserService {
         return retrofit.create(UserService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCommentService(retrofit: Retrofit): CommentService {
+        return retrofit.create(CommentService::class.java)
     }
 }

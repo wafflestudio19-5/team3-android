@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.ui.main
 
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -10,15 +11,21 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
+import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
+import com.wafflestudio.wafflestagram.ui.like.LikeActivity
+import java.time.format.DateTimeFormatter
 
 class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    private var feeds: List<Feed> = listOf()
+    private var feeds: MutableList<Feed> = mutableListOf()
 
+    inner class LoadingViewHolder(val binding: ItemLoadingBinding) : RecyclerView.ViewHolder(binding.root)
     inner class FeedViewHolder(val binding: ItemFeedBinding) : RecyclerView.ViewHolder(binding.root){
         fun onViewAppear(){
             binding.numberIndicatorPager.alpha = 1.0f
@@ -34,9 +41,19 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = ItemFeedBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return FeedViewHolder(binding)
+        return when(viewType){
+            VIEW_TYPE_FEED ->{
+                val binding = ItemFeedBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+                FeedViewHolder(binding)
+            }
+            VIEW_TYPE_LOADING ->{
+                val binding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                LoadingViewHolder(binding)
+            }
+            else -> throw IllegalStateException("viewType must be 0 or 1")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -82,6 +99,30 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                         }
                     })
 
+
+                    textDateCreated.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+
+                    buttonComment.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, CommentActivity::class.java)
+                        intent.putExtra("id", data.id)
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    textLike.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, LikeActivity::class.java)
+                        intent.putExtra("id", data.id)
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    buttonLike.setOnClickListener {
+                        if(buttonLike.isSelected){
+                            buttonLike.isSelected = false
+                            FeedFragment().unlike(data.id.toInt())
+                        }else{
+                            buttonLike.isSelected = true
+                            FeedFragment().like(data.id.toInt())
+                        }
+                    }
                 }
 
             }
@@ -94,6 +135,13 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         return feeds.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return when(feeds[position].id.toInt()){
+            NULL -> VIEW_TYPE_LOADING
+            else -> VIEW_TYPE_FEED
+        }
+    }
+
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         when(holder){
             is FeedViewHolder ->{
@@ -103,8 +151,30 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         super.onViewAttachedToWindow(holder)
     }
 
-    fun updateData(feeds : List<Feed>){
+    fun updateData(feeds : MutableList<Feed>){
         this.feeds = feeds
         notifyDataSetChanged()
+    }
+
+    fun addData(feeds: MutableList<Feed>){
+        val size = this.feeds.size
+        this.feeds.addAll(feeds)
+        this.feeds.add(Feed(NULL.toLong()))
+        notifyItemRangeInserted(size, 10)
+    }
+
+    fun clearData(){
+        this.feeds.clear()
+        notifyDataSetChanged()
+    }
+
+    fun deleteLoading(){
+        this.feeds.removeAt(feeds.lastIndex)
+    }
+
+    companion object{
+        const val VIEW_TYPE_FEED = 0
+        const val VIEW_TYPE_LOADING = 1
+        const val NULL = -1
     }
 }

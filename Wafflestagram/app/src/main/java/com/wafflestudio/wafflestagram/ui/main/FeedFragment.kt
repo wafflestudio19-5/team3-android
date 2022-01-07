@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
+import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,20 +55,37 @@ class FeedFragment : Fragment() {
             startActivity(intent)
         }
 
-        //더미 데이터
-        viewModel.loadData()
+        val request = FeedPageRequest(feedAdapter.itemCount, 10)
+        viewModel.getFeeds(request)
 
         binding.refreshLayoutFeed.setColorSchemeColors(*intArrayOf(Color.parseColor("#F6F6F6"),Color.parseColor("#D5D5D5"),Color.parseColor("#A6A6A6"),Color.parseColor("#D5D5D5")))
         binding.refreshLayoutFeed.setOnRefreshListener {
-            viewModel.loadData()
+            feedAdapter.clearData()
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.refreshLayoutFeed.setRefreshing(false)
             }, 1000)
-
+            val request = FeedPageRequest(feedAdapter.itemCount, 10)
+            viewModel.getFeeds(request)
         }
 
-        viewModel.feedList.observe(viewLifecycleOwner, {
-            feedAdapter.updateData(it)
+        binding.recyclerViewFeed.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if(!binding.recyclerViewFeed.canScrollVertically(1)){
+                    feedAdapter.deleteLoading()
+                    val request = FeedPageRequest(feedAdapter.itemCount, 10)
+                    viewModel.getFeeds(request)
+                }
+            }
+        })
+
+        viewModel.feedList.observe(viewLifecycleOwner, {response ->
+            if(response.isSuccessful){
+                feedAdapter.addData(response.body()!!.toMutableList())
+            }else if(response.code() == 401){
+                // 토큰 지우고 로그인 화면
+            }
         })
 
 
@@ -75,6 +93,14 @@ class FeedFragment : Fragment() {
 
     fun setRecyclerviewPosition(position: Int){
         binding.recyclerViewFeed.smoothScrollToPosition(position)
+    }
+
+    fun like(id:Int){
+        viewModel.like(id)
+    }
+
+    fun unlike(id: Int){
+        viewModel.unlike(id)
     }
 
 }

@@ -1,0 +1,27 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-wafflestagram-dev-193015-authRole",
+      "UnauthRoleArn": "arn:aws:iam::426154657685:role/amplify-wafflestagram-dev-193015-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::426154657685:role/amplify-wafflestagram-dev-193015-authRole",
+      "Region": "ap-northeast-2",
+      "DeploymentBucketName": "amplify-wafflestagram-dev-193015-deployment",
+      "UnauthRoleName": "amplify-wafflestagram-dev-193015-unauthRole",
+      "StackName": "amplify-wafflestagram-dev-193015",
+      "StackId": "arn:aws:cloudformation:ap-northeast-2:426154657685:stack/amplify-wafflestagram-dev-193015/a9638e90-6edb-11ec-a327-0a60a8eefef8",
+      "AmplifyAppId": "dwytw8pltdrjc"
+    },
+    "categories": {
+      "auth": {
+        "wafflestagram69d305ed": {},
+        "true": {}
+      },
+      "storage": {
+        "wafflestagrame88d7779": {
+          "bucketName": "waffle-team3-bucket",
+          "region": "ap-northeast-2"
+        }
+      }
+    }
+  }
+}
