@@ -44,18 +44,18 @@ object NetworkModule {
                     if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                     else HttpLoggingInterceptor.Level.NONE
             }
-
         )
-        val token = sharedPreferences.getString("token", "")
-
-        builder.addInterceptor { chain ->
-            val newRequest = chain.request().newBuilder().addHeader(
-                "Authentication", "$token"
-            ).build()
-            chain.proceed(newRequest)
-        }
-
-
+            builder.addInterceptor { chain ->
+                val newRequestBuilder = chain.request().newBuilder()
+                val token = sharedPreferences.getString("token", "")
+                if(token != "") {
+                    newRequestBuilder.addHeader(
+                        "Authentication", "$token"
+                    )
+                }
+                val newRequest = newRequestBuilder.build()
+                chain.proceed(newRequest)
+            }
         return builder.build()
     }
 
@@ -75,7 +75,7 @@ object NetworkModule {
         @Provides
         @Singleton
         fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-            return context.getSharedPreferences("sharedpreference", Context.MODE_PRIVATE)
+            return context.getSharedPreferences("sharedpreferences", Context.MODE_PRIVATE)
         }
     }
 
