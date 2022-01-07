@@ -53,6 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" >
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_follow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_like"/>
