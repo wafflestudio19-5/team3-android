@@ -81,10 +81,7 @@ class EditProfileActivity: AppCompatActivity() {
 
             viewModel.updateUser(updateUserRequest)
 
-            // Return to UserFragment
-            val intent = Intent(this, UserFragment::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            finish()
         }
 
         viewModel.image.observe(this, {response->
