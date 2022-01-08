@@ -69,6 +69,7 @@
             android:id="@+id/text_reply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:paddingVertical="4dp"
             android:paddingRight="15dp"
             android:text="답글 달기"

@@ -69,6 +69,10 @@ class EditProfileActivity: AppCompatActivity() {
 
         viewModel.getProfilePhoto(id)
 
+        binding.buttonClose.setOnClickListener {
+            finish()
+        }
+
         binding.buttonCheck.setOnClickListener{
             val updateUserRequest = UpdateUserRequest(
             binding.inputName.text.toString(), binding.inputUsername.text.toString(),

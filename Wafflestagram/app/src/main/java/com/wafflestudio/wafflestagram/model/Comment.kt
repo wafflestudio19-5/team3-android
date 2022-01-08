@@ -12,10 +12,10 @@ class Comment (
     val writer: User,
     @Json(name = "text")
     val text: String = "",
-    @Json(name = "replies")
-    val replies: List<Reply>,
+    //@Json(name = "replies")
+    //val replies: List<Reply>,
     @Json(name = "createdAt")
-    val createdAt : LocalDateTime = LocalDateTime.now(),
+    val createdAt : LocalDateTime? = LocalDateTime.now(),
     @Json(name = "updatedAt")
-    val updatedAt : LocalDateTime = LocalDateTime.now()
+    val updatedAt : LocalDateTime? = LocalDateTime.now()
 )

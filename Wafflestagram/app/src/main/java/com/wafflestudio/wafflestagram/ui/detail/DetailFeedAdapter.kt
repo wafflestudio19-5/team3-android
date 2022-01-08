@@ -64,7 +64,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         }
                         override fun onClick(p0: View) {
                             val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                            intent.putExtra("id", data.author?.id)
+                            intent.putExtra("id", data.author?.id!!.toInt())
                             ContextCompat.startActivity(holder.itemView.context, intent, null)
                         }
                     }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -92,18 +92,18 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         }
                     })
 
-                    textDateCreated.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    textDateCreated.text = data.createdAt!!.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
                     textLike.text = "좋아요 " + data.likeSum + "개"
 
                     buttonComment.setOnClickListener {
                         val intent = Intent(holder.itemView.context, CommentActivity::class.java)
-                        intent.putExtra("id", data.id)
+                        intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
                     textLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
-                        intent.putExtra("id", data.id)
+                        intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
@@ -119,13 +119,13 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
 
                     buttonUserImage.setOnClickListener{
                         val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                        intent.putExtra("id", data.author?.id)
+                        intent.putExtra("id", data.author?.id!!.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
                     buttonUsername.setOnClickListener {
                         val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                        intent.putExtra("id", data.author?.id)
+                        intent.putExtra("id", data.author?.id!!.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 

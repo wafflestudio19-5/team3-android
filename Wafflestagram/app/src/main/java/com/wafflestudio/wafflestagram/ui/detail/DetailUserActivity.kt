@@ -1,5 +1,6 @@
 package com.wafflestudio.wafflestagram.ui.detail
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,13 @@ class DetailUserActivity : AppCompatActivity() {
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userAdapter = DetailUserAdapter()
+        val id = intent.getIntExtra("id", 0)
+
+        userAdapter = DetailUserAdapter{startActivity(
+            Intent(this, DetailFeedActivity::class.java)
+                .putExtra("position", it)
+                .putExtra("userId", id)
+        )}
         userLayoutManager = GridLayoutManager(this, 3)
 
         binding.recyclerViewPhotos.apply {
@@ -29,7 +36,7 @@ class DetailUserActivity : AppCompatActivity() {
             layoutManager = userLayoutManager
         }
 
-        val id = intent.getIntExtra("id", 0)
+
 
         viewModel.getFeedCount(id)
         viewModel.getFollowerCount(id)

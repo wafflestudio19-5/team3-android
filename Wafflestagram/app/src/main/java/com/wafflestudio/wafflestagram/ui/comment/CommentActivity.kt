@@ -45,7 +45,7 @@ class CommentActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                if(p0?.length!! == 6){
+                if(p0?.length!! > 0){
                     binding.buttonComment.isClickable = true
                     binding.buttonComment.isEnabled = true
                     binding.buttonComment.setTextColor(Color.parseColor("#368AFF"))

@@ -58,7 +58,7 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     spannable.append(" " + data.content)
                     textContent.text = spannable
 
-                    textTime.text = data.createdAt.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    //textTime.text = data.createdAt!!.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
 
                     //프로필 사진
                     Glide.with(holder.itemView.context).load(data.author?.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
@@ -69,7 +69,7 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if(holder is CommentViewHolder){
                 holder.binding.apply {
                     textContent.text = data.text
-                    textReplyNumber.text = data.replies.size.toString()
+                    //textReplyNumber.text = data.replies.size.toString()
                 }
                 Glide.with(holder.itemView.context).load(data.writer.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
             }

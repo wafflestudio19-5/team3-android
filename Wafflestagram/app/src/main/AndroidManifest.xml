@@ -22,16 +22,8 @@
             android:theme="@style/Theme.Wafflestagram.NoActionBar" />
         <activity
             android:name=".ui.follow.FollowActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.follow.FollowerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.follow.FollowActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.follow.FollowerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.write.AddPostActivity"
             android:exported="false"
@@ -77,7 +69,8 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.profile.EditProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
