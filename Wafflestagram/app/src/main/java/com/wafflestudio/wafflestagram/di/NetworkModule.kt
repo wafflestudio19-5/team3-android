@@ -20,6 +20,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoField
 import javax.inject.Singleton
 
 @Module
@@ -129,7 +131,10 @@ object NetworkModule {
                 reader.nextNull<Any>()
                 null
             }    }
-        private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+        private val formatter = DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+            .toFormatter()
+
         private fun fromNonNullString(nextString: String) : LocalDateTime = LocalDateTime.parse(nextString, formatter)
 
     }
