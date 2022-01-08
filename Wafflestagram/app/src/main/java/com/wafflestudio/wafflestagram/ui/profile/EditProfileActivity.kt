@@ -19,7 +19,9 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ActivityEditProfileBinding
+import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import com.wafflestudio.wafflestagram.ui.main.UserFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,6 +65,9 @@ class EditProfileActivity: AppCompatActivity() {
         binding.inputUsername.setText(intent.getStringExtra("username"))
         binding.inputWebsite.setText(intent.getStringExtra("website"))
         binding.inputBio.setText(intent.getStringExtra("bio"))
+        val id = intent.getIntExtra("id", 0)
+
+        viewModel.getProfilePhoto(id)
 
         binding.buttonCheck.setOnClickListener{
             val updateUserRequest = UpdateUserRequest(
@@ -77,6 +82,16 @@ class EditProfileActivity: AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }
+
+        viewModel.image.observe(this, {response->
+            if(response.isSuccessful){
+                Glide.with(this).load(response.body()).centerCrop().into(binding.buttonUserImage)
+            }
+        })
+
+        viewModel.response.observe(this, {
+            viewModel.getProfilePhoto(id)
+        })
     }
 
     private fun upload(image : String){
@@ -89,7 +104,8 @@ class EditProfileActivity: AppCompatActivity() {
             override fun onStateChanged(id: Int, state: TransferState?) {
                 if(state == TransferState.COMPLETED){
                     //서버에 사진 변경 리퀘스트 보내기, fileName
-
+                    val request = SetProfilePhotoRequest(fileName)
+                    viewModel.setProfilePhoto(request)
                 }
             }
             override fun onProgressChanged(id: Int, bytesCurrent: Long, bytesTotal: Long) {

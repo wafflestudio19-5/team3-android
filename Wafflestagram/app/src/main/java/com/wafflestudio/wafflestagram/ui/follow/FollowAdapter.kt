@@ -36,7 +36,7 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
             val data = follows[position - 1]
             holder.binding.apply {
                 textUsername.text = data.user.username
-
+                textName.text = data.user.name
                 //팔로우 확인 로직
                 /*if(follow.checkFollowing(data.user.id.toInt()).body()!!){
                     buttonFollow.isSelected = true

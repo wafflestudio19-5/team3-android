@@ -22,7 +22,7 @@ import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
 import java.time.format.DateTimeFormatter
 
-class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var feeds: List<Feed> = listOf()
 
@@ -110,10 +110,10 @@ class DetailFeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
-                            FeedFragment().unlike(data.id.toInt(), position)
+                            detailFeedInterface.unlike(data.id.toInt(), position)
                         }else{
                             buttonLike.isSelected = true
-                            FeedFragment().like(data.id.toInt(), position)
+                            detailFeedInterface.like(data.id.toInt(), position)
                         }
                     }
 

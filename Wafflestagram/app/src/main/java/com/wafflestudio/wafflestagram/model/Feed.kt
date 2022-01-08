@@ -17,7 +17,7 @@ class Feed (
     @Json(name = "comments")
     val comments: List<Comment> = emptyList(),
     @Json(name = "likes")
-    val likes: List<Like> = emptyList(),
+    val likes: List<User> = emptyList(),
     @Json(name = "likeSum")
     val likeSum: Int = 0,
     @Json(name = "tags")

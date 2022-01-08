@@ -30,7 +30,7 @@ class FollowActivity : AppCompatActivity(), FollowInter {
         }
 
         binding.buttonBack.setOnClickListener {
-            onBackPressed()
+            finish()
         }
 
         val id = intent.getIntExtra("id", 0)

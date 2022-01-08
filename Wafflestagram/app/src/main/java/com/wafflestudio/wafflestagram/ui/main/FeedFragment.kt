@@ -25,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FeedFragment : Fragment() {
+class FeedFragment : Fragment() ,FeedInterface {
 
     private lateinit var binding: FragmentFeedBinding
     private val viewModel: FeedViewModel by activityViewModels()
@@ -52,7 +52,7 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        feedAdapter = FeedAdapter()
+        feedAdapter = FeedAdapter(this)
         feedLayoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         binding.recyclerViewFeed.apply {
             adapter = feedAdapter
@@ -140,12 +140,12 @@ class FeedFragment : Fragment() {
         binding.recyclerViewFeed.smoothScrollToPosition(position)
     }
 
-    fun like(id:Int ,position: Int){
+    override fun like(id:Int ,position: Int){
         viewModel.like(id)
         itemPosition = position
     }
 
-    fun unlike(id: Int, position: Int){
+    override fun unlike(id: Int, position: Int){
         viewModel.unlike(id)
         itemPosition = position
     }

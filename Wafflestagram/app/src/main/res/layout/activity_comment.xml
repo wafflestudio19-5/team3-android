@@ -64,23 +64,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
 
-        <com.baoyz.widget.PullRefreshLayout
-            android:id="@+id/refresh_layout_comment"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_comment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:listitem="@layout/item_comment"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            app:refreshType="ring">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_comment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/item_comment" />
-
-        </com.baoyz.widget.PullRefreshLayout>
+            app:layout_constraintTop_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

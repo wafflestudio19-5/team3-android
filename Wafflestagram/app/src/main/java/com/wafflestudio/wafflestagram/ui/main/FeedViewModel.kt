@@ -55,7 +55,7 @@ class FeedViewModel @Inject constructor(
     fun unlike(id: Int){
         viewModelScope.launch {
             try {
-                val data = feedRepository.like(id)
+                val data = feedRepository.unlike(id)
                 _likeRespone.value = data
             }catch (e: IOException){
                 Timber.e(e)

@@ -29,6 +29,10 @@ class LikeActivity : AppCompatActivity() {
             layoutManager = likeLayoutManager
         }
 
+        binding.buttonBack.setOnClickListener {
+            finish()
+        }
+
         val id = intent.getIntExtra("id", 0)
 
         viewModel.getMe()

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.repository.DetailFeedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,11 +22,36 @@ class DetailFeedViewModel @Inject constructor(
     private val _page = MutableLiveData<Response<Page>>()
     val page: LiveData<Response<Page>> = _page
 
+    private val _likeRespone = MutableLiveData<Response<Feed>>()
+    val likeResponse: LiveData<Response<Feed>> = _likeRespone
+
     fun getFeedsByUserId(id: Int, offset: Int, limit : Int){
         viewModelScope.launch {
             try {
                 val data = detailFeedRepository.getFeedsByUserId(id, offset, limit)
                 _page.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun like(id: Int){
+        viewModelScope.launch {
+            try {
+                val data = detailFeedRepository.like(id)
+                _likeRespone.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun unlike(id: Int){
+        viewModelScope.launch {
+            try {
+                val data = detailFeedRepository.unlike(id)
+                _likeRespone.value = data
             }catch (e: IOException){
                 Timber.e(e)
             }

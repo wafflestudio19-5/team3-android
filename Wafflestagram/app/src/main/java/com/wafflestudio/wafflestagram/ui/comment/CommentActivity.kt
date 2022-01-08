@@ -81,5 +81,9 @@ class CommentActivity : AppCompatActivity() {
                 Toast.makeText(this, response.errorBody()?.string()!!, Toast.LENGTH_SHORT).show()
             }
         })
+
+        binding.buttonBack.setOnClickListener {
+            finish()
+        }
     }
 }

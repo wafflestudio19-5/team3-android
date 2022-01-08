@@ -2,6 +2,7 @@ package com.wafflestudio.wafflestagram.network
 
 import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
+import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -42,13 +43,19 @@ interface UserService {
     ): Response<ResponseBody>
 
     @POST("/api/v1/users/profile/")
-    fun updateUser(
+    suspend fun updateUser(
         @Body updateUserRequest: UpdateUserRequest
-    ): Response<ResponseBody>
+    ): Response<Void>
 
     @GET("api/v1/feed/self/")
     suspend fun getMyFeeds(@Query("offset")offset : Int, @Query("number") number:Int):Response<Page>
 
     @GET("api/v1/feed/other/{user_id}/")
     suspend fun getFeedsById(@Path("user_id") id: Int, @Query("offset")offset : Int, @Query("number") number:Int):Response<Page>
+
+    @POST("api/v1/users/profilePhoto/")
+    suspend fun setProfilePhoto(@Body setProfilePhotoRequest: SetProfilePhotoRequest): Response<Void>
+
+    @GET("api/v1/users/profilePhoto/{user_id}/")
+    suspend fun getProfilePhoto(@Path("user_id") id: Int): Response<String>
 }

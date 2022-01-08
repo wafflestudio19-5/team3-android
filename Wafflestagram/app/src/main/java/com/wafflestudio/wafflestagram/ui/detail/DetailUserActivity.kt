@@ -67,5 +67,9 @@ class DetailUserActivity : AppCompatActivity() {
                 binding.followings.text = response.body()!!.string()
             }
         })
+
+        binding.buttonBack.setOnClickListener {
+            finish()
+        }
     }
 }

@@ -100,7 +100,7 @@ class AddPostActivity : AppCompatActivity() {
     }
 
     private fun addPost(){
-        val request = AddPostRequest(binding.editContent.text.toString(), emptyList(), emptyList(), imageKeys)
+        val request = AddPostRequest(binding.editContent.text.toString(), imageKeys, emptyList(), emptyList())
         viewModel.addPost(request)
     }
 
@@ -121,12 +121,11 @@ class AddPostActivity : AppCompatActivity() {
         val fileName = System.currentTimeMillis().toString()
 
         val uploadObserver = transferUtility.upload("waffle-team3-bucket", fileName, File(getRealPathFromURI(this, Uri.parse(image))))
-
+        imageKeys.add(fileName)
 
         uploadObserver.setTransferListener(object :TransferListener{
             override fun onStateChanged(id: Int, state: TransferState?) {
                 if(state == TransferState.COMPLETED){
-                    imageKeys.add(fileName)
                     //Timber.e(fileName)
                     Handler(Looper.getMainLooper()).postDelayed({
                         continueUpload()

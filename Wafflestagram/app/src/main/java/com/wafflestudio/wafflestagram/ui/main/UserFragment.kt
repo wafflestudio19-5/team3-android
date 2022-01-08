@@ -83,6 +83,7 @@ class UserFragment: Fragment() {
                     .putExtra("username", userInfo.username)
                     .putExtra("website", userInfo.website)
                     .putExtra("bio", userInfo.bio)
+                    .putExtra("id", userInfo.id)
                 startActivity(intent)
             }
 

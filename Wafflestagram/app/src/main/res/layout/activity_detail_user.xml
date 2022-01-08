@@ -44,33 +44,6 @@
                 app:layout_constraintStart_toEndOf="@+id/button_back"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/button_add"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/icon_plus"
-                android:background="@color/transparent"
-                android:scaleType="fitCenter"
-                android:paddingVertical="16dp"
-                android:paddingHorizontal="6dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/button_menu"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/button_menu"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/icon_menu"
-                android:background="@color/transparent"
-                android:scaleType="fitCenter"
-                android:paddingVertical="16dp"
-                android:paddingHorizontal="6dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline12"

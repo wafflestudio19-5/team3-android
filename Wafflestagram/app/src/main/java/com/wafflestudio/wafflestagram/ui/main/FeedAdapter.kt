@@ -25,7 +25,7 @@ import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import java.time.format.DateTimeFormatter
 
-class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var feeds: MutableList<Feed> = mutableListOf()
     private lateinit var currUser: User
@@ -69,8 +69,8 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         when(holder){
             is FeedViewHolder ->{
                 holder.binding.apply {
-                    buttonUsername.text = data.author?.username
-                    val spannable = SpannableStringBuilder(data.author?.username)
+                    buttonUsername.text = data.author!!.username
+                    val spannable = SpannableStringBuilder(data.author!!.username)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.setSpan(object : ClickableSpan(){
                         override fun updateDrawState(ds: TextPaint) {
@@ -79,7 +79,7 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                         override fun onClick(p0: View) {
                             // user page
                             val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                            intent.putExtra("id", data.author?.id)
+                            intent.putExtra("id", data.author.id)
                             ContextCompat.startActivity(holder.itemView.context,intent, null)
                         }
                     }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -124,17 +124,17 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
                     buttonUserImage.setOnClickListener{
                         val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                        intent.putExtra("id", data.author?.id)
+                        intent.putExtra("id", data.author.id)
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
                     buttonUsername.setOnClickListener {
                         val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                        intent.putExtra("id", data.author?.id)
+                        intent.putExtra("id", data.author.id)
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
-                    if(data.likes.contains(Like(NULL.toLong(), currUser))){
+                    if(data.likes.contains(currUser)){
                         buttonLike.isSelected = true
                     }else{
                         buttonLike.isSelected = false
@@ -143,14 +143,14 @@ class FeedAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
-                            FeedFragment().unlike(data.id.toInt(), position)
+                            feedInterface.unlike(data.id.toInt(), position)
                         }else{
                             buttonLike.isSelected = true
-                            FeedFragment().like(data.id.toInt(), position)
+                            feedInterface.like(data.id.toInt(), position)
                         }
                     }
 
-                    Glide.with(holder.itemView.context).load(data.author?.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
+                    Glide.with(holder.itemView.context).load(data.author.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
                 }
 
             }
