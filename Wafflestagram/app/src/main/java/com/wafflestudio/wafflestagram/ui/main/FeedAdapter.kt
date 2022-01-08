@@ -114,12 +114,12 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
-
+                        /*
                     textLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
-                    }
+                    }*/
 
                     buttonUserImage.setOnClickListener{
                         val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)

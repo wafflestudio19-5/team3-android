@@ -100,12 +100,12 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
-
+                    /*
                     textLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
-                    }
+                    }*/
 
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){

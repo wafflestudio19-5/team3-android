@@ -130,7 +130,7 @@ object NetworkModule {
                 null
             }    }
         private val formatter = DateTimeFormatterBuilder()
-            .appendPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+            .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
             .toFormatter()
 
         private fun fromNonNullString(nextString: String) : LocalDateTime = LocalDateTime.parse(nextString, formatter)
