@@ -43,7 +43,7 @@ class UserRepository @Inject constructor(private val userService: UserService){
         return userService.getFeedCountByUserId(userId)
     }
 
-    fun updateUser(updateUserRequest: UpdateUserRequest): Response<ResponseBody> {
+    suspend fun updateUser(updateUserRequest: UpdateUserRequest): Response<Void> {
         return userService.updateUser(updateUserRequest)
     }
 
