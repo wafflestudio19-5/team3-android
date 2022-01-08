@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailUserBinding
+import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,11 +38,10 @@ class DetailUserActivity : AppCompatActivity() {
         }
 
 
-
+        viewModel.getInfoById(id)
         viewModel.getFeedCount(id)
         viewModel.getFollowerCount(id)
         viewModel.getFollowingCount(id)
-        viewModel.getInfoById(id)
         viewModel.getFeedsById(id, 0, 50)
 
         viewModel.page.observe(this, {response->
@@ -77,6 +77,20 @@ class DetailUserActivity : AppCompatActivity() {
 
         binding.buttonBack.setOnClickListener {
             finish()
+        }
+
+        binding.areaFollowers.setOnClickListener {
+            val intent = Intent(this, FollowActivity::class.java)
+            intent.putExtra("id", id)
+            intent.putExtra("activity", 0)
+            startActivity(intent)
+        }
+
+        binding.areaFollowings.setOnClickListener {
+            val intent = Intent(this, FollowActivity::class.java)
+            intent.putExtra("id", id)
+            intent.putExtra("activity", 1)
+            startActivity(intent)
         }
     }
 }

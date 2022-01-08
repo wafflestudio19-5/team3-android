@@ -2,10 +2,10 @@ package com.wafflestudio.wafflestagram.ui.profile
 
 import android.content.ContentUris
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import androidx.activity.viewModels
@@ -23,7 +23,6 @@ import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ActivityEditProfileBinding
 import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
-import com.wafflestudio.wafflestagram.ui.main.UserFragment
 import dagger.hilt.android.AndroidEntryPoint
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.classes.SingleListener
@@ -86,7 +85,7 @@ class EditProfileActivity: AppCompatActivity() {
 
         viewModel.image.observe(this, {response->
             if(response.isSuccessful){
-                Glide.with(this).load(response.body()).centerCrop().into(binding.buttonUserImage)
+                Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(binding.buttonUserImage)
             }
         })
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.wafflestagram.model.PhotoUrl
 import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import com.wafflestudio.wafflestagram.repository.EditProfileRepository
@@ -25,8 +26,8 @@ class EditProfileViewModel @Inject constructor(
     private val _response = MutableLiveData<Response<Void>>()
     var response : LiveData<Response<Void>> = _response
 
-    private val _image = MutableLiveData<Response<String>>()
-    var image:LiveData<Response<String>> = _image
+    private val _image = MutableLiveData<Response<PhotoUrl>>()
+    var image:LiveData<Response<PhotoUrl>> = _image
 
     fun updateUser(updateUserRequest: UpdateUserRequest){
         viewModelScope.launch {

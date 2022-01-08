@@ -87,7 +87,6 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                     textContent.text = spannable
 
                     viewPagerImage.apply {
-
                         adapter = imageAdapter
                         imageAdapter.updateData(data.photos)
                     }

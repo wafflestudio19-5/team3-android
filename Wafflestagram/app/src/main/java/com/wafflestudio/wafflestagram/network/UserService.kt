@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.network
 
 import com.wafflestudio.wafflestagram.model.Page
+import com.wafflestudio.wafflestagram.model.PhotoUrl
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
@@ -57,5 +58,5 @@ interface UserService {
     suspend fun setProfilePhoto(@Body setProfilePhotoRequest: SetProfilePhotoRequest): Response<Void>
 
     @GET("api/v1/users/profilePhoto/{user_id}/")
-    suspend fun getProfilePhoto(@Path("user_id") id: Int): Response<String>
+    suspend fun getProfilePhoto(@Path("user_id") id: Int): Response<PhotoUrl>
 }
