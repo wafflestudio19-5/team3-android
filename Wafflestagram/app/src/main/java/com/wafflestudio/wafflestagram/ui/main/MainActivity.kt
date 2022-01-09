@@ -50,10 +50,14 @@ class MainActivity : AppCompatActivity() {
         viewModel.getMyInfo()
         val fragment = intent.getIntExtra("fragment", FEED_FRAGMENT)
 
+        binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
         setFragment(fragment)
         binding.tabLayoutMain.getTabAt(fragment)?.select()
+        if(fragment == 2){
+            userProfileBinding.imageProfile.borderColor= Color.parseColor("#FF000000")
+            binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
+        }
 
-        binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
         binding.tabLayoutMain.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when(tab!!.position){
