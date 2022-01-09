@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -84,6 +85,10 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         }
                     }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.append(" " + data.content)
+
+                    textContent.linksClickable = true
+                    textContent.isClickable = true
+                    textContent.movementMethod = LinkMovementMethod.getInstance()
                     textContent.text = spannable
 
                     viewPagerImage.apply {
@@ -114,12 +119,12 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
-                        /*
+
                     textLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
-                    }*/
+                    }
 
                     buttonUserImage.setOnClickListener{
                         val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
@@ -130,6 +135,20 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                     buttonUsername.setOnClickListener {
                         val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
                         intent.putExtra("id", data.author.id.toInt())
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    if(data.comments.isEmpty()){
+                        layoutComment.visibility = View.GONE
+                    }else{
+                        layoutComment.visibility = View.VISIBLE
+                    }
+
+                    textCommentNumber.text = data.comments.size.toString()
+
+                    layoutComment.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, CommentActivity::class.java)
+                        intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
@@ -192,7 +211,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
         val size = this.feeds.size
         this.feeds.addAll(feeds)
         if(size > 9){
-            this.feeds.add(Feed(NULL.toLong()))
+            this.feeds.add(Feed(NULL.toLong(), createdAt = null))
         }
         notifyDataSetChanged()
     }

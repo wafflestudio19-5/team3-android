@@ -34,8 +34,8 @@ class FeedFragment : Fragment() ,FeedInterface {
     private var itemPosition : Int = -1
     private var pageNumber: Int = 0
     private var totalPage: Int = 1
+    private var isLast: Boolean = false
 
-    private lateinit var userProfileBinding: IconUserProfileBinding
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -45,7 +45,6 @@ class FeedFragment : Fragment() ,FeedInterface {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFeedBinding.inflate(inflater, container, false)
-        userProfileBinding = IconUserProfileBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -73,8 +72,6 @@ class FeedFragment : Fragment() ,FeedInterface {
             viewModel.getFeeds(request)
         }
 
-
-
         viewModel.getMe()
 
         binding.refreshLayoutFeed.setColorSchemeColors(*intArrayOf(Color.parseColor("#F6F6F6"),Color.parseColor("#D5D5D5"),Color.parseColor("#A6A6A6"),Color.parseColor("#D5D5D5")))
@@ -93,7 +90,7 @@ class FeedFragment : Fragment() ,FeedInterface {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                if(!binding.recyclerViewFeed.canScrollVertically(1) && feedAdapter.itemCount > 9){
+                if(!binding.recyclerViewFeed.canScrollVertically(1) && feedAdapter.itemCount > 9 && !isLast){
                     feedAdapter.deleteLoading()
                     val request = FeedPageRequest(pageNumber, 10)
                     pageNumber++
@@ -106,16 +103,15 @@ class FeedFragment : Fragment() ,FeedInterface {
             if(response.isSuccessful){
                 feedAdapter.addData(response.body()!!.content.toMutableList())
                 totalPage = response.body()!!.totalPages
+                isLast = response.body()!!.last
             }else if(response.code() == 401){
                 // 토큰 만료시 토큰 삭제
-
-                    Toast.makeText(context,sharedPreferences.getString(MainActivity.TOKEN, ""),Toast.LENGTH_LONG ).show()
+                Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
                 sharedPreferences.edit {
                     putString(TOKEN, "")
-
                 }
                 val intent = Intent(context, LoginActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }
         })
@@ -123,7 +119,6 @@ class FeedFragment : Fragment() ,FeedInterface {
         viewModel.user.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
                 feedAdapter.updateData(response.body()!!)
-                Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
             }else if(response.code() == 401){
 
             }

@@ -1,11 +1,10 @@
 package com.wafflestudio.wafflestagram.network
 
+import com.wafflestudio.wafflestagram.model.FollowPage
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.model.UserPage
 import retrofit2.Response
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface SearchService {
 
@@ -21,4 +20,9 @@ interface SearchService {
     @DELETE("api/v1/users/unfollow/{user_id}/")
     suspend fun unfollow(@Path("user_id") id: Int)
 
+    @GET("api/v1/users/following/")
+    suspend fun getMyFollowing(@Query("offset") offset: Int, @Query("number") number: Int) : Response<FollowPage>
+
+    @GET("api/v1/users/me/")
+    suspend fun getMe() : Response<User>
 }

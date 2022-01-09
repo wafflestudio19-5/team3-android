@@ -33,4 +33,8 @@ class FollowRepository @Inject constructor(private val feedService: FeedService)
     suspend fun unfollow(id: Int) {
         return feedService.unfollow(id)
     }
+
+    suspend fun getMyFollowing(offset: Int, limit: Int): Response<FollowPage> {
+        return feedService.getMyFollowing(offset, limit)
+    }
 }

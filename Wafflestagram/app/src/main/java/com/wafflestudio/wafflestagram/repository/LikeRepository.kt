@@ -1,6 +1,7 @@
 package com.wafflestudio.wafflestagram.repository
 
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.FollowPage
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.FeedService
 import retrofit2.Response
@@ -28,5 +29,9 @@ class LikeRepository @Inject constructor(private val feedService: FeedService) {
 
     suspend fun unfollow(id: Int) {
         return feedService.unfollow(id)
+    }
+
+    suspend fun getMyFollowing(offset: Int, limit: Int): Response<FollowPage> {
+        return feedService.getMyFollowing(offset, limit)
     }
 }

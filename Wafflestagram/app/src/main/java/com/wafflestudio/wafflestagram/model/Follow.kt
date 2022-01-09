@@ -9,4 +9,11 @@ class Follow(
     val id : Long = 0,
     @Json(name = "user")
     val user: User
-)
+){
+    override fun equals(other: Any?): Boolean {
+        return if(other is Follow)
+            other.user == this.user
+        else
+            false
+    }
+}

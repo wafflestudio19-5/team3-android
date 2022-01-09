@@ -2,6 +2,7 @@ package com.wafflestudio.wafflestagram.repository
 
 import com.wafflestudio.wafflestagram.model.Comment
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.CommentService
 import com.wafflestudio.wafflestagram.network.dto.AddCommentRequest
 import retrofit2.Response
@@ -19,5 +20,8 @@ class CommentRepository @Inject constructor(private val commentService: CommentS
     }
     suspend fun getFeedById(id : Int): Response<Feed>{
         return commentService.getFeedById(id)
+    }
+    suspend fun getMyInfo(): Response<User> {
+        return commentService.getMyInfo()
     }
 }

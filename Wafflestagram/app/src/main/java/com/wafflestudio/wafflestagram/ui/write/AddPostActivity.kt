@@ -31,6 +31,7 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.network.dto.AddPostRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 
@@ -47,18 +48,17 @@ class AddPostActivity : AppCompatActivity() {
     private lateinit var images : List<String>
     private var position = 0
     private var imageKeys : MutableList<String> = mutableListOf()
+    private var isSelect = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        InstagramPicker(this).show(4,3,10, MultiListener { addresses ->
-            //저장
-            images = addresses
-            binding.imageSelected.setImageURI(Uri.parse(addresses[0]))
-        })
+        binding.imageSelected.isClickable = false
+        binding.imageSelected.isEnabled = false
 
+        showImagePicker()
 
         awsCredentials = BasicAWSCredentials(ACCESS_KEY_SYSTEM_PROPERTY, SECRET_KEY_SYSTEM_PROPERTY)
         s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2))
@@ -76,11 +76,16 @@ class AddPostActivity : AppCompatActivity() {
             )
         }
 
+
         binding.buttonComplete.setOnClickListener {
-            startUpload()
-            binding.buttonComplete.visibility = View.GONE
-            binding.progressBar.visibility = View.VISIBLE
-            binding.editContent.isEnabled = false
+            if(isSelect){
+                startUpload()
+                binding.buttonComplete.visibility = View.GONE
+                binding.progressBar.visibility = View.VISIBLE
+                binding.editContent.isEnabled = false
+            }else{
+                showImagePicker()
+            }
         }
 
         binding.buttonBack.setOnClickListener {
@@ -97,6 +102,11 @@ class AddPostActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         })
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 
     private fun addPost(){
@@ -146,7 +156,17 @@ class AddPostActivity : AppCompatActivity() {
         })
     }
 
-
+    private fun showImagePicker(){
+        InstagramPicker(this).show(4,3,10, MultiListener { addresses ->
+            //저장
+            images = addresses
+            binding.imageSelected.setImageURI(Uri.parse(addresses[0]))
+            binding.imageSelected.isClickable = true
+            binding.imageSelected.isEnabled = true
+            isSelect = true
+            binding.buttonComplete.setImageResource(R.drawable.icon_check)
+        })
+    }
 
     fun getRealPathFromURI(context: Context?, uri: Uri?): String? {
 

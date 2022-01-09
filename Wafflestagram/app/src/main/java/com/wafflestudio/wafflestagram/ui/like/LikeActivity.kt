@@ -1,27 +1,37 @@
 package com.wafflestudio.wafflestagram.ui.like
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.wafflestagram.databinding.ActivityLikeBinding
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.UserFragment
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Response
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class LikeActivity : AppCompatActivity() {
+class LikeActivity : AppCompatActivity() , LikeInterface{
 
     private lateinit var binding: ActivityLikeBinding
     private val viewModel: LikeViewModel by viewModels()
     private lateinit var likeAdapter: LikeAdapter
     private lateinit var likeLayoutManager: LinearLayoutManager
 
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLikeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        likeAdapter = LikeAdapter()
+        likeAdapter = LikeAdapter(this)
         likeLayoutManager = LinearLayoutManager(this)
 
         binding.recyclerViewLike.apply {
@@ -36,15 +46,35 @@ class LikeActivity : AppCompatActivity() {
         val id = intent.getIntExtra("id", 0)
 
         viewModel.getMe()
-        viewModel.getFeedById(id)
+
+        //viewModel.getFeedById(id)
 
         viewModel.feed.observe(this, {response ->
             if(response.isSuccessful){
                 likeAdapter.updateData(response.body()!!.likes)
             }else if(response.code() == 401){
-                // 토큰 삭제
+                sharedPreferences.edit {
+                    putString(FeedFragment.TOKEN, "")
+                }
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
             }else{
 
+            }
+        })
+
+        viewModel.page.observe(this, {response->
+            if(response.isSuccessful){
+                likeAdapter.updateFollowing(response.body()!!.content)
+                viewModel.getFeedById(id)
+            }
+        })
+
+        viewModel.user.observe(this, {reponse ->
+            if(reponse.isSuccessful){
+                likeAdapter.updateUser(reponse.body()!!)
+                viewModel.getMyFollowing(0, 500)
             }
         })
     }
@@ -53,11 +83,11 @@ class LikeActivity : AppCompatActivity() {
         return viewModel.checkFollowing(id)
     }
 
-    fun follow(id: Int){
+    override fun follow(id: Int){
         viewModel.follow(id)
     }
 
-    fun unfollow(id: Int){
+    override fun unfollow(id: Int){
         viewModel.unfollow(id)
     }
 }
