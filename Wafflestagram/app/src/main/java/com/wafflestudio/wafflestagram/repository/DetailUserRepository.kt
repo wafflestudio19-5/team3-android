@@ -30,4 +30,20 @@ class DetailUserRepository @Inject constructor(private val userService: UserServ
     suspend fun getFeedsById(id: Int, offset : Int, number: Int): Response<Page>{
         return userService.getFeedsById(id, offset, number)
     }
+
+    suspend fun checkFollowing(id: Int): Response<ResponseBody>{
+        return userService.checkFollowing(id)
+    }
+
+    suspend fun follow(id: Int) {
+        return userService.follow(id)
+    }
+
+    suspend fun unfollow(id: Int) {
+        return userService.unfollow(id)
+    }
+
+    suspend fun getMyInfo(): Response<User> {
+        return userService.getMyInfo()
+    }
 }

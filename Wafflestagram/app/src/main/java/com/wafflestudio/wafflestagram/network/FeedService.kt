@@ -42,6 +42,10 @@ interface FeedService {
 
     @GET("api/v1/users/following/{user_id}/")
     suspend fun getFollowingByUserId(@Path("user_id")id: Int, @Query("offset") offset: Int, @Query("number") number: Int) : Response<FollowPage>
+
     @GET("api/v1/users/follower/{user_id}/")
     suspend fun getFollowerByUserId(@Path("user_id")id: Int, @Query("offset") offset: Int, @Query("number") number: Int) : Response<FollowPage>
+
+    @GET("api/v1/users/following/")
+    suspend fun getMyFollowing(@Query("offset") offset: Int, @Query("number") number: Int) : Response<FollowPage>
 }

@@ -38,7 +38,7 @@ interface UserService {
         @Path("user_id") userId: Int
     ): Response<ResponseBody>
 
-    @GET("/api/v1/users/feedsNum/{user_id}")
+    @GET("/api/v1/users/feedsNum/{user_id}/")
     suspend fun getFeedCountByUserId(
         @Path("user_id") userId: Int
     ): Response<ResponseBody>
@@ -59,4 +59,13 @@ interface UserService {
 
     @GET("api/v1/users/profilePhoto/{user_id}/")
     suspend fun getProfilePhoto(@Path("user_id") id: Int): Response<PhotoUrl>
+
+    @GET("api/v1/users/isFollowing/{user_id}/")
+    suspend fun checkFollowing(@Path("user_id") id: Int): Response<ResponseBody>
+
+    @POST("api/v1/users/follow/{user_id}/")
+    suspend fun follow(@Path("user_id") id: Int)
+
+    @DELETE("api/v1/users/unfollow/{user_id}/")
+    suspend fun unfollow(@Path("user_id") id: Int)
 }

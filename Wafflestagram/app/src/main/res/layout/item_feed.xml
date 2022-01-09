@@ -30,6 +30,8 @@
             android:background="@color/transparent"
             android:gravity="center_vertical"
             android:text="username"
+            android:textAllCaps="false"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_item_more"
             app:layout_constraintStart_toEndOf="@+id/button_user_image"
@@ -189,6 +191,7 @@
             android:id="@+id/text_like"
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:layout_marginVertical="2dp"
             android:text="좋아요 0개"
             android:textSize="15sp"
             android:textColor="@color/black"
@@ -198,9 +201,33 @@
             android:id="@+id/text_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="2dp"
             android:text="Username  Content example, Content example, Content example, Content example, Content example"
             android:textColor="@color/black"
             android:textSize="15sp"/>
+
+        <LinearLayout
+            android:id="@+id/layout_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="댓글 "/>
+
+            <TextView
+                android:id="@+id/text_comment_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="개 모두 보기"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -1,17 +1,22 @@
 package com.wafflestudio.wafflestagram.ui.follow
 
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.databinding.ItemLikeBinding
 import com.wafflestudio.wafflestagram.databinding.ItemSearchBinding
 import com.wafflestudio.wafflestagram.model.Follow
 import com.wafflestudio.wafflestagram.model.User
+import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 
 class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var follows: List<Follow> = listOf()
+    private var myFollowingList: List<Follow> = listOf()
     private lateinit var currUser: User
 
     inner class FollowViewHolder(val binding: ItemLikeBinding) : RecyclerView.ViewHolder(binding.root)
@@ -38,11 +43,20 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
                 textUsername.text = data.user.username
                 textName.text = data.user.name
                 //팔로우 확인 로직
-                /*if(follow.checkFollowing(data.user.id.toInt()).body()!!){
+
+                if(data.user == currUser){
+                    buttonFollow.visibility = View.GONE
+                }
+
+                if(myFollowingList.contains(data)){
                     buttonFollow.isSelected = true
+                    buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                    buttonFollow.text = "팔로잉"
                 }else{
                     buttonFollow.isSelected = false
-                }*/
+                    buttonFollow.setTextColor(Color.parseColor("#FFFFFFFF"))
+                    buttonFollow.text = "팔로우"
+                }
 
                 buttonFollow.setOnClickListener{
                     if(buttonFollow.isSelected){
@@ -61,6 +75,9 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
             }
             holder.itemView.setOnClickListener {
                 // 유저 정보
+                val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                intent.putExtra("id", data.user.id.toInt())
+                ContextCompat.startActivity(holder.itemView.context,intent, null)
             }
         }
     }
@@ -84,6 +101,11 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
 
     fun updateUser(user: User){
         this.currUser = user
+    }
+
+    fun updateFollowing(following : List<Follow>){
+        this.myFollowingList = following
+        notifyDataSetChanged()
     }
 
     companion object{

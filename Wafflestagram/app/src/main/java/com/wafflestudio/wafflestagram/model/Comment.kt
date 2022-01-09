@@ -12,8 +12,8 @@ class Comment (
     val writer: User,
     @Json(name = "text")
     val text: String = "",
-    //@Json(name = "replies")
-    //val replies: List<Reply>,
+    @Json(name = "reply")
+    val replies: List<Reply>,
     @Json(name = "createdAt")
     val createdAt : LocalDateTime? = LocalDateTime.now(),
     @Json(name = "updatedAt")

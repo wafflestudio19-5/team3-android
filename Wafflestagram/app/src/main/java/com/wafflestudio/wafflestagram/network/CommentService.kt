@@ -2,6 +2,7 @@ package com.wafflestudio.wafflestagram.network
 
 import com.wafflestudio.wafflestagram.model.Comment
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.AddCommentRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -19,4 +20,7 @@ interface CommentService {
 
     @POST("api/v1/comment/{feed_id}/")
     suspend fun addComment(@Path("feed_id") id: Int, @Body addCommentRequest: AddCommentRequest) : Response<Comment>
+
+    @GET("/api/v1/users/me/")
+    suspend fun getMyInfo(): Response<User>
 }

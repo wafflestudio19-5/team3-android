@@ -59,7 +59,7 @@
                 android:autofillHints="이메일 주소"
                 android:background="@drawable/edittext_rounded_corner"
                 android:ems="10"
-                android:hint="이메일 주소 또는 사용자 이름"
+                android:hint="이메일 주소"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:padding="12dp"

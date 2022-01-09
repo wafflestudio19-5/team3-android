@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.aghajari.zoomhelper.ZoomHelper
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var userProfileBinding: IconUserProfileBinding
+    private val viewModel: MainViewModel by viewModels()
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -38,14 +40,19 @@ class MainActivity : AppCompatActivity() {
         // LogOut 상태인 경우 LoginActivity로 이동
         if(sharedPreferences.getString(TOKEN, "") == "") {
             val intent = Intent(this, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         }
 
         // set max zoom scale
         ZoomHelper.getInstance().maxScale = 3f
 
+        viewModel.getMyInfo()
+        val fragment = intent.getIntExtra("fragment", FEED_FRAGMENT)
 
-        setFragment(FEED_FRAGMENT)
+        setFragment(fragment)
+        binding.tabLayoutMain.getTabAt(fragment)?.select()
+
         binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
         binding.tabLayoutMain.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -75,6 +82,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        })
+
+        viewModel.myInfo.observe(this, { response->
+            if(response.isSuccessful){
+                Glide.with(this).load(response.body()?.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
+            }
         })
     }
 

@@ -36,9 +36,10 @@
                 android:paddingLeft="10dp"
                 android:background="@color/transparent"
                 android:gravity="center_vertical"
-                android:text="User0"
+                android:text="User"
                 android:textStyle="bold"
                 android:textSize="19sp"
+                android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline12"
                 app:layout_constraintStart_toEndOf="@+id/button_back"
@@ -185,6 +186,7 @@
             android:textColor="@color/black"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_follow_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -197,7 +199,7 @@
                 android:background="@drawable/button_follow"
                 android:clickable="true"
                 android:enabled="true"
-                android:text="팔로우"
+                android:text="읽어들이는 중.."
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button_DM"

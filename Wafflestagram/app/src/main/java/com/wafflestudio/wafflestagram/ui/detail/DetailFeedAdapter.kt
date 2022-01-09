@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -14,18 +15,24 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
+import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
+import com.wafflestudio.wafflestagram.ui.main.FeedAdapter
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
 import java.time.format.DateTimeFormatter
 
 class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    private var feeds: List<Feed> = listOf()
+    private var feeds: MutableList<Feed> = mutableListOf()
+    private lateinit var currUser: User
 
+    inner class LoadingViewHolder(val binding: ItemLoadingBinding) : RecyclerView.ViewHolder(binding.root)
     inner class FeedViewHolder(val binding: ItemFeedBinding) : RecyclerView.ViewHolder(binding.root){
         fun onViewAppear(){
             binding.numberIndicatorPager.alpha = 1.0f
@@ -43,8 +50,17 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = ItemFeedBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return FeedViewHolder(binding)
+        return when(viewType){
+            VIEW_TYPE_FEED ->{
+                val binding = ItemFeedBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+                FeedViewHolder(binding)
+            }
+            VIEW_TYPE_LOADING ->{
+                val binding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                LoadingViewHolder(binding)
+            }
+            else -> throw IllegalStateException("viewType must be 0 or 1")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -55,24 +71,28 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
         when(holder){
             is FeedViewHolder ->{
                 holder.binding.apply {
-                    buttonUsername.text = data.author?.username
-                    val spannable = SpannableStringBuilder(data.author?.username)
+                    buttonUsername.text = data.author!!.username
+                    val spannable = SpannableStringBuilder(data.author!!.username)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.setSpan(object : ClickableSpan(){
                         override fun updateDrawState(ds: TextPaint) {
                             ds.isUnderlineText = false
                         }
                         override fun onClick(p0: View) {
+                            // user page
                             val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                            intent.putExtra("id", data.author?.id!!.toInt())
-                            ContextCompat.startActivity(holder.itemView.context, intent, null)
+                            intent.putExtra("id", data.author.id.toInt())
+                            ContextCompat.startActivity(holder.itemView.context,intent, null)
                         }
                     }, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.append(" " + data.content)
+
+                    textContent.linksClickable = true
+                    textContent.isClickable = true
+                    textContent.movementMethod = LinkMovementMethod.getInstance()
                     textContent.text = spannable
 
                     viewPagerImage.apply {
-
                         adapter = imageAdapter
                         imageAdapter.updateData(data.photos)
                     }
@@ -100,12 +120,44 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
-                    /*
+
                     textLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
-                    }*/
+                    }
+
+                    buttonUserImage.setOnClickListener{
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.author.id.toInt())
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    buttonUsername.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.author.id.toInt())
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    if(data.comments.isEmpty()){
+                        layoutComment.visibility = View.GONE
+                    }else{
+                        layoutComment.visibility = View.VISIBLE
+                    }
+
+                    textCommentNumber.text = data.comments.size.toString()
+
+                    layoutComment.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, CommentActivity::class.java)
+                        intent.putExtra("id", data.id.toInt())
+                        ContextCompat.startActivity(holder.itemView.context, intent, null)
+                    }
+
+                    if(data.likes.contains(currUser)){
+                        buttonLike.isSelected = true
+                    }else{
+                        buttonLike.isSelected = false
+                    }
 
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){
@@ -117,18 +169,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         }
                     }
 
-                    buttonUserImage.setOnClickListener{
-                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                        intent.putExtra("id", data.author?.id!!.toInt())
-                        ContextCompat.startActivity(holder.itemView.context, intent, null)
-                    }
-
-                    buttonUsername.setOnClickListener {
-                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
-                        intent.putExtra("id", data.author?.id!!.toInt())
-                        ContextCompat.startActivity(holder.itemView.context, intent, null)
-                    }
-
+                    Glide.with(holder.itemView.context).load(data.author.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
                 }
 
             }
@@ -141,6 +182,12 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
         return feeds.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return when(feeds[position].id.toInt()){
+            NULL -> VIEW_TYPE_LOADING
+            else -> VIEW_TYPE_FEED
+        }
+    }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         when(holder){
@@ -151,13 +198,37 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
         super.onViewAttachedToWindow(holder)
     }
 
-    fun updateData(feeds : List<Feed>){
-        this.feeds = feeds
+    fun updateData(user: User){
+        this.currUser = user
         notifyDataSetChanged()
     }
 
+    fun changeData(feed: Feed, position: Int){
+        this.feeds[position] = feed
+        notifyItemChanged(position)
+    }
+
+    fun addData(feeds: MutableList<Feed>){
+        val size = this.feeds.size
+        this.feeds.addAll(feeds)
+        if(size > 9){
+            this.feeds.add(Feed(NULL.toLong(), createdAt = null))
+        }
+        notifyDataSetChanged()
+    }
+
+    fun clearData(){
+        this.feeds.clear()
+        notifyDataSetChanged()
+    }
+
+    fun deleteLoading(){
+        this.feeds.removeAt(feeds.lastIndex)
+    }
 
     companion object{
         const val VIEW_TYPE_FEED = 0
+        const val VIEW_TYPE_LOADING = 1
+        const val NULL = -1
     }
 }

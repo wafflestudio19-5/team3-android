@@ -92,6 +92,7 @@ class UserFragment: Fragment() {
                     putString("token", "")
                 }
                 val intent = Intent(context, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }
         } else {
@@ -109,7 +110,7 @@ class UserFragment: Fragment() {
             startActivity(
                 Intent(context, DetailFeedActivity::class.java)
                 .putExtra("position", it)
-                .putExtra("userId", userId)
+                .putExtra("userId", currentUserId)
             )
         }
         // recyclerView -> 3행 Grid 형식으로 지정
@@ -163,13 +164,28 @@ class UserFragment: Fragment() {
                 val data = response.body()!!
                 Glide.with(_context)
                     .load(data.profilePhotoURL)
+                    .centerCrop()
                     .into(binding.userImage)
                 binding.buttonUsername.text = data.username
                 binding.textBio.text = data.bio
-            } else {
+            } else if(response.code() == 401){
+                Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
+                sharedPreferences.edit {
+                    putString(FeedFragment.TOKEN, "")
+                }
+                val intent = Intent(context, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+            } else{
                 Toast.makeText(context, "유저 정보를 불러올 수 없습니다", Toast.LENGTH_SHORT).show()
             }
         })
+
+        binding.areaFeeds.setOnClickListener {
+            val intent = Intent(context, DetailFeedActivity::class.java)
+            intent.putExtra("id", currentUserId)
+            startActivity(intent)
+        }
 
         binding.areaFollowers.setOnClickListener {
             val intent = Intent(context, FollowActivity::class.java)

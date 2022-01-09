@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.FollowPage
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.repository.LikeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,8 @@ class LikeViewModel @Inject constructor(
     private val _user = MutableLiveData<Response<User>>()
     val user: LiveData<Response<User>> = _user
 
+    private val _page = MutableLiveData<Response<FollowPage>>()
+    val page: LiveData<Response<FollowPage>> = _page
 
     fun getFeedById(id: Int){
         viewModelScope.launch {
@@ -66,6 +69,17 @@ class LikeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 likeRepository.unfollow(id)
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getMyFollowing(offset: Int, number: Int){
+        viewModelScope.launch {
+            try {
+                val data = likeRepository.getMyFollowing(offset, number)
+                _page.value = data
             }catch (e: IOException){
                 Timber.e(e)
             }

@@ -1,14 +1,22 @@
 package com.wafflestudio.wafflestagram.ui.detail
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailUserBinding
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailUserActivity : AppCompatActivity() {
@@ -17,6 +25,9 @@ class DetailUserActivity : AppCompatActivity() {
     private val viewModel: DetailUserViewModel by viewModels()
     private lateinit var userAdapter: DetailUserAdapter
     private lateinit var userLayoutManager: GridLayoutManager
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,12 +48,13 @@ class DetailUserActivity : AppCompatActivity() {
             layoutManager = userLayoutManager
         }
 
-
+        viewModel.getMyInfo()
         viewModel.getInfoById(id)
         viewModel.getFeedCount(id)
         viewModel.getFollowerCount(id)
         viewModel.getFollowingCount(id)
         viewModel.getFeedsById(id, 0, 50)
+        viewModel.checkFollowing(id)
 
         viewModel.page.observe(this, {response->
             if(response.isSuccessful){
@@ -53,7 +65,16 @@ class DetailUserActivity : AppCompatActivity() {
         viewModel.fetchUserInfo.observe(this, {response->
             if(response.isSuccessful){
                 binding.buttonUsername.text = response.body()!!.username
+                binding.textBio.text = response.body()!!.bio
                 Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(binding.userImage)
+            }else if(response.code() == 401){
+                Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
+                sharedPreferences.edit {
+                    putString(FeedFragment.TOKEN, "")
+                }
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
             }
         })
 
@@ -75,6 +96,42 @@ class DetailUserActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.checkFollowing.observe(this, {response->
+            if(response.isSuccessful){
+                if(response.body()!!.string() == "true"){
+                    binding.buttonFollow.isSelected = true
+                    binding.buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                    binding.buttonFollow.text = "팔로잉"
+                }else{
+                    binding.buttonFollow.isSelected = false
+                    binding.buttonFollow.setTextColor(Color.parseColor("#FFFFFFFF"))
+                    binding.buttonFollow.text = "팔로우"
+                }
+            }
+        })
+
+        viewModel.fetchMyInfo.observe(this, {response ->
+            if(response.isSuccessful){
+                if(response.body()!!.id.toInt() == id){
+                    binding.layoutFollowMessage.visibility = View.GONE
+                }
+            }
+        })
+
+        binding.buttonFollow.setOnClickListener {
+            if(binding.buttonFollow.isSelected){
+                binding.buttonFollow.isSelected = false
+                binding.buttonFollow.setTextColor(Color.parseColor("#FFFFFFFF"))
+                binding.buttonFollow.text = "팔로우"
+                viewModel.unfollow(id)
+            }else{
+                binding.buttonFollow.isSelected = true
+                binding.buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                binding.buttonFollow.text = "팔로잉"
+                viewModel.follow(id)
+            }
+        }
+
         binding.buttonBack.setOnClickListener {
             finish()
         }
@@ -92,5 +149,13 @@ class DetailUserActivity : AppCompatActivity() {
             intent.putExtra("activity", 1)
             startActivity(intent)
         }
+
+        binding.areaPosts.setOnClickListener {
+            val intent = Intent(this, DetailFeedActivity::class.java)
+            intent.putExtra("userId", id)
+            startActivity(intent)
+        }
+
+
     }
 }

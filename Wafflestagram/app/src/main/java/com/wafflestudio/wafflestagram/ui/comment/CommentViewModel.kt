@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.wafflestagram.model.Comment
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.AddCommentRequest
 import com.wafflestudio.wafflestagram.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,19 @@ class CommentViewModel @Inject constructor(
     private val _comment = MutableLiveData<Response<Comment>>()
     val comment: LiveData<Response<Comment>> = _comment
 
+    private val _myInfo = MutableLiveData<Response<User>>()
+    val myInfo: LiveData<Response<User>> = _myInfo
+
+    fun getMyInfo(){
+        viewModelScope.launch {
+            try{
+                val data = commentRepository.getMyInfo()
+                _myInfo.value = data
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
 
     fun getFeedById(id: Int){
         viewModelScope.launch {

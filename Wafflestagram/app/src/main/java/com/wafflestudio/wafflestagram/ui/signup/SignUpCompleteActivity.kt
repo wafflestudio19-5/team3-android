@@ -100,7 +100,7 @@ class SignUpCompleteActivity : AppCompatActivity() {
                     putInt(LoginActivity.CURRENT_USER_ID, response.body()!!.id.toInt())
                 }
                 val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }else if(response.code() == 409){
                 //에러 메시지

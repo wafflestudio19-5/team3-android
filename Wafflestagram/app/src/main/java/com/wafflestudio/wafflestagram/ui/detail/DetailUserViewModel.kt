@@ -26,6 +26,9 @@ class DetailUserViewModel @Inject constructor(
     private val _fetchUserInfo = MutableLiveData<Response<User>>()
     val fetchUserInfo: LiveData<Response<User>> = _fetchUserInfo
 
+    private val _fetchMyInfo = MutableLiveData<Response<User>>()
+    val fetchMyInfo: LiveData<Response<User>> = _fetchMyInfo
+
     private val _fetchFollowerCount = MutableLiveData<Response<ResponseBody>>()
     val fetchFollowerCount: LiveData<Response<ResponseBody>> = _fetchFollowerCount
 
@@ -34,6 +37,9 @@ class DetailUserViewModel @Inject constructor(
 
     private val _fetchFeedCount = MutableLiveData<Response<ResponseBody>>()
     val fetchFeedCount: LiveData<Response<ResponseBody>> = _fetchFeedCount
+
+    private val _checkFollowing = MutableLiveData<Response<ResponseBody>>()
+    val checkFollowing: LiveData<Response<ResponseBody>> = _checkFollowing
 
     fun getInfoById(id:Int){
         viewModelScope.launch {
@@ -85,6 +91,48 @@ class DetailUserViewModel @Inject constructor(
                 val data = detailUserRepository.getFeedsById(id, offset, number)
                 _page.value = data
             }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun checkFollowing(id: Int){
+        viewModelScope.launch {
+            try {
+                val data = detailUserRepository.checkFollowing(id)
+                _checkFollowing.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun follow(id: Int){
+        viewModelScope.launch {
+            try {
+                detailUserRepository.follow(id)
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun unfollow(id: Int){
+        viewModelScope.launch {
+            try {
+                detailUserRepository.unfollow(id)
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getMyInfo(){
+        viewModelScope.launch {
+            try{
+                val data = detailUserRepository.getMyInfo()
+                _fetchMyInfo.value = data
+            } catch (e: IOException) {
                 Timber.e(e)
             }
         }

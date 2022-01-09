@@ -25,6 +25,8 @@ class FollowViewModel @Inject constructor(
     private val _user = MutableLiveData<Response<User>>()
     val user: LiveData<Response<User>> = _user
 
+    private val _followPage = MutableLiveData<Response<FollowPage>>()
+    val followPage: LiveData<Response<FollowPage>> = _followPage
 
     fun getFollowingById(id: Int, offset : Int, limit: Int){
         viewModelScope.launch {
@@ -77,6 +79,17 @@ class FollowViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 followRepository.unfollow(id)
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getMyFollowing(offset: Int, number: Int){
+        viewModelScope.launch {
+            try {
+                val data = followRepository.getMyFollowing(offset, number)
+                _followPage.value = data
             }catch (e: IOException){
                 Timber.e(e)
             }

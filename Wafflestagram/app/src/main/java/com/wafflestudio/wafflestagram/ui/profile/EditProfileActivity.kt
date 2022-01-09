@@ -2,15 +2,19 @@ package com.wafflestudio.wafflestagram.ui.profile
 
 import android.content.ContentUris
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import com.amazonaws.SDKGlobalConfiguration
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
@@ -23,11 +27,15 @@ import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ActivityEditProfileBinding
 import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.classes.SingleListener
 import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class EditProfileActivity: AppCompatActivity() {
@@ -38,6 +46,9 @@ class EditProfileActivity: AppCompatActivity() {
     private lateinit var awsCredentials: BasicAWSCredentials
     private lateinit var s3Client: AmazonS3Client
     private lateinit var transferUtility : TransferUtility
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("Edit Profile")
@@ -80,12 +91,23 @@ class EditProfileActivity: AppCompatActivity() {
 
             viewModel.updateUser(updateUserRequest)
 
-            finish()
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("fragment", 2)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
         }
 
         viewModel.image.observe(this, {response->
             if(response.isSuccessful){
                 Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(binding.buttonUserImage)
+            }else if(response.code() == 401){
+                Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
+                sharedPreferences.edit {
+                    putString(FeedFragment.TOKEN, "")
+                }
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
             }
         })
 
