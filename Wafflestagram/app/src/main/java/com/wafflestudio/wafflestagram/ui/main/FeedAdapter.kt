@@ -19,12 +19,15 @@ import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
 import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
-import com.wafflestudio.wafflestagram.model.Like
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
@@ -65,13 +68,13 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = feeds[position]
 
-        var imageAdapter : ViewPagerImageAdapter = ViewPagerImageAdapter()
+        var imageAdapter = ViewPagerImageAdapter()
 
         when(holder){
             is FeedViewHolder ->{
                 holder.binding.apply {
                     buttonUsername.text = data.author!!.username
-                    val spannable = SpannableStringBuilder(data.author!!.username)
+                    val spannable = SpannableStringBuilder(data.author.username)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.setSpan(object : ClickableSpan(){
                         override fun updateDrawState(ds: TextPaint) {
@@ -111,7 +114,8 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         }
                     })
 
-                    textDateCreated.text = data.createdAt!!.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    textDateCreated.text = getBetween(data.createdAt!!.plusHours(9), ZonedDateTime.now(
+                        ZoneId.of("Asia/Seoul")))
                     textLike.text = "좋아요 " + data.likeSum + "개"
 
                     buttonComment.setOnClickListener {
@@ -211,7 +215,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
         val size = this.feeds.size
         this.feeds.addAll(feeds)
         if(size > 9){
-            this.feeds.add(Feed(NULL.toLong(), createdAt = null))
+            this.feeds.add(Feed(NULL.toLong()))
         }
         notifyDataSetChanged()
     }
@@ -223,6 +227,19 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
 
     fun deleteLoading(){
         this.feeds.removeAt(feeds.lastIndex)
+    }
+
+    private fun getBetween(time: LocalDateTime, time2: ZonedDateTime) : String{
+        for(timeFormat in listOf(ChronoUnit.SECONDS, ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS)){
+            val between = timeFormat.between(time, time2)
+            when(timeFormat){
+                ChronoUnit.SECONDS -> if(between < 60) return between.toString() + "초 전"
+                ChronoUnit.MINUTES -> if(between < 60) return between.toString() + "분 전"
+                ChronoUnit.HOURS -> if(between < 24) return between.toString() + "시간 전"
+                ChronoUnit.DAYS -> if(between < 7) return between.toString() + "일 전"
+            }
+        }
+        return time.format(DateTimeFormatter.ofPattern( "MM월 dd일"))
     }
 
     companion object{

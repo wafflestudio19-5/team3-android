@@ -21,6 +21,8 @@ import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -71,7 +73,7 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     textContent.movementMethod = LinkMovementMethod.getInstance()
                     textContent.text = spannable
 
-                    textTime.text = data.createdAt!!.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    textTime.text = getBetween(data.createdAt!!.plusHours(9), ZonedDateTime.now(ZoneId.of("Asia/Seoul")))
 
                     //프로필 사진
                     Glide.with(holder.itemView.context).load(data.author?.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
@@ -106,8 +108,7 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     textContent.movementMethod = LinkMovementMethod.getInstance()
                     textContent.text = spannable
 
-                    val duration = ChronoUnit.HOURS.between(data.createdAt, LocalDateTime.now())
-                    textTime.text = duration.toString() + "시간"
+                    textTime.text = getBetween(data.createdAt!!.plusHours(9), ZonedDateTime.now(ZoneId.of("Asia/Seoul")))
                     //textReplyNumber.text = data.replies.size.toString()
 
                     imageUserProfile.setOnClickListener {
@@ -145,6 +146,19 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         this.feed = feed
         this.comments = feed.comments
         this.notifyDataSetChanged()
+    }
+
+    private fun getBetween(time: LocalDateTime, time2: ZonedDateTime) : String{
+        for(timeFormat in listOf(ChronoUnit.SECONDS, ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS)){
+            val between = timeFormat.between(time, time2)
+            when(timeFormat){
+                ChronoUnit.SECONDS -> if(between < 60) return between.toString() + "초"
+                ChronoUnit.MINUTES -> if(between < 60) return between.toString() + "분"
+                ChronoUnit.HOURS -> if(between < 24) return between.toString() + "시간"
+                ChronoUnit.DAYS -> if(between < 7) return between.toString() + "일"
+            }
+        }
+        return time.format(DateTimeFormatter.ofPattern( "MM월 dd일"))
     }
 
      companion object{
