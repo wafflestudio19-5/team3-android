@@ -25,7 +25,11 @@ import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedAdapter
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
@@ -112,7 +116,8 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         }
                     })
 
-                    textDateCreated.text = data.createdAt!!.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    textDateCreated.text = getBetween(data.createdAt!!.plusHours(9), ZonedDateTime.now(
+                        ZoneId.of("Asia/Seoul")))
                     textLike.text = "좋아요 " + data.likeSum + "개"
 
                     buttonComment.setOnClickListener {
@@ -224,6 +229,19 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
 
     fun deleteLoading(){
         this.feeds.removeAt(feeds.lastIndex)
+    }
+
+    private fun getBetween(time: LocalDateTime, time2: ZonedDateTime) : String{
+        for(timeFormat in listOf(ChronoUnit.SECONDS, ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS)){
+            val between = timeFormat.between(time, time2)
+            when(timeFormat){
+                ChronoUnit.SECONDS -> if(between < 60) return between.toString() + "초 전"
+                ChronoUnit.MINUTES -> if(between < 60) return between.toString() + "분 전"
+                ChronoUnit.HOURS -> if(between < 24) return between.toString() + "시간 전"
+                ChronoUnit.DAYS -> if(between < 7) return between.toString() + "일 전"
+            }
+        }
+        return time.format(DateTimeFormatter.ofPattern( "MM월 dd일"))
     }
 
     companion object{
