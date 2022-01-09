@@ -71,10 +71,16 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     textContent.movementMethod = LinkMovementMethod.getInstance()
                     textContent.text = spannable
 
-                    //textTime.text = data.createdAt!!.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
+                    textTime.text = data.createdAt!!.format(DateTimeFormatter.ofPattern( "MM월 dd일 HH시 mm분"))
 
                     //프로필 사진
                     Glide.with(holder.itemView.context).load(data.author?.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
+
+                    imageUserProfile.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.author?.id?.toInt())
+                        ContextCompat.startActivity(holder.itemView.context,intent, null)
+                    }
                 }
             }
         }else{
@@ -103,6 +109,12 @@ class CommentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val duration = ChronoUnit.HOURS.between(data.createdAt, LocalDateTime.now())
                     textTime.text = duration.toString() + "시간"
                     //textReplyNumber.text = data.replies.size.toString()
+
+                    imageUserProfile.setOnClickListener {
+                        val intent = Intent(holder.itemView.context, DetailUserActivity::class.java)
+                        intent.putExtra("id", data.writer.id.toInt())
+                        ContextCompat.startActivity(holder.itemView.context,intent, null)
+                    }
                 }
                 Glide.with(holder.itemView.context).load(data.writer.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
             }

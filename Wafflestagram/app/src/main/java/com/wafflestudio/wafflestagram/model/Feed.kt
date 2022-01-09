@@ -22,7 +22,7 @@ class Feed (
     val likeSum: Int = 0,
     @Json(name = "tags")
     val tags: List<String> = emptyList(),
-    @Json(name = "user_tags")
+    @Json(name = "userTags")
     val user_tags: List<String> = emptyList(),
     @Json(name = "created_at")
     val createdAt : LocalDateTime? = LocalDateTime.now(),
