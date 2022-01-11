@@ -55,5 +55,3 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
         this.notifyDataSetChanged()
     }
 }
-
-// TODO: parameter로 clicklistener 함수 넘겨서 사진 클릭 시 해당 id의 feed로 이동하도록!

@@ -159,6 +159,18 @@
 
         </LinearLayout>
 
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/button_social_login_facebook"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:paddingHorizontal="80dp"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintBottom_toTopOf="@id/button_social_login_google"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Permission issue로 인해 facebook 기본 login button 사용 -->
+        <!--
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_social_login_facebook"
             android:layout_width="360dp"
@@ -175,6 +187,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="TouchTargetSizeCheck" />
+        -->
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_social_login_google"
@@ -188,6 +201,7 @@
             android:textAllCaps="false"
             android:textColor="#EA4335"
             android:textStyle="bold"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

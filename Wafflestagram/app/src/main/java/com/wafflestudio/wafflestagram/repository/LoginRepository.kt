@@ -10,15 +10,19 @@ import javax.inject.Singleton
 
 @Singleton
 class LoginRepository @Inject constructor(private val loginService: LoginService){
-    suspend fun getResponseByPing(): ResponseBody {
-        return loginService.getResponseByPing()
-    }
-
     suspend fun getResponseByLogin(loginRequest: LoginRequest): Response<ResponseBody> {
         return loginService.getResponseByLogin(loginRequest)
     }
 
     suspend fun getResponseBySocialLogin(provider: String): Response<ResponseBody> {
         return loginService.getResponseBySocialLogin(provider)
+    }
+
+    suspend fun getResponseByGoogleLogin(idToken: String): Response<ResponseBody> {
+        return loginService.getResponseByGoogleLogin(idToken)
+    }
+
+    suspend fun getResponseByFacebookLogin(token: String): Response<ResponseBody> {
+        return loginService.getResponseByFacebookLogin(token)
     }
 }
