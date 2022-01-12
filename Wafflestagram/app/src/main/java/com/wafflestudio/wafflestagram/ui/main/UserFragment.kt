@@ -167,7 +167,25 @@ class UserFragment: Fragment() {
                     .centerCrop()
                     .into(binding.userImage)
                 binding.buttonUsername.text = data.username
-                binding.textBio.text = data.bio
+                if(data.bio.isNullOrBlank()){
+                    binding.textBio.visibility = View.GONE
+                }else{
+                    binding.textBio.text = data.bio
+                    binding.textBio.visibility = View.VISIBLE
+                }
+                if(data.website.isNullOrBlank()){
+                    binding.textWebsite.visibility = View.GONE
+                }else{
+                    binding.textWebsite.visibility = View.VISIBLE
+                    binding.textWebsite.text = data.website
+                }
+                if(data.name.isNullOrBlank()){
+                    binding.textName.visibility = View.GONE
+                }else{
+                    binding.textName.visibility = View.VISIBLE
+                    binding.textName.text = data.name
+                }
+
             } else if(response.code() == 401){
                 Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
                 sharedPreferences.edit {

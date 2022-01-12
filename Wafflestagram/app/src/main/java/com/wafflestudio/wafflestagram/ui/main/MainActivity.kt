@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
+            finish()
         }
 
         // set max zoom scale
@@ -73,9 +74,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                if(tab!!.position == 2){
+                if(tab!!.position == USER_FRAGMENT){
                     userProfileBinding.imageProfile.borderColor = Color.parseColor("#00ff0000")
                     binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
+                }
+
+                if(tab.position == FEED_FRAGMENT){
+                    feedFragment.clearRecyclerView()
                 }
             }
 
@@ -97,13 +102,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun setFragment(fragmentNum : Int){
         val fb = supportFragmentManager.beginTransaction()
+
         val currentUserId = sharedPreferences.getInt(CURRENT_USER_ID, -1)
         when(fragmentNum){
             FEED_FRAGMENT -> {
-                fb.replace(binding.fragmentContainerViewMain.id, feedFragment).commit()
+                fb.replace(binding.fragmentContainerViewMain.id, feedFragment)
+                fb.addToBackStack(null)
+                fb.commit()
             }
             SEARCH_FRAGMENT -> {
-                fb.replace(binding.fragmentContainerViewMain.id, searchFragment).commit()
+                fb.replace(binding.fragmentContainerViewMain.id, searchFragment)
+                fb.addToBackStack(null)
+                fb.commit()
             }
             USER_FRAGMENT -> {
                 fb.replace(binding.fragmentContainerViewMain.id,
@@ -111,7 +121,9 @@ class MainActivity : AppCompatActivity() {
                         arguments = Bundle().apply {
                             putInt(USER_ID, currentUserId)
                         }
-                    }).commit()
+                    })
+                fb.addToBackStack(null)
+                fb.commit()
             }
         }
     }

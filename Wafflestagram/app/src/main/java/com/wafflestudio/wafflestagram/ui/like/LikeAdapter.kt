@@ -46,6 +46,8 @@ class LikeAdapter(val likeInterface: LikeInterface) :RecyclerView.Adapter<Recycl
 
                 if(data == currUser){
                     buttonFollow.visibility = View.GONE
+                }else{
+                    buttonFollow.visibility = View.VISIBLE
                 }
                 if(myFollowingList.contains(Follow(user = data))){
                     buttonFollow.isSelected = true

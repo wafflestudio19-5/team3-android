@@ -41,6 +41,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    fun clearPage(){
+        viewModelScope.launch {
+            _page.value = Response.success(Page(listOf(), false, false, 1, 0, 0))
+        }
+    }
+
     fun like(id: Int){
         viewModelScope.launch {
             try {

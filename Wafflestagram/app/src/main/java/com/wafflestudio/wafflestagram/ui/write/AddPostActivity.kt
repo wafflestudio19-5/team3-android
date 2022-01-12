@@ -31,6 +31,7 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import com.wafflestudio.wafflestagram.BuildConfig
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.network.dto.AddPostRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
@@ -60,7 +61,7 @@ class AddPostActivity : AppCompatActivity() {
 
         showImagePicker()
 
-        awsCredentials = BasicAWSCredentials(ACCESS_KEY_SYSTEM_PROPERTY, SECRET_KEY_SYSTEM_PROPERTY)
+        awsCredentials = BasicAWSCredentials(BuildConfig.AWS_S3_ACCESS_KEY, BuildConfig.AWS_S3_SECRET_KEY)
         s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2))
 
         transferUtility = TransferUtility.builder().s3Client(s3Client).context(this).build()
@@ -139,7 +140,7 @@ class AddPostActivity : AppCompatActivity() {
                     //Timber.e(fileName)
                     Handler(Looper.getMainLooper()).postDelayed({
                         continueUpload()
-                    }, 1000)
+                    }, 500)
                 }else if(state == TransferState.FAILED || state == TransferState.WAITING_FOR_NETWORK){
                     Toast.makeText(this@AddPostActivity, "연결이 불안정합니다", Toast.LENGTH_LONG).show()
                 }

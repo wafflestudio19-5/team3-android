@@ -4,6 +4,5 @@ data class AddPostRequest(
     val content:String,
     val imageKeys: List<String>,
     val tags: List<String>,
-    val user_tags: List<String>,
-
+    val userTags: List<String>,
 )

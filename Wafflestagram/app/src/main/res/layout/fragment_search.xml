@@ -10,33 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
             android:background="@drawable/search_rounded_corner"
-            android:layout_margin="10dp"
-            android:singleLine="true"
-            android:hint="검색..."
-            android:padding="5dp"
-            android:textSize="20sp"
             app:iconifiedByDefault="false"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:queryHint="검색" />
-
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:background="@color/transparent"
-            android:scaleType="fitCenter"
-            android:clickable="true"
-            android:src="@drawable/icon_search"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_search"

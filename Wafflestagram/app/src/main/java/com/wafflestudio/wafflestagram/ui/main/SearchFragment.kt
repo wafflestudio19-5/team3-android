@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
@@ -47,14 +48,27 @@ class SearchFragment : Fragment(), SearchInterface {
             layoutManager = searchLayoutManager
         }
 
-        binding.imageButton.setOnClickListener {
-            viewModel.search(binding.searchView.text.toString())
-        }
+
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(!newText.isNullOrBlank()){
+                    viewModel.search(newText.toString())
+                }else{
+                    searchAdapter.deleteData()
+                }
+                return false
+            }
+
+        })
 
         viewModel.getMe()
 
         viewModel.page.observe(this, {response ->
-            if(response.isSuccessful){
+            if(response.isSuccessful and binding.searchView.query.isNotBlank()){
                 searchAdapter.updateData(response.body()!!.content)
             }else if(response.code() == 401){
                 Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
