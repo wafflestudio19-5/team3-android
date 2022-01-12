@@ -94,10 +94,24 @@
                 android:textColor="@color/grey"
                 android:textSize="14sp" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@color/transparent">
             <EditText
                 android:id="@+id/input_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
+                android:background="@drawable/border_bottom"
+                android:singleLine="true"
+                />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -116,10 +130,26 @@
                 android:textColor="@color/grey"
                 android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/input_username"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_username"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@color/transparent">
+
+
+                <EditText
+                    android:id="@+id/input_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:background="@drawable/border_bottom"
+                    android:singleLine="true"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -138,10 +168,26 @@
                 android:textColor="@color/grey"
                 android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/input_website"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_website"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@color/transparent">
+
+
+                <EditText
+                    android:id="@+id/input_website"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:background="@drawable/border_bottom"
+                    android:singleLine="true"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -160,10 +206,23 @@
                 android:textColor="@color/grey"
                 android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/input_bio"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_layout_bio"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@color/transparent">
+                <EditText
+                    android:id="@+id/input_bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:background="@drawable/border_bottom"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 

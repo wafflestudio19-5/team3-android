@@ -46,6 +46,8 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
 
                 if(data.user == currUser){
                     buttonFollow.visibility = View.GONE
+                }else{
+                    buttonFollow.visibility = View.VISIBLE
                 }
 
                 if(myFollowingList.contains(data)){

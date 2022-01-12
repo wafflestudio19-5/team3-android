@@ -201,7 +201,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
         super.onViewAttachedToWindow(holder)
     }
 
-    fun updateData(user: User){
+    fun updateUser(user: User){
         this.currUser = user
         notifyDataSetChanged()
     }
@@ -211,22 +211,26 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
         notifyItemChanged(position)
     }
 
+    fun updateData(feeds: MutableList<Feed>){
+        this.feeds = feeds
+    }
+
     fun addData(feeds: MutableList<Feed>){
         val size = this.feeds.size
         this.feeds.addAll(feeds)
-        if(size > 9){
-            this.feeds.add(Feed(NULL.toLong()))
-        }
-        notifyDataSetChanged()
     }
 
     fun clearData(){
-        this.feeds.clear()
+        this.feeds = mutableListOf()
         notifyDataSetChanged()
     }
 
     fun deleteLoading(){
         this.feeds.removeAt(feeds.lastIndex)
+    }
+
+    fun addLoading(){
+        this.feeds.add(Feed((NULL.toLong())))
     }
 
     private fun getBetween(time: LocalDateTime, time2: ZonedDateTime) : String{

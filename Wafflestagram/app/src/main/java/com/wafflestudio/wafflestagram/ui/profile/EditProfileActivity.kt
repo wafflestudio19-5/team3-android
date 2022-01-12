@@ -24,6 +24,7 @@ import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
 import com.bumptech.glide.Glide
+import com.wafflestudio.wafflestagram.BuildConfig
 import com.wafflestudio.wafflestagram.databinding.ActivityEditProfileBinding
 import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
@@ -58,8 +59,8 @@ class EditProfileActivity: AppCompatActivity() {
         setContentView(binding.root)
 
         awsCredentials = BasicAWSCredentials(
-            SDKGlobalConfiguration.ACCESS_KEY_SYSTEM_PROPERTY,
-            SDKGlobalConfiguration.SECRET_KEY_SYSTEM_PROPERTY
+            BuildConfig.AWS_S3_ACCESS_KEY,
+            BuildConfig.AWS_S3_SECRET_KEY
         )
         s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2))
 
@@ -85,17 +86,23 @@ class EditProfileActivity: AppCompatActivity() {
         }
 
         binding.buttonCheck.setOnClickListener{
-            val updateUserRequest = UpdateUserRequest(
-            binding.inputName.text.toString(), binding.inputUsername.text.toString(),
-            binding.inputWebsite.text.toString(), binding.inputBio.text.toString()
-            )
-
-            viewModel.updateUser(updateUserRequest)
-
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("fragment", 2)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            if(binding.inputUsername.text.isNotBlank()){
+                binding.textInputLayoutUsername.error = null
+            }else{
+                binding.textInputLayoutUsername.error = "사용자 이름을 입력해 주세요"
+            }
+            if(binding.inputWebsite.text.isBlank() || android.util.Patterns.WEB_URL.matcher(binding.inputWebsite.text).matches()){
+                binding.textInputLayoutWebsite.error = null
+            }else{
+                binding.textInputLayoutWebsite.error = "올바른 웹사이트를 입력하세요"
+            }
+            if(binding.inputUsername.text.isNotBlank() && (binding.inputWebsite.text.isBlank() || android.util.Patterns.WEB_URL.matcher(binding.inputWebsite.text).matches())){
+                val updateUserRequest = UpdateUserRequest(
+                    binding.inputName.text.toString(), binding.inputUsername.text.toString(),
+                    binding.inputWebsite.text.toString(), binding.inputBio.text.toString()
+                )
+                viewModel.updateUser(updateUserRequest)
+            }
         }
 
         viewModel.image.observe(this, {response->
@@ -115,12 +122,25 @@ class EditProfileActivity: AppCompatActivity() {
         viewModel.response.observe(this, {
             viewModel.getProfilePhoto(id)
         })
+
+        viewModel.fetchUserInfoResponse.observe(this, {response->
+            if(response.isSuccessful){
+                binding.textInputLayoutUsername.error = null
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("fragment", 2)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+            }else if(response.code() == 409){
+                binding.textInputLayoutUsername.error = "이미 사용중인 사용자 이름입니다."
+            }
+
+        })
     }
 
     private fun upload(image : String){
         val fileName = System.currentTimeMillis().toString()
 
-        val uploadObserver = transferUtility.upload("waffle-team3-bucket", fileName, File(getRealPathFromURI(this, Uri.parse(image))))
+        val uploadObserver = transferUtility.upload("waffle-team3-bucket", fileName, File(getRealPathFromURI(this, Uri.parse(image))!!))
 
 
         uploadObserver.setTransferListener(object : TransferListener {

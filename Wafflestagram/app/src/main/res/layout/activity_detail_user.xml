@@ -177,6 +177,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
+            android:id="@+id/text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:text="name"
+            android:textColor="@color/black"/>
+
+        <TextView
             android:id="@+id/text_bio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -184,6 +193,18 @@
             android:paddingHorizontal="10dp"
             android:text="example"
             android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/text_website"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:visibility="gone"
+            android:text="wafflestudio.com"
+            android:autoLink="web"
+            android:linksClickable="true"
+            android:textColorLink="@color/blue" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_follow_message"
