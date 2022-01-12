@@ -15,9 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
-import com.wafflestudio.wafflestagram.databinding.IconUserProfileBinding
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
@@ -31,10 +29,12 @@ class FeedFragment : Fragment() ,FeedInterface {
     private val viewModel: FeedViewModel by activityViewModels()
     private lateinit var feedAdapter: FeedAdapter
     private lateinit var feedLayoutManager: LinearLayoutManager
-    private var itemPosition : Int = -1
+    private var itemPosition : Int = 0
     private var pageNumber: Int = 0
     private var totalPage: Int = 1
     private var isLast: Boolean = false
+    private var isFirst: Boolean = true
+    private var isLoading: Boolean = false
 
 
     @Inject
@@ -66,44 +66,72 @@ class FeedFragment : Fragment() ,FeedInterface {
             val intent = Intent(context, AddPostActivity::class.java)
             startActivity(intent)
         }
-        if(pageNumber < totalPage){
-            val request = FeedPageRequest(pageNumber, 10)
-            pageNumber++
-            viewModel.getFeeds(request)
-        }
-
+        itemPosition = 0
+        pageNumber = 0
+        isLast = false
         viewModel.getMe()
+        feedAdapter.clearData()
+        val request = FeedPageRequest(pageNumber, 10)
+        viewModel.getFeeds(request)
 
         binding.refreshLayoutFeed.setColorSchemeColors(*intArrayOf(Color.parseColor("#F6F6F6"),Color.parseColor("#D5D5D5"),Color.parseColor("#A6A6A6"),Color.parseColor("#D5D5D5")))
         binding.refreshLayoutFeed.setOnRefreshListener {
-            feedAdapter.clearData()
+
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.refreshLayoutFeed.setRefreshing(false)
             }, 1000)
-            pageNumber = 0
-            val request = FeedPageRequest(pageNumber, 10)
-            pageNumber++
-            viewModel.getFeeds(request)
+            feedAdapter.clearData()
+            feedAdapter.notifyItemRangeRemoved(0, feedAdapter.itemCount)
+            if(!isLoading){
+                pageNumber = 0
+                isLast = false
+                val request = FeedPageRequest(pageNumber, 10)
+                viewModel.getFeeds(request)
+                isLoading = true
+            }
         }
 
         binding.recyclerViewFeed.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                val lastVisibleItemPosition = (feedLayoutManager as LinearLayoutManager?)!!.findLastCompletelyVisibleItemPosition()
+                val itemTotalCount = feedAdapter.itemCount-1
 
-                if(!binding.recyclerViewFeed.canScrollVertically(1) && feedAdapter.itemCount > 9 && !isLast){
-                    feedAdapter.deleteLoading()
-                    val request = FeedPageRequest(pageNumber, 10)
-                    pageNumber++
-                    viewModel.getFeeds(request)
+                if(!isLoading){
+                    if(!binding.recyclerViewFeed.canScrollVertically(1) && lastVisibleItemPosition == itemTotalCount && !isLast){
+                        isLoading = true
+                        val request = FeedPageRequest(pageNumber, 10)
+                        viewModel.getFeeds(request)
+                    }else if(isLast){
+                        //feedAdapter.deleteLoading()
+                    }
                 }
             }
         })
 
         viewModel.page.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
-                feedAdapter.addData(response.body()!!.content.toMutableList())
+                isLoading = false
                 totalPage = response.body()!!.totalPages
+                pageNumber = response.body()!!.pageNumber + 1
+                if(pageNumber > 0 && feedAdapter.itemCount > 0){
+                    feedAdapter.deleteLoading()
+                    feedAdapter.notifyItemRemoved(feedAdapter.itemCount)
+                }
                 isLast = response.body()!!.last
+                isFirst = response.body()!!.fisrt
+                if(isFirst){
+                    feedAdapter.updateData(response.body()!!.content.toMutableList())
+                    feedAdapter.notifyDataSetChanged()
+                }else{
+                    feedAdapter.addData(response.body()!!.content.toMutableList())
+                    feedAdapter.notifyItemRangeInserted((response.body()!!.pageNumber) * 10, response.body()!!.numberOfElements)
+                }
+
+                if(!response.body()!!.last){
+                    feedAdapter.addLoading()
+                    feedAdapter.notifyItemInserted(feedAdapter.itemCount)
+                }
             }else if(response.code() == 401){
                 // 토큰 만료시 토큰 삭제
                 Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
@@ -118,7 +146,7 @@ class FeedFragment : Fragment() ,FeedInterface {
 
         viewModel.user.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
-                feedAdapter.updateData(response.body()!!)
+                feedAdapter.updateUser(response.body()!!)
             }else if(response.code() == 401){
 
             }
@@ -133,6 +161,11 @@ class FeedFragment : Fragment() ,FeedInterface {
 
     fun setRecyclerviewPosition(position: Int){
         binding.recyclerViewFeed.smoothScrollToPosition(position)
+    }
+
+    fun clearRecyclerView(){
+        //feedAdapter.clearData()
+        //feedAdapter.notifyDataSetChanged()
     }
 
     override fun like(id:Int ,position: Int){

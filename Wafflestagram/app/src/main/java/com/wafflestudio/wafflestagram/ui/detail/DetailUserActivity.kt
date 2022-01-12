@@ -64,8 +64,26 @@ class DetailUserActivity : AppCompatActivity() {
 
         viewModel.fetchUserInfo.observe(this, {response->
             if(response.isSuccessful){
-                binding.buttonUsername.text = response.body()!!.username
-                binding.textBio.text = response.body()!!.bio
+                val data = response.body()!!
+                binding.buttonUsername.text = data.username
+                if(data.bio.isNullOrBlank()){
+                    binding.textBio.visibility = View.GONE
+                }else{
+                    binding.textBio.text = data.bio
+                    binding.textBio.visibility = View.VISIBLE
+                }
+                if(data.website.isNullOrBlank()){
+                    binding.textWebsite.visibility = View.GONE
+                }else{
+                    binding.textWebsite.visibility = View.VISIBLE
+                    binding.textWebsite.text = data.website
+                }
+                if(data.name.isNullOrBlank()){
+                    binding.textName.visibility = View.GONE
+                }else{
+                    binding.textName.visibility = View.VISIBLE
+                    binding.textName.text = data.name
+                }
                 Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(binding.userImage)
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()

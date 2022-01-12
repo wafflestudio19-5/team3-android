@@ -12,5 +12,9 @@ class Page(
     @Json(name = "first")
     val fisrt: Boolean,
     @Json(name = "totalPages")
-    val totalPages: Int
+    val totalPages: Int,
+    @Json(name = "number")
+    val pageNumber: Int,
+    @Json(name = "numberOfElements")
+    val numberOfElements: Int
 )

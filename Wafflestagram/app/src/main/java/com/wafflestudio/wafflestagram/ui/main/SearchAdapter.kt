@@ -35,6 +35,8 @@ class SearchAdapter(val searchInterface: SearchInterface) :RecyclerView.Adapter<
                 //팔로우 확인 로직
                 if(data == currUser){
                     buttonFollow.visibility = View.GONE
+                }else{
+                    buttonFollow.visibility = View.VISIBLE
                 }
                 if(myFollowingList.contains(Follow(user = data))){
                     buttonFollow.isSelected = true
@@ -79,6 +81,12 @@ class SearchAdapter(val searchInterface: SearchInterface) :RecyclerView.Adapter<
         this.users = users
         notifyDataSetChanged()
     }
+
+    fun deleteData(){
+        this.users = listOf()
+        notifyDataSetChanged()
+    }
+
 
     fun updateFollowing(following : List<Follow>){
         this.myFollowingList = following
