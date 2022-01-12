@@ -27,7 +27,8 @@
                 android:src="@drawable/icon_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_username"
@@ -57,7 +58,8 @@
                 android:paddingHorizontal="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button_menu"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black"/>
 
             <ImageButton
                 android:id="@+id/button_menu"
@@ -71,7 +73,8 @@
                 android:paddingHorizontal="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline12"
@@ -210,6 +213,8 @@
             android:paddingVertical="5dp"
             android:paddingHorizontal="10dp"
             android:text="name"
+            android:textAllCaps="false"
+            android:textStyle="bold"
             android:textColor="@color/black"/>
 
         <TextView
@@ -288,7 +293,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/saved_pictures"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+                app:tint="@color/black"/>
 
             <ImageButton
                 android:id="@+id/saved_pictures"
@@ -302,7 +308,8 @@
                 app:layout_constraintStart_toEndOf="@+id/my_pictures"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
+                app:tint="@color/black"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

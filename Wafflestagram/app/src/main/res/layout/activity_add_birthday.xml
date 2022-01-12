@@ -26,7 +26,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline8"
-        app:srcCompat="@drawable/birthday_cake" />
+        app:srcCompat="@drawable/birthday_cake"
+        app:tint="@color/black"/>
 
     <ImageView
         android:id="@+id/imageView3"

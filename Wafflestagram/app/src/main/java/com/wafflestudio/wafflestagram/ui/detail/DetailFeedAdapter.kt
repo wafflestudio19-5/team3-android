@@ -118,7 +118,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
 
                     textDateCreated.text = getBetween(data.createdAt!!.plusHours(9), ZonedDateTime.now(
                         ZoneId.of("Asia/Seoul")))
-                    textLike.text = "좋아요 " + data.likeSum + "개"
+                    textLike.text = data.likeSum.toString()
 
                     buttonComment.setOnClickListener {
                         val intent = Intent(holder.itemView.context, CommentActivity::class.java)
@@ -126,7 +126,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
-                    textLike.setOnClickListener {
+                    layoutLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
@@ -168,9 +168,11 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
                             detailFeedInterface.unlike(data.id.toInt(), position)
+                            textLike.text = (textLike.text.toString().toInt()-1).toString()
                         }else{
                             buttonLike.isSelected = true
                             detailFeedInterface.like(data.id.toInt(), position)
+                            textLike.text = (textLike.text.toString().toInt()+1).toString()
                         }
                     }
 

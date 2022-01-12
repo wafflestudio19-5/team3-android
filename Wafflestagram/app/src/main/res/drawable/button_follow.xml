@@ -2,5 +2,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_selected="false" android:drawable="@drawable/button_rounded_corner_blue3"/>
-    <item android:state_selected="true" android:drawable="@drawable/button_rounded_corner"/>
+    <item android:state_selected="true" android:drawable="@drawable/button_rounded_corner_white"/>
 </selector>
