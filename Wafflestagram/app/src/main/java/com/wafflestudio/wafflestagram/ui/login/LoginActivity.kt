@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Point
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,13 +14,23 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import com.google.firebase.auth.FirebaseAuth
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
-import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
@@ -29,13 +38,20 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val viewModel: LoginViewModel by viewModels()
 
-    private lateinit var auth: FirebaseAuth
+    // for replace startActivityForResult()
+    private lateinit var facebookResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var googleResultLauncher: ActivityResultLauncher<Intent>
+
+    // Google Login Request Code
+    private val FACEBOOK_RC_SIGN_IN = 1
+    private val GOOGLE_RC_SIGN_IN = 2
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -93,14 +109,81 @@ class LoginActivity : AppCompatActivity() {
             currentFocus?.hideKeyboard()
         }
 
-        // facebook login
-        binding.buttonSocialLoginFacebook.setOnClickListener {
-            viewModel.getResponseBySocialLogin(FACEBOOK)
+        /** facebook login **/
+        // Create Callback Manager
+        val facebookCallbackManager = CallbackManager.Factory.create()
+
+        // Set Permission
+        binding.buttonSocialLoginFacebook.setPermissions("email", "public_profile")
+
+        // Callback registration
+        binding.buttonSocialLoginFacebook.registerCallback(facebookCallbackManager, object : FacebookCallback<LoginResult?> {
+            override fun onSuccess(loginResult: LoginResult?) {
+                Timber.d("facebook:onSuccess:$loginResult")
+                loginWithFacebookIdToken(loginResult!!.accessToken)
+            }
+
+            override fun onCancel() {
+                Timber.d("facebook:onCancel")
+            }
+
+            override fun onError(error: FacebookException) {
+                Timber.e("facebook:onError", error)
+            }
+        })
+
+        facebookResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()) {
+            val requestCode = intent!!.getIntExtra("requestCode", 0)
+            val resultCode = it.resultCode
+            val data = it.data
+            if (requestCode == FACEBOOK_RC_SIGN_IN && resultCode == RESULT_OK){
+                facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
+            }
         }
 
-        // google login
-        binding.buttonSocialLoginGoogle.setOnClickListener {
-            viewModel.getResponseBySocialLogin(GOOGLE)
+        /** google login **/
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_web_client_id))
+            .requestEmail()
+            .build()
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        // Activity Callback Function(instead of startActivityForResult)
+        googleResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()) { result ->
+            val requestCode = intent!!.getIntExtra("requestCode", 0)
+            val resultCode = result.resultCode
+            val data = result.data
+            if (requestCode == GOOGLE_RC_SIGN_IN && resultCode == RESULT_OK){
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    // Signed in successfully
+                    loginWithGoogleIdToken(account)
+                } catch (e: ApiException) {
+                    Timber.w("signInResult:failed code=" + e.statusCode);
+                    loginWithGoogleIdToken(null)
+                }
+            }
+            // result canceled됨...
+        }
+
+        binding.buttonSocialLoginGoogle.setOnClickListener { result ->
+            when (result.id) {
+                R.id.button_social_login_google -> {
+                    val signInIntent = googleSignInClient.signInIntent
+                    signInIntent.putExtra("requestCode", GOOGLE_RC_SIGN_IN)
+                    googleResultLauncher.launch(signInIntent)
+                }
+                else -> {
+                    Timber.w("버튼 터치 과정에서 오류가 발생했습니다.")
+                }
+            }
         }
 
         //signup 버튼
@@ -110,11 +193,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         // fetch Responses
-
-        viewModel.fetchPingResponse.observe(this,{
-            showDialog(it)
-        })
-
         viewModel.fetchLoginResponse.observe(this, { response ->
             if(response.isSuccessful){
                 sharedPreferences.edit {
@@ -138,26 +216,23 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show()
             }
         })
+
+        viewModel.fetchDummy.observe(this, {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Check for existing Google Sign In account, if the user is already signed in
+        // the GoogleSignInAccount will be non-null.
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+        loginWithGoogleIdToken(account)
     }
 
     override fun onBackPressed() {
         finish()
-    }
-
-    private fun showDialog(contents: String){
-        val dialogBinding = DialogBinding.inflate(layoutInflater)
-        val dialogBuilder = AlertDialog.Builder(this)
-            .setView(dialogBinding.root)
-            .setCancelable(false)
-
-        val dialog = dialogBuilder.create()
-        dialog.show()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        resizeDialog(this, dialog, 0.65F, 0.35F)
-        dialogBinding.textDialogContents.text = contents
-        dialogBinding.buttonDialog.setOnClickListener {
-            dialog.dismiss()
-        }
     }
 
     private fun resizeDialog(context: Context, dialog: AlertDialog, width: Float, height: Float){
@@ -189,10 +264,21 @@ class LoginActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
+    private fun loginWithGoogleIdToken(account: GoogleSignInAccount?) {
+        if(account != null){
+            viewModel.getResponseByGoogleLogin(account.idToken!!)
+        }
+    }
+
+    private fun loginWithFacebookIdToken(token: AccessToken){
+        Timber.d("loginWithFacebookIdToken:$token")
+        viewModel.getResponseByFacebookLogin(token.token)
+    }
+
     companion object{
         const val TOKEN = "token"
         const val CURRENT_USER_ID = "currentUserId"
-        const val FACEBOOK = "facebook"
-        const val GOOGLE = "google"
     }
 }
+
+// TODO: google sign in button 안 눌림
