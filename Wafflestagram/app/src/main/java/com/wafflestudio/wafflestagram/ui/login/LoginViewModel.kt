@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
     fun getResponseByGoogleLogin(idToken: String) {
         viewModelScope.launch {
             try {
-                _fetchDummy.value = "Google"
+                _fetchDummy.value = idToken
                 /*
                 val data = loginRepository.getResponseByGoogleLogin(idToken)
                 _fetchLoginResponse.value = data
@@ -71,7 +71,7 @@ class LoginViewModel @Inject constructor(
     fun getResponseByFacebookLogin(token: String){
         viewModelScope.launch {
             try {
-                _fetchDummy.value = "Facebook"
+                _fetchDummy.value = token
                 /*
                 val data = loginRepository.getResponseByFacebookLogin(token)
                 _fetchLoginResponse.value = data

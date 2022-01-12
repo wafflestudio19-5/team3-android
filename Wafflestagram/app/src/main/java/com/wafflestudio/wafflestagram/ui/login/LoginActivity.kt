@@ -146,6 +146,7 @@ class LoginActivity : AppCompatActivity() {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_web_client_id))
             .requestEmail()
             .build()
 
@@ -154,10 +155,10 @@ class LoginActivity : AppCompatActivity() {
 
         // Activity Callback Function(instead of startActivityForResult)
         googleResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()) {
+            ActivityResultContracts.StartActivityForResult()) { result ->
             val requestCode = intent!!.getIntExtra("requestCode", 0)
-            val resultCode = it.resultCode
-            val data = it.data
+            val resultCode = result.resultCode
+            val data = result.data
             if (requestCode == GOOGLE_RC_SIGN_IN && resultCode == RESULT_OK){
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 try {
@@ -169,6 +170,7 @@ class LoginActivity : AppCompatActivity() {
                     loginWithGoogleIdToken(null)
                 }
             }
+            // result canceled됨...
         }
 
         binding.buttonSocialLoginGoogle.setOnClickListener { result ->
@@ -176,6 +178,7 @@ class LoginActivity : AppCompatActivity() {
                 R.id.button_social_login_google -> {
                     val signInIntent = googleSignInClient.signInIntent
                     signInIntent.putExtra("requestCode", GOOGLE_RC_SIGN_IN)
+                    googleResultLauncher.launch(signInIntent)
                 }
                 else -> {
                     Timber.w("버튼 터치 과정에서 오류가 발생했습니다.")
@@ -215,7 +218,7 @@ class LoginActivity : AppCompatActivity() {
         })
 
         viewModel.fetchDummy.observe(this, {
-            Toast.makeText(this, "$it login was well executed.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
     }
 
