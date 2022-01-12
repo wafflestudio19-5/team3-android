@@ -108,7 +108,7 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
 
         viewModel.likeResponse.observe(this, {response ->
             if(response.isSuccessful){
-                feedAdapter.changeData(response.body()!!, itemPosition)
+                //feedAdapter.changeData(response.body()!!, itemPosition)
             }
         })
 

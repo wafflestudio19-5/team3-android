@@ -201,7 +201,7 @@ class UserFragment: Fragment() {
 
         binding.areaFeeds.setOnClickListener {
             val intent = Intent(context, DetailFeedActivity::class.java)
-            intent.putExtra("id", currentUserId)
+            intent.putExtra("userId", currentUserId)
             startActivity(intent)
         }
 
