@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
@@ -106,20 +108,15 @@ class UserFragment: Fragment() {
             binding.buttonMenu.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_more))
             checkFollowingStatus()
         }
-        userPhotoAdapter = UserPhotoAdapter {
-            startActivity(
-                Intent(context, DetailFeedActivity::class.java)
-                .putExtra("position", it)
-                .putExtra("userId", currentUserId)
-            )
-        }
-        // recyclerView -> 3행 Grid 형식으로 지정
-        userLayoutManager = GridLayoutManager(context, 3)
-        binding.recyclerViewPhotos.apply {
-            adapter = userPhotoAdapter
-            layoutManager = userLayoutManager
-        }
-        viewModel.getMyFeeds(0, 100)
+
+        // Set ViewPager
+        val viewpagerUserFragmentAdapter = ViewPagerUserFragmentAdapter(activity!!)
+        binding.viewPager.adapter = viewpagerUserFragmentAdapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { _, _ -> Unit }.attach()
+
+        binding.tabLayout.getTabAt(0)!!.setIcon(R.drawable.icon_grid)
+        binding.tabLayout.getTabAt(1)!!.setIcon(R.drawable.icon_tagged)
         
         // 데이터 저장
 
@@ -148,15 +145,6 @@ class UserFragment: Fragment() {
             } else {
                 Toast.makeText(context, "피드 정보를 불러 올 수 없습니다", Toast.LENGTH_SHORT).show()
             }
-        })
-
-        viewModel.page.observe(viewLifecycleOwner, {response ->
-            if(response.isSuccessful){
-                userPhotoAdapter.updatePhotos(response.body()!!.content, context!!)
-            }else{
-
-            }
-
         })
 
         viewModel.fetchUserInfo.observe(viewLifecycleOwner, { response ->
@@ -220,6 +208,7 @@ class UserFragment: Fragment() {
         }
     }
 
+    // for creating option menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val inflater = MenuInflater(context)
         inflater.inflate(R.menu.menu_user, menu)
@@ -245,5 +234,7 @@ class UserFragment: Fragment() {
     companion object {
         const val CURRENT_USER_ID = "currentUserId"
         const val USER_ID = "userId"
+        const val MY_FEED = 0
+        const val TAGGED_FEED = 1
     }
 }
