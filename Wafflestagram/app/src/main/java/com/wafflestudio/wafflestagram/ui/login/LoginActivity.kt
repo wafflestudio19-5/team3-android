@@ -272,6 +272,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginWithFacebookIdToken(token: AccessToken){
         Timber.d("loginWithFacebookIdToken:$token")
+        Timber.d(token.token)
         viewModel.getResponseByFacebookLogin(token.token)
     }
 
@@ -280,5 +281,3 @@ class LoginActivity : AppCompatActivity() {
         const val CURRENT_USER_ID = "currentUserId"
     }
 }
-
-// TODO: google sign in button 안 눌림
