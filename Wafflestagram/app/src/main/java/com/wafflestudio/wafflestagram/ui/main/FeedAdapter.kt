@@ -1,8 +1,10 @@
 package com.wafflestudio.wafflestagram.ui.main
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -22,7 +24,10 @@ import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
+import com.wafflestudio.wafflestagram.ui.dialog.FeedBottomSheetFragment
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
+import dagger.hilt.android.components.FragmentComponent
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -175,6 +180,16 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                     }
 
                     Glide.with(holder.itemView.context).load(data.author.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
+
+                    buttonItemMore.setOnClickListener {
+                        val feedBottomSheetFragment = FeedBottomSheetFragment(holder.itemView.context)
+                        val bundle = Bundle()
+                        bundle.putInt("feedId", data.id.toInt())
+                        bundle.putInt("userId", data.author.id.toInt())
+                        bundle.putInt("currUserId", currUser.id.toInt())
+                        feedBottomSheetFragment.arguments = bundle
+                        feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as MainActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
+                    }
                 }
 
             }
@@ -243,6 +258,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                 ChronoUnit.MINUTES -> if(between < 60) return between.toString() + "분 전"
                 ChronoUnit.HOURS -> if(between < 24) return between.toString() + "시간 전"
                 ChronoUnit.DAYS -> if(between < 7) return between.toString() + "일 전"
+                else -> {}
             }
         }
         return time.format(DateTimeFormatter.ofPattern( "MM월 dd일"))

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBinding
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
-import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
+import com.wafflestudio.wafflestagram.ui.post.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

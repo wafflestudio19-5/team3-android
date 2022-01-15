@@ -109,12 +109,12 @@ class MainActivity : AppCompatActivity() {
         when(fragmentNum){
             FEED_FRAGMENT -> {
                 fb.replace(binding.fragmentContainerViewMain.id, feedFragment)
-                fb.addToBackStack(null)
+                //fb.addToBackStack(null)
                 fb.commit()
             }
             SEARCH_FRAGMENT -> {
                 fb.replace(binding.fragmentContainerViewMain.id, searchFragment)
-                fb.addToBackStack(null)
+                //fb.addToBackStack(null)
                 fb.commit()
             }
             USER_FRAGMENT -> {
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                             putInt(USER_ID, currentUserId)
                         }
                     })
-                fb.addToBackStack(null)
+                //fb.addToBackStack(null)
                 fb.commit()
             }
         }

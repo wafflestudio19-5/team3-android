@@ -72,4 +72,14 @@ class DetailFeedViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteFeed(id: Int){
+        viewModelScope.launch {
+            try {
+                detailFeedRepository.deleteFeed(id)
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
 }
