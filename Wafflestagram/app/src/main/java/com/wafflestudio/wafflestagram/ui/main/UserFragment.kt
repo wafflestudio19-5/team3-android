@@ -3,12 +3,9 @@ package com.wafflestudio.wafflestagram.ui.main
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings.Global.putString
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
@@ -21,7 +18,7 @@ import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
-import com.wafflestudio.wafflestagram.ui.write.AddPostActivity
+import com.wafflestudio.wafflestagram.ui.post.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

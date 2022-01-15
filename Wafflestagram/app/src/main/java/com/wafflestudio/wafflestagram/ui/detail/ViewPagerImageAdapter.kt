@@ -7,7 +7,6 @@ import com.aghajari.zoomhelper.ZoomHelper
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.PagerItemImageBinding
 import com.wafflestudio.wafflestagram.model.Photo
-import timber.log.Timber
 
 class ViewPagerImageAdapter : RecyclerView.Adapter<ViewPagerImageAdapter.ImageViewHolder>() {
 
@@ -27,7 +26,7 @@ class ViewPagerImageAdapter : RecyclerView.Adapter<ViewPagerImageAdapter.ImageVi
         holder.apply {
             Glide.with(itemView.context).load(data.path).centerCrop().into(binding.imagePhoto)
         }
-        Timber.e(data.path)
+        //Timber.e(data.path)
     }
 
     override fun getItemCount(): Int {

@@ -4,6 +4,7 @@ import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.FeedService
+import okhttp3.ResponseBody
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,5 +26,9 @@ class DetailFeedRepository @Inject constructor(private val feedService: FeedServ
 
     suspend fun getMe() : Response<User> {
         return feedService.getMe()
+    }
+
+    suspend fun deleteFeed(id: Int): Response<ResponseBody>{
+        return feedService.deleteFeed(id)
     }
 }

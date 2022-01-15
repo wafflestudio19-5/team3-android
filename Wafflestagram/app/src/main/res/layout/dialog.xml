@@ -30,7 +30,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_top"
+        android:background="@drawable/border_top_pressed_for_bottom"
         android:padding="4dp"
         android:text="확인"
         android:textColor="@color/blue"

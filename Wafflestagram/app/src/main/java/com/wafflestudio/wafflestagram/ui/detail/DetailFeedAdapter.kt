@@ -3,6 +3,7 @@ package com.wafflestudio.wafflestagram.ui.detail
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -21,10 +22,13 @@ import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
+import com.wafflestudio.wafflestagram.ui.dialog.FeedBottomSheetFragment
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedAdapter
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -177,6 +181,23 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                     }
 
                     Glide.with(holder.itemView.context).load(data.author.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
+
+                    buttonItemMore.setOnClickListener {
+                        val feedBottomSheetFragment = FeedBottomSheetFragment(holder.itemView.context)
+                        val bundle = Bundle()
+                        bundle.putInt("feedId", data.id.toInt())
+                        bundle.putInt("userId", data.author.id.toInt())
+                        bundle.putInt("currUserId", currUser.id.toInt())
+                        bundle.putInt("position", position)
+                        feedBottomSheetFragment.arguments = bundle
+                        feedBottomSheetFragment.setOnClickedListener(object : FeedBottomSheetFragment.ButtonClickListener{
+                            override fun onClicked(id: Int, position: Int) {
+                                detailFeedInterface.deleteFeed(id, position)
+                            }
+
+                        })
+                        feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as DetailFeedActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
+                    }
                 }
 
             }

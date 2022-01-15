@@ -114,6 +114,11 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
 
     }
 
+    override fun deleteFeed(id: Int, position: Int){
+        viewModel.deleteFeed(id)
+        feedAdapter.notifyItemRemoved(position)
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         return ZoomHelper.getInstance().dispatchTouchEvent(ev!!, this) || super.dispatchTouchEvent(ev)
     }
