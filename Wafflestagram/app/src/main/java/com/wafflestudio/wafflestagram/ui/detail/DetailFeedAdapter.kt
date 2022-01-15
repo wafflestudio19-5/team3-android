@@ -3,6 +3,7 @@ package com.wafflestudio.wafflestagram.ui.detail
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -21,10 +22,13 @@ import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
+import com.wafflestudio.wafflestagram.ui.dialog.FeedBottomSheetFragment
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedAdapter
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -118,7 +122,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
 
                     textDateCreated.text = getBetween(data.createdAt!!.plusHours(9), ZonedDateTime.now(
                         ZoneId.of("Asia/Seoul")))
-                    textLike.text = "좋아요 " + data.likeSum + "개"
+                    textLike.text = data.likeSum.toString()
 
                     buttonComment.setOnClickListener {
                         val intent = Intent(holder.itemView.context, CommentActivity::class.java)
@@ -126,7 +130,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
-                    textLike.setOnClickListener {
+                    layoutLike.setOnClickListener {
                         val intent = Intent(holder.itemView.context, LikeActivity::class.java)
                         intent.putExtra("id", data.id.toInt())
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
@@ -168,13 +172,32 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
                             detailFeedInterface.unlike(data.id.toInt(), position)
+                            textLike.text = (textLike.text.toString().toInt()-1).toString()
                         }else{
                             buttonLike.isSelected = true
                             detailFeedInterface.like(data.id.toInt(), position)
+                            textLike.text = (textLike.text.toString().toInt()+1).toString()
                         }
                     }
 
                     Glide.with(holder.itemView.context).load(data.author.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
+
+                    buttonItemMore.setOnClickListener {
+                        val feedBottomSheetFragment = FeedBottomSheetFragment(holder.itemView.context)
+                        val bundle = Bundle()
+                        bundle.putInt("feedId", data.id.toInt())
+                        bundle.putInt("userId", data.author.id.toInt())
+                        bundle.putInt("currUserId", currUser.id.toInt())
+                        bundle.putInt("position", position)
+                        feedBottomSheetFragment.arguments = bundle
+                        feedBottomSheetFragment.setOnClickedListener(object : FeedBottomSheetFragment.ButtonClickListener{
+                            override fun onClicked(id: Int, position: Int) {
+                                detailFeedInterface.deleteFeed(id, position)
+                            }
+
+                        })
+                        feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as DetailFeedActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
+                    }
                 }
 
             }

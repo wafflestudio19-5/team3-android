@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ItemLikeBinding
 import com.wafflestudio.wafflestagram.databinding.ItemSearchBinding
 import com.wafflestudio.wafflestagram.model.Follow
@@ -52,7 +53,7 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
 
                 if(myFollowingList.contains(data)){
                     buttonFollow.isSelected = true
-                    buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                    buttonFollow.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.black))
                     buttonFollow.text = "팔로잉"
                 }else{
                     buttonFollow.isSelected = false
@@ -69,7 +70,7 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
                         followInter.unfollow(data.user.id.toInt())
                     }else{
                         buttonFollow.isSelected = true
-                        buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                        buttonFollow.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.black))
                         buttonFollow.text = "팔로잉"
                         followInter.follow(data.user.id.toInt())
                     }

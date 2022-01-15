@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.write.AddPostActivity">
+    tools:context=".ui.post.AddPostActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -24,7 +24,8 @@
             android:src="@drawable/icon_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/black"/>
 
         <TextView
             android:id="@+id/text_activity"
@@ -118,6 +119,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"
         android:text="사람 태그하기"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:gravity="center_vertical"
         android:background="@drawable/button_rectangle"

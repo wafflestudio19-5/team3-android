@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import com.aghajari.zoomhelper.ZoomHelper
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityMainBinding
 import com.wafflestudio.wafflestagram.databinding.IconUserProfileBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
@@ -55,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         setFragment(fragment)
         binding.tabLayoutMain.getTabAt(fragment)?.select()
         if(fragment == 2){
-            userProfileBinding.imageProfile.borderColor= Color.parseColor("#FF000000")
+            userProfileBinding.imageProfile.borderColor= ContextCompat.getColor(this, R.color.black)
             binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
         }
 
@@ -67,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     SEARCH_FRAGMENT -> setFragment(SEARCH_FRAGMENT)
                     USER_FRAGMENT -> {
                         setFragment(USER_FRAGMENT)
-                        userProfileBinding.imageProfile.borderColor= Color.parseColor("#FF000000")
+                        userProfileBinding.imageProfile.borderColor= ContextCompat.getColor(applicationContext, R.color.black)
                         binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
                     }
                 }
@@ -75,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 if(tab!!.position == USER_FRAGMENT){
-                    userProfileBinding.imageProfile.borderColor = Color.parseColor("#00ff0000")
+                    userProfileBinding.imageProfile.borderColor = ContextCompat.getColor(applicationContext, R.color.transparent)
                     binding.tabLayoutMain.getTabAt(2)!!.customView = userProfileBinding.root
                 }
 
@@ -107,12 +109,12 @@ class MainActivity : AppCompatActivity() {
         when(fragmentNum){
             FEED_FRAGMENT -> {
                 fb.replace(binding.fragmentContainerViewMain.id, feedFragment)
-                fb.addToBackStack(null)
+                //fb.addToBackStack(null)
                 fb.commit()
             }
             SEARCH_FRAGMENT -> {
                 fb.replace(binding.fragmentContainerViewMain.id, searchFragment)
-                fb.addToBackStack(null)
+                //fb.addToBackStack(null)
                 fb.commit()
             }
             USER_FRAGMENT -> {
@@ -122,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                             putInt(USER_ID, currentUserId)
                         }
                     })
-                fb.addToBackStack(null)
+                //fb.addToBackStack(null)
                 fb.commit()
             }
         }

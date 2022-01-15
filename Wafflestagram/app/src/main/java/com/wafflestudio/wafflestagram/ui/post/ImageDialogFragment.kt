@@ -1,4 +1,4 @@
-package com.wafflestudio.wafflestagram.ui.write
+package com.wafflestudio.wafflestagram.ui.post
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentImageDialogBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ImageDialogFragment : DialogFragment() {
 
     private lateinit var binding: FragmentImageDialogBinding

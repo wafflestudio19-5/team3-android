@@ -1,4 +1,4 @@
-package com.wafflestudio.wafflestagram.ui.write
+package com.wafflestudio.wafflestagram.ui.post
 
 import android.net.Uri
 import android.view.LayoutInflater

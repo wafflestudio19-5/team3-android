@@ -22,13 +22,14 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:src="@drawable/icon_close"
-                android:background="@drawable/effect_pressed"
+                android:background="@drawable/button_pressed"
                 android:scaleType="fitCenter"
-                android:paddingVertical="16dp"
+                android:paddingVertical="18dp"
                 android:paddingHorizontal="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_username"

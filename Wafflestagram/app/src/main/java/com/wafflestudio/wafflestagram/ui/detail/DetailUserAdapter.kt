@@ -22,7 +22,9 @@ class DetailUserAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Re
         val data = feeds[position]
         if(holder is FeedViewHolder){
             holder.binding.apply {
-                Glide.with(holder.itemView.context).load(data.photos.get(0).path).centerCrop().into(userPhoto)
+                if(!data.photos.isNullOrEmpty()){
+                    Glide.with(holder.itemView.context).load(data.photos.get(0).path).centerCrop().into(userPhoto)
+                }
             }
         }
         holder.itemView.setOnClickListener{

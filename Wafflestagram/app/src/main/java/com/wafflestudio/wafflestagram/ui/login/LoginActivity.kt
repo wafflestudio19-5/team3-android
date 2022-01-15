@@ -213,12 +213,12 @@ class LoginActivity : AppCompatActivity() {
                 intent.data = Uri.parse(response.raw().request.url.toString())
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show()
             }
         })
 
         viewModel.fetchDummy.observe(this, {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
     }
 

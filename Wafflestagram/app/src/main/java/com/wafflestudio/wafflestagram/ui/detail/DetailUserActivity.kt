@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
@@ -135,7 +136,7 @@ class DetailUserActivity : AppCompatActivity() {
             if(response.isSuccessful){
                 if(response.body()!!.string() == "true"){
                     binding.buttonFollow.isSelected = true
-                    binding.buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                    binding.buttonFollow.setTextColor(ContextCompat.getColor(this, R.color.black))
                     binding.buttonFollow.text = "팔로잉"
                 }else{
                     binding.buttonFollow.isSelected = false
@@ -161,7 +162,7 @@ class DetailUserActivity : AppCompatActivity() {
                 viewModel.unfollow(id)
             }else{
                 binding.buttonFollow.isSelected = true
-                binding.buttonFollow.setTextColor(Color.parseColor("#FF000000"))
+                binding.buttonFollow.setTextColor(ContextCompat.getColor(this, R.color.black))
                 binding.buttonFollow.text = "팔로잉"
                 viewModel.follow(id)
             }

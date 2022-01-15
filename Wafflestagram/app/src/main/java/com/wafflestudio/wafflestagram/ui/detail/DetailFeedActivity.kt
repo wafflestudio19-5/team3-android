@@ -109,10 +109,15 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
 
         viewModel.likeResponse.observe(this, {response ->
             if(response.isSuccessful){
-                feedAdapter.changeData(response.body()!!, itemPosition)
+                //feedAdapter.changeData(response.body()!!, itemPosition)
             }
         })
 
+    }
+
+    override fun deleteFeed(id: Int, position: Int){
+        viewModel.deleteFeed(id)
+        feedAdapter.notifyItemRemoved(position)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

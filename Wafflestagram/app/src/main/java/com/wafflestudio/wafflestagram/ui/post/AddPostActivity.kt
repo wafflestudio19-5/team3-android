@@ -1,4 +1,4 @@
-package com.wafflestudio.wafflestagram.ui.write
+package com.wafflestudio.wafflestagram.ui.post
 
 import android.content.ContentUris
 import android.content.Context
@@ -12,8 +12,6 @@ import android.os.Looper
 import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.amazonaws.SDKGlobalConfiguration.ACCESS_KEY_SYSTEM_PROPERTY
-import com.amazonaws.SDKGlobalConfiguration.SECRET_KEY_SYSTEM_PROPERTY
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState

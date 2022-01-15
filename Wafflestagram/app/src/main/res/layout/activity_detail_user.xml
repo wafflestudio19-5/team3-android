@@ -27,21 +27,22 @@
                 android:src="@drawable/icon_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/black"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_username"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:paddingLeft="10dp"
                 android:background="@color/transparent"
                 android:gravity="center_vertical"
+                android:paddingLeft="10dp"
                 android:text="User"
-                android:textStyle="bold"
-                android:textSize="19sp"
                 android:textAllCaps="false"
+                android:textSize="19sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/button_back"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -183,6 +184,8 @@
             android:paddingVertical="5dp"
             android:paddingHorizontal="10dp"
             android:text="name"
+            android:textStyle="bold"
+            android:textAllCaps="false"
             android:textColor="@color/black"/>
 
         <TextView
