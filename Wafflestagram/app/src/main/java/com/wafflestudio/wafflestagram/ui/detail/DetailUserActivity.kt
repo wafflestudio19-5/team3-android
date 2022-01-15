@@ -9,13 +9,15 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayoutMediator
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailUserBinding
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,8 +25,10 @@ class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
     private val viewModel: DetailUserViewModel by viewModels()
+    /*
     private lateinit var userAdapter: DetailUserAdapter
     private lateinit var userLayoutManager: GridLayoutManager
+     */
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -34,8 +38,18 @@ class DetailUserActivity : AppCompatActivity() {
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val id = intent.getIntExtra("id", 0)
+        val id = intent.getIntExtra("id", -1)
 
+        val viewpagerUserFragmentAdapter = ViewPagerDetailUserAdapter(this)
+        viewpagerUserFragmentAdapter.setId(id)
+        binding.viewPager.adapter = viewpagerUserFragmentAdapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { _, _ -> Unit }.attach()
+
+        binding.tabLayout.getTabAt(0)!!.setIcon(R.drawable.icon_grid)
+        binding.tabLayout.getTabAt(1)!!.setIcon(R.drawable.icon_tagged)
+
+        /*
         userAdapter = DetailUserAdapter{startActivity(
             Intent(this, DetailFeedActivity::class.java)
                 .putExtra("position", it)
@@ -47,6 +61,7 @@ class DetailUserActivity : AppCompatActivity() {
             adapter = userAdapter
             layoutManager = userLayoutManager
         }
+         */
 
         viewModel.getMyInfo()
         viewModel.getInfoById(id)
@@ -56,11 +71,13 @@ class DetailUserActivity : AppCompatActivity() {
         viewModel.getFeedsById(id, 0, 50)
         viewModel.checkFollowing(id)
 
+        /*
         viewModel.page.observe(this, {response->
             if(response.isSuccessful){
                 userAdapter.updateData(response.body()!!.content)
             }
         })
+         */
 
         viewModel.fetchUserInfo.observe(this, {response->
             if(response.isSuccessful){

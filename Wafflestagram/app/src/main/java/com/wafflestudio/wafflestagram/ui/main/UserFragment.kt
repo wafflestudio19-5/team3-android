@@ -59,7 +59,7 @@ class UserFragment: Fragment() {
 
         // change UI and get info according to user ID
         currentUserId = sharedPreferences.getInt(CURRENT_USER_ID, -1)
-        val userId = arguments?.getInt(USER_ID, -1)
+        val userId = arguments!!.getInt(USER_ID, -1)
         if(userId == currentUserId){
             // the user is me
             viewModel.getMyInfo()
