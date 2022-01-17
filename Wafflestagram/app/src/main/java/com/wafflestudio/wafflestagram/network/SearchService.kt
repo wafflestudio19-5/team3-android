@@ -8,8 +8,8 @@ import retrofit2.http.*
 
 interface SearchService {
 
-    @GET("api/v1/users/search/{nickname}/")
-    suspend fun search(@Path("nickname") nickname: String) : Response<UserPage>
+    @GET("api/v1/users/search/")
+    suspend fun search(@Query("nickname_prefix") nickname: String) : Response<UserPage>
 
     @GET("api/v1/users/following/{user_id}/")
     suspend fun checkFollowing(@Path("user_id") id: Int): Response<Boolean>

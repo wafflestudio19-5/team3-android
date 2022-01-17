@@ -1,13 +1,10 @@
 package com.wafflestudio.wafflestagram.ui.login
 
-import android.content.SharedPreferences
-import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
-import com.wafflestudio.wafflestagram.network.dto.TokenResponse
 import com.wafflestudio.wafflestagram.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,7 +12,6 @@ import okhttp3.ResponseBody
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
-import java.lang.IndexOutOfBoundsException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,10 +54,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _fetchDummy.value = idToken
-                /*
+
                 val data = loginRepository.getResponseByGoogleLogin(idToken)
                 _fetchLoginResponse.value = data
-                 */
+
             } catch (e: IOException) {
                 Timber.e(e)
             }
@@ -72,10 +68,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _fetchDummy.value = token
-                /*
+
                 val data = loginRepository.getResponseByFacebookLogin(token)
                 _fetchLoginResponse.value = data
-                 */
+
             } catch (e: IOException) {
                 Timber.e(e)
             }

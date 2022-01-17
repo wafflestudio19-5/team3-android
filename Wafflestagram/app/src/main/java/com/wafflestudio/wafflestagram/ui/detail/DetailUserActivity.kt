@@ -4,6 +4,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -26,6 +28,7 @@ class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
     private val viewModel: DetailUserViewModel by viewModels()
+    private var isLoading: Boolean = false
     /*
     private lateinit var userAdapter: DetailUserAdapter
     private lateinit var userLayoutManager: GridLayoutManager
@@ -49,6 +52,8 @@ class DetailUserActivity : AppCompatActivity() {
 
         binding.tabLayout.getTabAt(0)!!.setIcon(R.drawable.icon_grid)
         binding.tabLayout.getTabAt(1)!!.setIcon(R.drawable.icon_tagged)
+
+
 
         /*
         userAdapter = DetailUserAdapter{startActivity(
@@ -79,7 +84,26 @@ class DetailUserActivity : AppCompatActivity() {
             }
         })
          */
+        binding.refreshLayoutUser.setColorSchemeColors(*intArrayOf(
+                Color.parseColor("#F6F6F6"),
+                Color.parseColor("#D5D5D5"),
+                Color.parseColor("#A6A6A6"),
+                Color.parseColor("#D5D5D5")))
+        binding.refreshLayoutUser.setOnRefreshListener {
 
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.refreshLayoutUser.setRefreshing(false) }, 1000)
+            if(!isLoading){
+                viewModel.getMyInfo()
+                viewModel.getInfoById(id)
+                viewModel.getFeedCount(id)
+                viewModel.getFollowerCount(id)
+                viewModel.getFollowingCount(id)
+                viewModel.getFeedsById(id, 0, 50)
+                viewModel.checkFollowing(id)
+                isLoading = true
+            }
+        }
         viewModel.fetchUserInfo.observe(this, {response->
             if(response.isSuccessful){
                 val data = response.body()!!
@@ -103,6 +127,7 @@ class DetailUserActivity : AppCompatActivity() {
                     binding.textName.text = data.name
                 }
                 Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(binding.userImage)
+                isLoading = false
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
                 sharedPreferences.edit {

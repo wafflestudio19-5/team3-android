@@ -3,7 +3,10 @@ package com.wafflestudio.wafflestagram.ui.main
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -16,6 +19,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
+import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
@@ -32,6 +36,7 @@ class UserFragment: Fragment() {
 
     private lateinit var binding: FragmentUserBinding
     private val viewModel: UserViewModel by activityViewModels()
+    private var isLoading: Boolean = false
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -64,7 +69,6 @@ class UserFragment: Fragment() {
             viewModel.getMyFollowingCount()
             viewModel.getMyFeedCount()
 
-            binding.buttonBack.visibility = View.GONE
             binding.buttonDM.visibility = View.GONE
             binding.buttonMenu.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_close))
 
@@ -72,6 +76,26 @@ class UserFragment: Fragment() {
             binding.buttonAdd.setOnClickListener{
                 val intent = Intent(context, AddPostActivity::class.java)
                 startActivity(intent)
+            }
+
+            binding.refreshLayoutUser.setColorSchemeColors(*intArrayOf(
+                Color.parseColor("#F6F6F6"),
+                Color.parseColor("#D5D5D5"),
+                Color.parseColor("#A6A6A6"),
+                Color.parseColor("#D5D5D5")))
+            binding.refreshLayoutUser.setOnRefreshListener {
+
+                Handler(Looper.getMainLooper()).postDelayed({
+                    binding.refreshLayoutUser.setRefreshing(false)
+                }, 1000)
+                if(!isLoading){
+                    viewModel.getMyInfo()
+                    viewModel.getMyFollowerCount()
+                    viewModel.getMyFollowingCount()
+                    viewModel.getMyFeedCount()
+                    viewModel.getMyFeeds(0, 100)
+                    isLoading = true
+                }
             }
 
             // profile 편집 버튼
@@ -170,7 +194,7 @@ class UserFragment: Fragment() {
                     binding.textName.visibility = View.VISIBLE
                     binding.textName.text = data.name
                 }
-
+                isLoading = false
             } else if(response.code() == 401){
                 Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
                 sharedPreferences.edit {
