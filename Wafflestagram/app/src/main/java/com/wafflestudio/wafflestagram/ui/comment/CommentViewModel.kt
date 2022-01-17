@@ -6,11 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wafflestudio.wafflestagram.model.Comment
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.model.Reply
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.AddCommentRequest
+import com.wafflestudio.wafflestagram.network.dto.AddReplyRequest
 import com.wafflestudio.wafflestagram.repository.CommentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
 import retrofit2.Response
 import timber.log.Timber
 import java.io.IOException
@@ -29,6 +32,12 @@ class CommentViewModel @Inject constructor(
 
     private val _myInfo = MutableLiveData<Response<User>>()
     val myInfo: LiveData<Response<User>> = _myInfo
+
+    private val _reply = MutableLiveData<Response<Reply>>()
+    val reply: LiveData<Response<Reply>> = _reply
+
+    private val _deleteCommentResponse = MutableLiveData<Response<ResponseBody>>()
+    val deleteCommentResponse: LiveData<Response<ResponseBody>> = _deleteCommentResponse
 
     fun getMyInfo(){
         viewModelScope.launch {
@@ -58,6 +67,39 @@ class CommentViewModel @Inject constructor(
                 val data = commentRepository.addComment(id, addCommentRequest)
                 _comment.value = data
             }catch (e : IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun deleteComment(id: Int){
+        viewModelScope.launch {
+            try {
+                val data = commentRepository.deleteComment(id)
+                _deleteCommentResponse.value = data
+            }catch (e:IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun addReply(id: Int, addReplyRequest: AddReplyRequest){
+        viewModelScope.launch {
+            try {
+                val data = commentRepository.addReply(id, addReplyRequest)
+                _reply.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun deleteReply(id: Int){
+        viewModelScope.launch {
+            try {
+                val data = commentRepository.deleteReply(id)
+                _deleteCommentResponse.value = data
+            }catch (e:IOException){
                 Timber.e(e)
             }
         }

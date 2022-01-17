@@ -137,6 +137,8 @@ dependencies {
     // Jsoup
     implementation 'org.jsoup:jsoup:1.14.3'
 
+    // Expandable Recyclerview
+    implementation("com.github.pokercc:ExpandableRecyclerView:0.9.3")
 }
 
 apply plugin: "com.google.gms.google-services"

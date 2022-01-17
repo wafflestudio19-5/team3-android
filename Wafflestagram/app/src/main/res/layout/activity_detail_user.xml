@@ -55,6 +55,16 @@
                 app:layout_constraintGuide_begin="302dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/refresh_layout_user"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:refreshType="ring">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -289,6 +299,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+    </com.baoyz.widget.PullRefreshLayout>
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

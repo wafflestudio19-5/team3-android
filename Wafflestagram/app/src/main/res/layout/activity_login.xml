@@ -195,7 +195,7 @@
             android:layout_width="360dp"
             android:layout_height="32dp"
             android:paddingHorizontal="95dp"
-            android:background="#00ff0000"
+            android:background="@drawable/button_pressed"
             android:drawableLeft="@drawable/google_logo_resize"
             android:drawablePadding="-20dp"
             android:text="Google로 로그인"
