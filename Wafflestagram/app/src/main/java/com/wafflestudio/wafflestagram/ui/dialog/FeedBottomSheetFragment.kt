@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,13 +14,17 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.dynamiclinks.ktx.*
+import com.google.firebase.ktx.Firebase
 import com.wafflestudio.wafflestagram.databinding.DialogReconfirmBinding
 import com.wafflestudio.wafflestagram.databinding.FragmentFeedBottomSheetBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
 import com.wafflestudio.wafflestagram.ui.post.EditPostActivity
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.internal.managers.FragmentComponentManager
+import timber.log.Timber
 
 @AndroidEntryPoint
 class FeedBottomSheetFragment(context: Context) : BottomSheetDialogFragment() {
@@ -44,7 +49,6 @@ class FeedBottomSheetFragment(context: Context) : BottomSheetDialogFragment() {
         val currUserId = arguments?.getInt("currUserId")
         position = arguments?.getInt("position")!!
 
-
         if(userId == currUserId){
             binding.buttonDelete.visibility = View.VISIBLE
             binding.buttonEdit.visibility = View.VISIBLE
@@ -54,8 +58,7 @@ class FeedBottomSheetFragment(context: Context) : BottomSheetDialogFragment() {
         }
 
         binding.buttonShare.setOnClickListener {
-            Toast.makeText(activity, "아직 구현 중입니다.", Toast.LENGTH_LONG).show()
-            dismiss()
+            createDynamicLink()
         }
 
         binding.buttonDelete.setOnClickListener {
@@ -116,6 +119,34 @@ class FeedBottomSheetFragment(context: Context) : BottomSheetDialogFragment() {
 
             window?.setLayout(x, y)
         }
+    }
+
+    fun createDynamicLink(){
+        val dynamicLink = Uri.parse("https://wafflestagram.page.link/?link=https://wafflestudio.com/?content=$feedId&apn=com.wafflestudio.wafflestagram&amv=2&afl=https://github.com/wafflestudio19-5/team3-android/issues/46&st=Wafflestagram&sd=%EC%97%AC%EA%B8%B0%EB%A5%BC+%EB%88%8C%EB%9F%AC+%EB%A7%81%ED%81%AC%EB%A5%BC+%ED%99%95%EC%9D%B8%ED%95%98%EC%84%B8%EC%9A%94.&si=https://raw.githubusercontent.com/wafflestudio/19.5-rookies/master/wafflestudio_logo.png"
+            +"&ofl=https://github.com/wafflestudio19-5/team3-android/issues/46"
+        )
+        shortenLongLink(dynamicLink)
+    }
+
+    fun shortenLongLink(dynamicLink: Uri) {
+        val shortLinkTask = Firebase.dynamicLinks.shortLinkAsync {
+            longLink = dynamicLink
+        }.addOnSuccessListener { (shortLink, flowChartLink) ->
+            shareLink(shortLink!!)
+        }.addOnFailureListener {
+            e -> Timber.e(e)
+        }
+    }
+
+    fun shareLink(dynamicLink: Uri){
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, dynamicLink.toString())
+            type = "text/plain"
+        }
+        val intent = Intent.createChooser(sendIntent, "share")
+        context?.startActivity(intent)
+        dismiss()
     }
 
     interface ButtonClickListener{

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityAddBirthdayBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -38,6 +39,14 @@ class AddBirthdayActivity : AppCompatActivity() {
             intent.putExtra(SIGNUP_ACTIVITY_EXTRA_PASSWORD, password)
             intent.putExtra(SIGNUP_ACTIVITY_EXTRA_BIRTHDAY, binding.textBirthday.text.toString())
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
     }
 

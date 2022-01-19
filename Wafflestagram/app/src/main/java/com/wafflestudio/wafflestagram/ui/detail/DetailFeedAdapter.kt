@@ -13,10 +13,12 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
 import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
@@ -169,6 +171,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                     }
 
                     buttonLike.setOnClickListener {
+                        buttonLike.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context, R.anim.heart))
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
                             detailFeedInterface.unlike(data.id.toInt(), position)
@@ -194,7 +197,6 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                             override fun onClicked(id: Int, position: Int) {
                                 detailFeedInterface.deleteFeed(id, position)
                             }
-
                         })
                         feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as DetailFeedActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
                     }

@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityLikeBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
@@ -30,6 +31,7 @@ class LikeActivity : AppCompatActivity() , LikeInterface{
         super.onCreate(savedInstanceState)
         binding = ActivityLikeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
         likeAdapter = LikeAdapter(this)
         likeLayoutManager = LinearLayoutManager(this)
@@ -41,6 +43,7 @@ class LikeActivity : AppCompatActivity() , LikeInterface{
 
         binding.buttonBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
 
         val id = intent.getIntExtra("id", 0)
@@ -77,6 +80,13 @@ class LikeActivity : AppCompatActivity() , LikeInterface{
                 viewModel.getMyFollowing(0, 500)
             }
         })
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
     }
 
     fun checkFollowing(id: Int) : Response<Boolean> {

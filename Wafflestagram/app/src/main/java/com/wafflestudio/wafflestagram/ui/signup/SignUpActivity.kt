@@ -1,9 +1,10 @@
 package com.wafflestudio.wafflestagram.ui.signup
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.tabs.TabLayout
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,6 +43,14 @@ class SignUpActivity : AppCompatActivity() {
         binding.buttonLogin.setOnClickListener{
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
     }
 

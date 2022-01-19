@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityCommentBinding
 import com.wafflestudio.wafflestagram.databinding.DialogReconfirmBinding
 import com.wafflestudio.wafflestagram.model.Comment
@@ -48,6 +49,7 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
         super.onCreate(savedInstanceState)
         binding = ActivityCommentBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
         commentAdapter = CommentAdapter(this)
         commentLayoutManager = LinearLayoutManager(this)
@@ -144,6 +146,7 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
 
         binding.buttonBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
         viewModel.deleteCommentResponse.observe(this, {response->
             if(response.isSuccessful){
@@ -220,6 +223,13 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
             val y = (bound.height() * height).toInt()
 
             window?.setLayout(x, y)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
     }
 

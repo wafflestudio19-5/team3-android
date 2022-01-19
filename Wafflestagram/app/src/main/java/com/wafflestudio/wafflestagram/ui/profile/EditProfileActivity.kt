@@ -25,6 +25,7 @@ import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3Client
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.BuildConfig
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityEditProfileBinding
 import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
@@ -53,11 +54,10 @@ class EditProfileActivity: AppCompatActivity() {
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.d("Edit Profile")
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         awsCredentials = BasicAWSCredentials(
             BuildConfig.AWS_S3_ACCESS_KEY,
             BuildConfig.AWS_S3_SECRET_KEY
@@ -83,6 +83,7 @@ class EditProfileActivity: AppCompatActivity() {
 
         binding.buttonClose.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
 
         binding.buttonCheck.setOnClickListener{
@@ -135,6 +136,13 @@ class EditProfileActivity: AppCompatActivity() {
             }
 
         })
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
     }
 
     private fun upload(image : String){
