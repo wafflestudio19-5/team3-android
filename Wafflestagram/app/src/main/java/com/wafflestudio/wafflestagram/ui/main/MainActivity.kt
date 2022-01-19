@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         userProfileBinding = IconUserProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // LogOut 상태인 경우 LoginActivity로 이동
+        // Logout 상태인 경우 LoginActivity로 이동
         if(sharedPreferences.getString(TOKEN, "") == "") {
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

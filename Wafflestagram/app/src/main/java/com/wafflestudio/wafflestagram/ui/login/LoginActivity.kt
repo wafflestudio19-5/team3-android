@@ -1,5 +1,6 @@
 package com.wafflestudio.wafflestagram.ui.login
 
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -156,17 +157,18 @@ class LoginActivity : AppCompatActivity() {
         // Activity Callback Function(instead of startActivityForResult)
         googleResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()) { result ->
-            val requestCode = intent!!.getIntExtra("requestCode", 0)
             val resultCode = result.resultCode
             val data = result.data
-            if (requestCode == GOOGLE_RC_SIGN_IN && resultCode == RESULT_OK){
+            Timber.d("${intent!!.getIntExtra("requestCode", 0)}")
+            if (resultCode == RESULT_OK){
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 try {
+                    Timber.d("Login Success")
                     val account = task.getResult(ApiException::class.java)
                     // Signed in successfully
                     loginWithGoogleIdToken(account)
                 } catch (e: ApiException) {
-                    Timber.w("signInResult:failed code=" + e.statusCode);
+                    Timber.w("signInResult:failed code=" + e.statusCode)
                     loginWithGoogleIdToken(null)
                 }
             }
@@ -176,8 +178,8 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonSocialLoginGoogle.setOnClickListener { result ->
             when (result.id) {
                 R.id.button_social_login_google -> {
+                    googleSignInClient.signOut()
                     val signInIntent = googleSignInClient.signInIntent
-                    signInIntent.putExtra("requestCode", GOOGLE_RC_SIGN_IN)
                     googleResultLauncher.launch(signInIntent)
                 }
                 else -> {
@@ -219,17 +221,9 @@ class LoginActivity : AppCompatActivity() {
         })
 
         viewModel.fetchDummy.observe(this, {
-            //Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            Timber.d("SignInToken:$it")
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        // Check for existing Google Sign In account, if the user is already signed in
-        // the GoogleSignInAccount will be non-null.
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        loginWithGoogleIdToken(account)
     }
 
     override fun onBackPressed() {
@@ -267,14 +261,22 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginWithGoogleIdToken(account: GoogleSignInAccount?) {
         if(account != null){
+            Timber.d("loginWithGoogleIdToken")
+            setClipboard(this, account.idToken!!)
             viewModel.getResponseByGoogleLogin(account.idToken!!)
         }
     }
 
     private fun loginWithFacebookIdToken(token: AccessToken){
         Timber.d("loginWithFacebookIdToken:$token")
-        Timber.d(token.token)
+        setClipboard(this, token.token)
         viewModel.getResponseByFacebookLogin(token.token)
+    }
+
+    private fun setClipboard(context: Context, text: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = android.content.ClipData.newPlainText("Copied Text", text)
+        clipboard.setPrimaryClip(clip)
     }
 
     companion object{
