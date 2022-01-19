@@ -39,25 +39,14 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun getResponseBySocialLogin(provider: String) {
-        viewModelScope.launch {
-            try {
-                val data = loginRepository.getResponseBySocialLogin(provider)
-                _fetchSocialLoginUrl.value = data
-            } catch (e: IOException) {
-                Timber.e(e)
-            }
-        }
-    }
-
     fun getResponseByGoogleLogin(idToken: String) {
         viewModelScope.launch {
             try {
                 _fetchDummy.value = idToken
-
+                /*
                 val data = loginRepository.getResponseByGoogleLogin(idToken)
                 _fetchLoginResponse.value = data
-
+*/
             } catch (e: IOException) {
                 Timber.e(e)
             }
@@ -68,10 +57,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _fetchDummy.value = token
-
+/*
                 val data = loginRepository.getResponseByFacebookLogin(token)
                 _fetchLoginResponse.value = data
-
+*/
             } catch (e: IOException) {
                 Timber.e(e)
             }

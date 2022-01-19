@@ -190,6 +190,15 @@
             tools:ignore="TouchTargetSizeCheck" />
         -->
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/button_social_login_google"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!--
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_social_login_google"
             android:layout_width="360dp"
@@ -207,6 +216,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="TouchTargetSizeCheck"/>
+            -->
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline9"
