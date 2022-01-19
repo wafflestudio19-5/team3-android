@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -14,10 +16,12 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ItemFeedBinding
 import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.model.Feed
@@ -177,6 +181,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                             feedInterface.like(data.id.toInt(), position)
                             textLike.text = (textLike.text.toString().toInt()+1).toString()
                         }
+                        buttonLike.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context, R.anim.heart))
                     }
 
                     Glide.with(holder.itemView.context).load(data.author.profilePhotoURL).centerCrop().into(holder.binding.buttonUserImage)
@@ -190,6 +195,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         feedBottomSheetFragment.arguments = bundle
                         feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as MainActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
                     }
+
                 }
 
             }

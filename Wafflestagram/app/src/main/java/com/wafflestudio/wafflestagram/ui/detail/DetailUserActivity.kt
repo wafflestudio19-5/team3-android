@@ -41,6 +41,7 @@ class DetailUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
         val id = intent.getIntExtra("id", -1)
 
@@ -195,6 +196,7 @@ class DetailUserActivity : AppCompatActivity() {
 
         binding.buttonBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
 
         binding.areaFollowers.setOnClickListener {
@@ -218,5 +220,11 @@ class DetailUserActivity : AppCompatActivity() {
         }
 
 
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
     }
 }

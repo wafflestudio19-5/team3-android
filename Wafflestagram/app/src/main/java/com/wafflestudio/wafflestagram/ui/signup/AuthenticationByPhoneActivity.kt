@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityAuthenticationByPhoneBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,6 +61,9 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthenticationByPhoneBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+
         auth = FirebaseAuth.getInstance()
         auth.useAppLanguage()
         phoneNumber = intent.getStringExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER)!!
@@ -96,6 +100,13 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
+    }
+
     private fun startPhoneVerification(phoneNumber: String){
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)
@@ -126,6 +137,7 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
                     val intent = Intent(this, SignUpDetailActivity::class.java)
                     intent.putExtra(SIGNUP_ACTIVITY_EXTRA_PHONE_NUMBER, phoneNumber)
                     startActivity(intent)
+                    overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
                 }else{
                     showDialog("  코드가 유효하지 않습니다. 새 코드를 요청하세요.")
                 }

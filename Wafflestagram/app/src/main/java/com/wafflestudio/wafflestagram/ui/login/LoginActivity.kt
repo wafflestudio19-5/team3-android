@@ -190,6 +190,7 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonSignup.setOnClickListener{
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
         }
 
         // fetch Responses
@@ -232,7 +233,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        finish()
+        finishAffinity()
     }
 
     private fun resizeDialog(context: Context, dialog: AlertDialog, width: Float, height: Float){

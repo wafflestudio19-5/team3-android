@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aghajari.zoomhelper.ZoomHelper
 import com.bumptech.glide.Glide
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailFeedBinding
 import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
@@ -43,6 +44,7 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
         ZoomHelper.getInstance().maxScale = 3f
 
@@ -63,6 +65,7 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
 
         binding.buttonBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
 
         binding.refreshLayoutFeed.setColorSchemeColors(*intArrayOf(
@@ -113,6 +116,13 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
             }
         })
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
     }
 
     override fun deleteFeed(id: Int, position: Int){

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -69,6 +70,14 @@ class SignUpDetailActivity : AppCompatActivity() {
             intent.putExtra(SIGNUP_ACTIVITY_EXTRA_NAME, binding.editName.text.toString())
             intent.putExtra(SIGNUP_ACTIVITY_EXTRA_PASSWORD, binding.editPassword.text.toString())
             startActivity(intent)
+            overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
     }
 

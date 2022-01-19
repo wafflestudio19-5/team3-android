@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.aghajari.zoomhelper.ZoomHelper
 import com.bumptech.glide.Glide
+import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityEditPostBinding
 import com.wafflestudio.wafflestagram.network.dto.EditPostRequest
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
@@ -28,6 +29,7 @@ class EditPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
         ZoomHelper.getInstance().maxScale = 3f
 
@@ -47,6 +49,7 @@ class EditPostActivity : AppCompatActivity() {
 
         binding.buttonBack.setOnClickListener {
             finish()
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
         }
 
         binding.buttonComplete.setOnClickListener {
@@ -80,6 +83,13 @@ class EditPostActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(isFinishing){
+            overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
     }
 
     private fun getBetween(time: LocalDateTime, time2: ZonedDateTime) : String{

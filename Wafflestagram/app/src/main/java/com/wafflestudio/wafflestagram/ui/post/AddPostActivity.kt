@@ -53,6 +53,7 @@ class AddPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
         binding.imageSelected.isClickable = false
         binding.imageSelected.isEnabled = false
@@ -106,6 +107,7 @@ class AddPostActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+        overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
     }
 
     private fun addPost(){

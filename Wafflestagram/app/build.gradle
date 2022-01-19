@@ -16,8 +16,8 @@ android {
         applicationId "com.wafflestudio.wafflestagram"
         minSdk 26
         targetSdk 31
-        versionCode 1
-        versionName "1.1.4"
+        versionCode 2
+        versionName "1.1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"https://wafflestagram.shop\"")
@@ -139,6 +139,10 @@ dependencies {
 
     // Expandable Recyclerview
     implementation("com.github.pokercc:ExpandableRecyclerView:0.9.3")
+
+    // Dynamic Link
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
+
 }
 
 apply plugin: "com.google.gms.google-services"
