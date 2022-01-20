@@ -140,7 +140,7 @@ class AddPostActivity : AppCompatActivity() {
                     //Timber.e(fileName)
                     Handler(Looper.getMainLooper()).postDelayed({
                         continueUpload()
-                    }, 500)
+                    }, 400)
                 }else if(state == TransferState.FAILED || state == TransferState.WAITING_FOR_NETWORK){
                     Toast.makeText(this@AddPostActivity, "연결이 불안정합니다", Toast.LENGTH_LONG).show()
                 }
