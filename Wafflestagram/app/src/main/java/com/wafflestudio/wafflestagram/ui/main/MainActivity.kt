@@ -17,6 +17,7 @@ import com.wafflestudio.wafflestagram.databinding.ActivityMainBinding
 import com.wafflestudio.wafflestagram.databinding.IconUserProfileBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint

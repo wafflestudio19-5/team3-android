@@ -119,9 +119,9 @@ class LoginActivity : AppCompatActivity() {
 
         // Callback registration
         binding.buttonSocialLoginFacebook.registerCallback(facebookCallbackManager, object : FacebookCallback<LoginResult?> {
-            override fun onSuccess(loginResult: LoginResult?) {
-                Timber.d("facebook:onSuccess:$loginResult")
-                loginWithFacebookIdToken(loginResult!!.accessToken)
+            override fun onSuccess(result: LoginResult?) {
+                Timber.d("facebook:onSuccess:$result")
+                loginWithFacebookIdToken(result!!.accessToken)
             }
 
             override fun onCancel() {
@@ -129,7 +129,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onError(error: FacebookException) {
-                Timber.e("facebook:onError", error)
+                Timber.e(error)
             }
         })
 
@@ -159,7 +159,6 @@ class LoginActivity : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()) { result ->
             val resultCode = result.resultCode
             val data = result.data
-            Timber.d("${intent!!.getIntExtra("requestCode", 0)}")
             if (resultCode == RESULT_OK){
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 try {
@@ -178,9 +177,10 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonSocialLoginGoogle.setOnClickListener { result ->
             when (result.id) {
                 R.id.button_social_login_google -> {
-                    googleSignInClient.signOut()
                     val signInIntent = googleSignInClient.signInIntent
                     googleResultLauncher.launch(signInIntent)
+                    // facebook login 버튼처럼 따로 logout 기능이 없어서 로그인 하자마자 로그아웃 시켰습니다
+                    googleSignInClient.signOut()
                 }
                 else -> {
                     Timber.w("버튼 터치 과정에서 오류가 발생했습니다.")
@@ -261,20 +261,18 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginWithGoogleIdToken(account: GoogleSignInAccount?) {
         if(account != null){
-            Timber.d("loginWithGoogleIdToken")
             setClipboard(this, account.idToken!!)
             viewModel.getResponseByGoogleLogin(account.idToken!!)
         }
     }
 
     private fun loginWithFacebookIdToken(token: AccessToken){
-        Timber.d("loginWithFacebookIdToken:$token")
         setClipboard(this, token.token)
         viewModel.getResponseByFacebookLogin(token.token)
     }
 
     private fun setClipboard(context: Context, text: String) {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = android.content.ClipData.newPlainText("Copied Text", text)
         clipboard.setPrimaryClip(clip)
     }
