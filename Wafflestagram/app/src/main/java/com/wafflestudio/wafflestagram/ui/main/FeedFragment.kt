@@ -152,11 +152,6 @@ class FeedFragment : Fragment() ,FeedInterface {
             }
         })
 
-        viewModel.likeResponse.observe(viewLifecycleOwner, {response ->
-            if(response.isSuccessful){
-                //feedAdapter.changeData(response.body()!!, itemPosition)
-            }
-        })
     }
 
     fun setRecyclerviewPosition(position: Int){

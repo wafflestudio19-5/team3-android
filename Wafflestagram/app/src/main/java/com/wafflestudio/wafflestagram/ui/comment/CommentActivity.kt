@@ -9,9 +9,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -83,6 +86,19 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
                 }
             }
         })
+
+        binding.editComment.imeOptions = EditorInfo.IME_ACTION_SEND
+        binding.editComment.setRawInputType(InputType.TYPE_CLASS_TEXT)
+
+        binding.editComment.setOnKeyListener { view, i, keyEvent ->
+            if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN){
+                if(binding.buttonComment.isEnabled){
+                    binding.buttonComment.performClick()
+                    true
+                }
+            }
+            false
+        }
 
         binding.buttonComment.setOnClickListener {
             if(!isReply){

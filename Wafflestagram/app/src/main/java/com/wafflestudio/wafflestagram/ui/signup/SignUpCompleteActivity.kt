@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import androidx.activity.viewModels
 import androidx.core.content.edit
 import com.wafflestudio.wafflestagram.R
@@ -72,6 +73,17 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.editUsername.setOnKeyListener { view, i, keyEvent ->
+            if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN){
+                if(binding.buttonComplete.isEnabled){
+                    binding.buttonComplete.performClick()
+                    true
+                }
+            }
+            false
+        }
+
         binding.buttonComplete.setOnClickListener{
             if(android.util.Patterns.EMAIL_ADDRESS.matcher(binding.editEmail.text).matches()){
                 binding.textInputLayoutEmail.error = null

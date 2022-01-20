@@ -158,12 +158,12 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:elevation="10dp"
-                android:visibility="gone"
+                android:alpha="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/view_pager_image"
                 app:layout_constraintTop_toTopOf="@+id/view_pager_image"
-                app:srcCompat="@drawable/view_heart" />
+                app:srcCompat="@drawable/avd_heart" />
 
             <LinearLayout
                 android:id="@+id/number_indicator_pager"
