@@ -99,6 +99,11 @@ class MainActivity : AppCompatActivity() {
         viewModel.myInfo.observe(this, { response->
             if(response.isSuccessful){
                 Glide.with(this).load(response.body()?.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
+            }else if(response.code() == 401){
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                finish()
             }
         })
     }

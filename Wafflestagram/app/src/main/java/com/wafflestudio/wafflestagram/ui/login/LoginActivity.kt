@@ -6,11 +6,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -32,6 +34,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
+import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
@@ -100,6 +103,16 @@ class LoginActivity : AppCompatActivity() {
             }
 
         })
+
+        binding.editPassword.setOnKeyListener { view, i, keyEvent ->
+            if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN){
+                if(binding.buttonLogin.isEnabled){
+                    binding.buttonLogin.performClick()
+                    true
+                }
+            }
+            false
+        }
 
         //login 버튼 클릭 이벤트
         binding.buttonLogin.setOnClickListener {
@@ -205,8 +218,8 @@ class LoginActivity : AppCompatActivity() {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
-            } else {
-                Toast.makeText(this, "이메일 또는 비밀번호가 잘못되었습니다.", Toast.LENGTH_SHORT).show()
+            } else if(response.code() == 401){
+                showDialog("입력하신 이메일\n혹은 비밀번호가\n잘못되었습니다.")
             }
         })
 
@@ -250,6 +263,22 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         finishAffinity()
+    }
+
+    private fun showDialog(contents: String){
+        val dialogBinding = DialogBinding.inflate(layoutInflater)
+        val dialogBuilder = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+
+        val dialog = dialogBuilder.create()
+        dialog.show()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        resizeDialog(this, dialog, 0.65F, 0.35F)
+        dialogBinding.textDialogContents.text = contents
+        dialogBinding.buttonDialog.setOnClickListener {
+            dialog.dismiss()
+        }
     }
 
     private fun resizeDialog(context: Context, dialog: AlertDialog, width: Float, height: Float){

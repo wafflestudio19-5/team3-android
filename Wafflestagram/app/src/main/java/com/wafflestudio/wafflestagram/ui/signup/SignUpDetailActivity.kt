@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpDetailBinding
@@ -63,6 +64,16 @@ class SignUpDetailActivity : AppCompatActivity() {
             }
 
         })
+
+        binding.editPassword.setOnKeyListener { view, i, keyEvent ->
+            if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN){
+                if(binding.buttonContinue.isEnabled){
+                    binding.buttonContinue.performClick()
+                    true
+                }
+            }
+            false
+        }
 
         binding.buttonContinue.setOnClickListener{
             val intent = Intent(this, AddBirthdayActivity::class.java)
