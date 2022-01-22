@@ -70,7 +70,6 @@ class UserFragment: Fragment() {
             viewModel.getMyFeedCount()
 
             binding.buttonDM.visibility = View.GONE
-            binding.buttonMenu.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.icon_close))
 
             // post 작성 버튼
             binding.buttonAdd.setOnClickListener{
