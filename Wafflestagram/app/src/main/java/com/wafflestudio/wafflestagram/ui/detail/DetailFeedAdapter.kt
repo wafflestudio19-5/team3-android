@@ -3,6 +3,7 @@ package com.wafflestudio.wafflestagram.ui.detail
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.Typeface
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.R
@@ -101,6 +103,33 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                     textContent.isClickable = true
                     textContent.movementMethod = LinkMovementMethod.getInstance()
                     textContent.text = spannable
+
+                    imageAdapter.setOnClickedListener(object : ViewPagerImageAdapter.ButtonClickListener{
+                        override fun onClicked(id: Int, position: Int) {
+                            if(buttonLike.isSelected){
+                            }else{
+                                buttonLike.isSelected = true
+                                detailFeedInterface.like(data.id.toInt(), position)
+                                textLike.text = (textLike.text.toString().toInt()+1).toString()
+                            }
+                            buttonLike.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context, R.anim.heart))
+                            imageViewHeart.alpha = 1.0f
+                            if(imageViewHeart.drawable is AnimatedVectorDrawableCompat){
+                                val avd = (imageViewHeart.drawable as AnimatedVectorDrawableCompat)
+                                if(avd.isRunning){
+                                    avd.stop()
+                                }
+                                avd.start()
+                            }else if(imageViewHeart.drawable is AnimatedVectorDrawable){
+                                val avd = (imageViewHeart.drawable as AnimatedVectorDrawable)
+                                if(avd.isRunning){
+                                    avd.stop()
+                                }
+                                avd.start()
+                            }
+                        }
+
+                    })
 
                     viewPagerImage.apply {
                         adapter = imageAdapter

@@ -1,5 +1,7 @@
 package com.wafflestudio.wafflestagram.ui.main
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +29,16 @@ class ViewPagerImageAdapter : RecyclerView.Adapter<ViewPagerImageAdapter.ImageVi
         holder.apply {
             Glide.with(itemView.context).load(data.path).centerCrop().into(binding.imagePhoto)
         }
+
+        var doubleClickTime = 0L
+        holder.itemView.setOnClickListener {
+            if(System.currentTimeMillis() - doubleClickTime < 500){
+                onClickedListener.onClicked(0,0)
+                doubleClickTime = 0L
+            }else{
+                doubleClickTime = System.currentTimeMillis()
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -35,6 +47,16 @@ class ViewPagerImageAdapter : RecyclerView.Adapter<ViewPagerImageAdapter.ImageVi
 
     fun updateData(photos: List<Photo>){
         this.photos = photos
+    }
+
+    interface ButtonClickListener{
+        fun onClicked(id: Int, position: Int)
+    }
+
+    private lateinit var onClickedListener: ButtonClickListener
+
+    fun setOnClickedListener(listener: ButtonClickListener){
+        onClickedListener = listener
     }
 
 }

@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -91,6 +92,17 @@ class AuthenticationByPhoneActivity : AppCompatActivity() {
             }
 
         })
+
+        binding.editCode.setOnKeyListener { view, i, keyEvent ->
+            if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN){
+                if(binding.buttonNext.isEnabled){
+                    binding.buttonNext.performClick()
+                    true
+                }
+            }
+            false
+        }
+
         binding.buttonNext.setOnClickListener{
             val phoneAuthCredential = PhoneAuthProvider.getCredential(storedVerificationId, binding.editCode.text.toString())
             verifyPhoneWithCode(phoneAuthCredential)

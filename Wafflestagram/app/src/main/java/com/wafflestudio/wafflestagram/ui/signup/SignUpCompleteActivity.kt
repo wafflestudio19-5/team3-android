@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import androidx.activity.viewModels
 import androidx.core.content.edit
 import com.wafflestudio.wafflestagram.R
@@ -72,6 +73,17 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.editUsername.setOnKeyListener { view, i, keyEvent ->
+            if(i == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN){
+                if(binding.buttonComplete.isEnabled){
+                    binding.buttonComplete.performClick()
+                    true
+                }
+            }
+            false
+        }
+
         binding.buttonComplete.setOnClickListener{
             if(android.util.Patterns.EMAIL_ADDRESS.matcher(binding.editEmail.text).matches()){
                 binding.textInputLayoutEmail.error = null
@@ -104,7 +116,7 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
-            }else if(response.code() == 409){
+            }else if(response.code() == 400){
                 //에러 메시지
                 binding.textInputLayoutUsername.error = "이메일 또는 사용자 이름이 이미 사용 중입니다. 다시 입력해주세요."
             }else{
