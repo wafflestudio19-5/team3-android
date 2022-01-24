@@ -1,5 +1,6 @@
 package com.wafflestudio.wafflestagram.ui.comment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,15 +12,19 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.R
@@ -31,7 +36,6 @@ import com.wafflestudio.wafflestagram.network.dto.AddReplyRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.http.DELETE
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -112,6 +116,15 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
             }
             binding.editComment.text = null
         }
+
+        setEmojiButton(binding.buttonEmoji1)
+        setEmojiButton(binding.buttonEmoji2)
+        setEmojiButton(binding.buttonEmoji3)
+        setEmojiButton(binding.buttonEmoji4)
+        setEmojiButton(binding.buttonEmoji5)
+        setEmojiButton(binding.buttonEmoji6)
+        setEmojiButton(binding.buttonEmoji7)
+        setEmojiButton(binding.buttonEmoji8)
 
         binding.buttonReplyClose.setOnClickListener {
             isReply = false
@@ -246,6 +259,27 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
         super.onBackPressed()
         if(isFinishing){
             overridePendingTransition(R.anim.slide_left_enter, R.anim.slide_left_exit)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setEmojiButton(button: TextView){
+        button.setOnTouchListener { view, motionEvent ->
+            when(motionEvent.action){
+                MotionEvent.ACTION_DOWN ->{
+                    button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 21F)
+                }
+                MotionEvent.ACTION_UP ->{
+                    button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 23F)
+                }
+            }
+            false
+        }
+        button.setOnClickListener {
+            var str = binding.editComment.text.toString()
+            str += button.text.toString()
+            binding.editComment.setText(str)
+            binding.editComment.setSelection(str.length)
         }
     }
 
