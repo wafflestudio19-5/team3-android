@@ -116,7 +116,7 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
-            }else if(response.code() == 409){
+            }else if(response.code() == 400){
                 //에러 메시지
                 binding.textInputLayoutUsername.error = "이메일 또는 사용자 이름이 이미 사용 중입니다. 다시 입력해주세요."
             }else{

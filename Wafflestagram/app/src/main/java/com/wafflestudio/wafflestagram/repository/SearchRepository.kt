@@ -11,6 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SearchRepository @Inject constructor(private val searchService: SearchService){
+
     suspend fun search(nickname: String): Response<UserPage>{
         return searchService.search(nickname)
     }
