@@ -15,17 +15,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
-import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
+import com.wafflestudio.wafflestagram.ui.dialog.MenuBottomSheetFragment
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
 import com.wafflestudio.wafflestagram.ui.post.AddPostActivity
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.internal.managers.FragmentComponentManager
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -110,12 +110,9 @@ class UserFragment: Fragment() {
             }
 
             binding.buttonMenu.setOnClickListener {
-                sharedPreferences.edit {
-                    putString("token", "")
-                }
-                val intent = Intent(context, LoginActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intent)
+                // TODO: bottombar 나오도록 하기
+                val menuBottomSheetFragment = MenuBottomSheetFragment(_context)
+                menuBottomSheetFragment.show((FragmentComponentManager.findActivity(_context) as MainActivity).supportFragmentManager, MenuBottomSheetFragment.TAG)
             }
         } else {
             // the user is other one
@@ -226,23 +223,6 @@ class UserFragment: Fragment() {
             intent.putExtra("activity", 1)
             startActivity(intent)
         }
-    }
-
-    // for creating option menu
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val inflater = MenuInflater(context)
-        inflater.inflate(R.menu.menu_user, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_settings ->
-                Toast.makeText(context, "settings select", Toast.LENGTH_SHORT).show()
-
-            R.id.menu_logout ->
-                Toast.makeText(context, "logout select", Toast.LENGTH_SHORT).show()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun checkFollowingStatus() {
