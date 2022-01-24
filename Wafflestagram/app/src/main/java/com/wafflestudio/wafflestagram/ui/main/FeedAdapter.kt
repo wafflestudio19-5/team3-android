@@ -193,11 +193,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         ContextCompat.startActivity(holder.itemView.context, intent, null)
                     }
 
-                    if(data.likes.contains(currUser)){
-                        buttonLike.isSelected = true
-                    }else{
-                        buttonLike.isSelected = false
-                    }
+                    buttonLike.isSelected = data.likes.contains(currUser)
 
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){
