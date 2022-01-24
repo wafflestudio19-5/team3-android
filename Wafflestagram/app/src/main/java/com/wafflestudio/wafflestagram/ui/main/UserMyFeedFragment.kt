@@ -13,6 +13,7 @@ import com.wafflestudio.wafflestagram.databinding.FragmentUserMyFeedBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,12 +53,22 @@ class UserMyFeedFragment: Fragment() {
             )
         }
         // recyclerView -> 3행 Grid 형식으로 지정
-        userLayoutManager = GridLayoutManager(context, 3)
+        userLayoutManager = GridLayoutManager(context, 3).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+                override fun getSpanSize(position: Int): Int {
+                    return when(userPhotoAdapter.getItemViewType(position)){
+                        UserPhotoAdapter.VIEW_TYPE_LOADING -> 3
+                        UserPhotoAdapter.VIEW_TYPE_FEED -> 1
+                        else -> throw IllegalStateException("viewType must be 0 or 1")
+                    }
+                }
+            }
+        }
         binding.recyclerViewPhotos.apply {
             adapter = userPhotoAdapter
             layoutManager = userLayoutManager
         }
-        viewModel.getMyFeeds(0, 100)
+        viewModel.getMyFeeds(0, 12)
 
         viewModel.page.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
@@ -65,7 +76,6 @@ class UserMyFeedFragment: Fragment() {
             }else{
 
             }
-
         })
     }
 }

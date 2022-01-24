@@ -10,7 +10,6 @@ import javax.inject.Singleton
 @Singleton
 class AddPostRepository @Inject constructor(private val feedService: FeedService) {
 
-
     suspend fun addPost(addPostRequest: AddPostRequest): Response<Feed>{
         return feedService.addPost(addPostRequest)
     }
