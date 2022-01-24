@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Typeface
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
@@ -12,6 +13,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -19,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.aghajari.zoomhelper.ZoomHelper
 import com.bumptech.glide.Glide
@@ -34,6 +37,7 @@ import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import timber.log.Timber
@@ -130,6 +134,33 @@ class SharedFeedActivity : AppCompatActivity() {
                     textContent.isClickable = true
                     textContent.movementMethod = LinkMovementMethod.getInstance()
                     textContent.text = spannable
+
+                    sharedFeedAdapter.setOnClickedListener(object : SharedFeedAdapter.ButtonClickListener{
+                        override fun onClicked(id: Int, position: Int) {
+                            if(buttonLike.isSelected){
+                            }else{
+                                buttonLike.isSelected = true
+                                viewModel.like(data.id.toInt())
+                                textLike.text = (textLike.text.toString().toInt()+1).toString()
+                            }
+                            buttonLike.startAnimation(AnimationUtils.loadAnimation(this@SharedFeedActivity, R.anim.heart))
+                            imageViewHeart.alpha = 1.0f
+                            if(imageViewHeart.drawable is AnimatedVectorDrawableCompat){
+                                val avd = (imageViewHeart.drawable as AnimatedVectorDrawableCompat)
+                                if(avd.isRunning){
+                                    avd.stop()
+                                }
+                                avd.start()
+                            }else if(imageViewHeart.drawable is AnimatedVectorDrawable){
+                                val avd = (imageViewHeart.drawable as AnimatedVectorDrawable)
+                                if(avd.isRunning){
+                                    avd.stop()
+                                }
+                                avd.start()
+                            }
+                        }
+
+                    })
 
                     viewPagerImage.apply {
                         adapter = sharedFeedAdapter
@@ -284,6 +315,10 @@ class SharedFeedActivity : AppCompatActivity() {
             duration = fadeDuration
             startDelay = delay
         }.start()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        return ZoomHelper.getInstance().dispatchTouchEvent(ev!!, this) || super.dispatchTouchEvent(ev)
     }
 
     companion object{
