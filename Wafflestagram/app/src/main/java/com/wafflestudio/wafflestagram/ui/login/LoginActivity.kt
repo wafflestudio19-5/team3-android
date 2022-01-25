@@ -54,9 +54,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var facebookResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var googleResultLauncher: ActivityResultLauncher<Intent>
 
-    // Google Login Request Code
+    // Facebook Login Request Code
     private val FACEBOOK_RC_SIGN_IN = 1
-    private val GOOGLE_RC_SIGN_IN = 2
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
