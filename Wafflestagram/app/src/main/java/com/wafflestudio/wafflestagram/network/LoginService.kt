@@ -23,7 +23,7 @@ interface LoginService {
         @Header("idToken") idToken: String
     ): Response<User>
 
-    @POST("/api/v1/social_login/facebook/")
+    @POST("/api/v1/social_login/facebook/verify/")
     suspend fun getResponseByFacebookLogin(
         @Header("idToken") token: String
     ): Response<User>
