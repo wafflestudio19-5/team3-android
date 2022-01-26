@@ -1,5 +1,6 @@
 package com.wafflestudio.wafflestagram.network
 
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
 import com.wafflestudio.wafflestagram.network.dto.TokenResponse
 import okhttp3.ResponseBody
@@ -20,10 +21,10 @@ interface LoginService {
     @POST("/api/v1/social_login/google/")
     suspend fun getResponseByGoogleLogin(
         @Header("idToken") idToken: String
-    ): Response<ResponseBody>
+    ): Response<User>
 
     @POST("/api/v1/social_login/facebook/")
     suspend fun getResponseByFacebookLogin(
         @Header("idToken") token: String
-    ): Response<ResponseBody>
+    ): Response<User>
 }

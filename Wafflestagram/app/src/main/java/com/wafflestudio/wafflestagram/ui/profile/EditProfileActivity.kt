@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,7 @@ import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.classes.SingleListener
@@ -104,6 +106,13 @@ class EditProfileActivity: AppCompatActivity() {
                 )
                 viewModel.updateUser(updateUserRequest)
             }
+        }
+
+        binding.buttonPersonalInfo.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            intent.putExtra("fragmentNum", SettingsActivity.SETTING_EDIT_PERSONAL_INFO_FRAGMENT)
+            Timber.d(intent.getIntExtra("fragmentNum", 1).toString())
+            startActivity(intent)
         }
 
         viewModel.image.observe(this, {response->

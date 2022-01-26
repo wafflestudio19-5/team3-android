@@ -35,6 +35,7 @@ import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
+import com.wafflestudio.wafflestagram.ui.signup.SocialLoginUsernameActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -171,7 +172,6 @@ class LoginActivity : AppCompatActivity() {
                     loginWithGoogleIdToken(null)
                 }
             }
-            // result canceled됨...
         }
 
         binding.buttonSocialLoginGoogle.setOnClickListener { result ->
@@ -207,6 +207,28 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "이메일 또는 비밀번호가 잘못되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        viewModel.fetchSocialLoginResponse.observe(this, { response ->
+            if(response.isSuccessful){
+                sharedPreferences.edit {
+                    putString(TOKEN, response.headers()["Authentication"])
+                    putInt(CURRENT_USER_ID, response.body()!!.id.toInt())
+                }
+                if(response.body()!!.username == null) {
+                    // 새로 회원가입하는 경우(또는 소셜 로그인 회원가입 절차가 제대로 마무리되지 않은 경우)
+                    val intent = Intent(this, SocialLoginUsernameActivity::class.java)
+                    intent.putExtra(NAME, response.body()!!.name)
+                    intent.putExtra(WEBSITE, response.body()!!.website)
+                    intent.putExtra(BIO, response.body()!!.bio)
+                    startActivity(intent)
+                } else {
+                    // 기존 회원이 로그인하는 경우
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
             }
         })
 
@@ -278,6 +300,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     companion object{
+        const val NAME = "name"
+        const val WEBSITE = "website"
+        const val BIO = "bio"
         const val TOKEN = "token"
         const val CURRENT_USER_ID = "currentUserId"
     }
