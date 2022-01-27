@@ -213,6 +213,7 @@ class LoginActivity : AppCompatActivity() {
                 sharedPreferences.edit {
                     putString(TOKEN, response.headers()["Authentication"])
                     putInt(CURRENT_USER_ID, response.body()!!.string().toInt())
+                    putBoolean(IS_LOGGED_IN, true)
                 }
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -227,6 +228,7 @@ class LoginActivity : AppCompatActivity() {
                 sharedPreferences.edit {
                     putString(TOKEN, response.headers()["Authentication"])
                     putInt(CURRENT_USER_ID, response.body()!!.id.toInt())
+                    putBoolean(IS_LOGGED_IN, true)
                 }
                 if(response.body()!!.username == null) {
                     // 새로 회원가입하는 경우(또는 소셜 로그인 회원가입 절차가 제대로 마무리되지 않은 경우)
@@ -333,5 +335,6 @@ class LoginActivity : AppCompatActivity() {
         const val BIO = "bio"
         const val TOKEN = "token"
         const val CURRENT_USER_ID = "currentUserId"
+        const val IS_LOGGED_IN = "isLoggedIn"
     }
 }

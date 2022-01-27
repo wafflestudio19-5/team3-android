@@ -1,19 +1,15 @@
 package com.wafflestudio.wafflestagram.ui.settings.account
 
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.wafflestudio.wafflestagram.databinding.FragmentEditPersonalInfoBinding
-import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import com.wafflestudio.wafflestagram.ui.main.UserViewModel
 import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
-import com.wafflestudio.wafflestagram.ui.signup.AddBirthdayActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,7 +34,7 @@ class EditPersonalInfoFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTING_EDIT_PERSONAL_INFO_FRAGMENT)
+        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT)
 
         binding.textBirthday.text = SimpleDateFormat("yyyy년MM월dd일", Locale.KOREAN).format(System.currentTimeMillis())
         binding.inputBirthday.updateDate(1, 1, 1)

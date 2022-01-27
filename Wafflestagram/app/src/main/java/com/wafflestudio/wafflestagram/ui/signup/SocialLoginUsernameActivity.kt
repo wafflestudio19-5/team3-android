@@ -30,9 +30,9 @@ class SocialLoginUsernameActivity : AppCompatActivity() {
         binding = ActivitySocialLoginUsernameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val name = intent.getStringExtra(NAME)!!
-        val website = intent.getStringExtra(WEBSITE)!!
-        val bio = intent.getStringExtra(BIO)!!
+        val name = intent.getStringExtra(NAME)
+        val website = intent.getStringExtra(WEBSITE)
+        val bio = intent.getStringExtra(BIO)
 
         binding.editUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

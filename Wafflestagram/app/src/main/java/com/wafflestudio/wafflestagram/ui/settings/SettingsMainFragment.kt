@@ -8,8 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
@@ -18,7 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentSettingsMainBinding
-import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,7 +39,7 @@ class SettingsMainFragment: Fragment() {
         _context = container!!.context
         binding = FragmentSettingsMainBinding.inflate(inflater, container, false)
 
-        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTING_MAIN_FRAGMENT)
+        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTINGS_MAIN_FRAGMENT)
 
         /** fragments in setting (implemented) **/
         binding.buttonPersonalInfo.setOnClickListener {

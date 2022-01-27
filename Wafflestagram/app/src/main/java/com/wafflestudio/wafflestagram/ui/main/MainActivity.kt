@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Logout 상태인 경우 LoginActivity로 이동
-        if(sharedPreferences.getString(TOKEN, "") == "") {
+        if(sharedPreferences.getBoolean(IS_LOGGED_IN, false)) {
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
@@ -147,5 +147,6 @@ class MainActivity : AppCompatActivity() {
         const val TOKEN = "token"
         const val CURRENT_USER_ID = "currentUserId"
         const val USER_ID = "userId"
+        const val IS_LOGGED_IN = "isLoggedIn"
     }
 }
