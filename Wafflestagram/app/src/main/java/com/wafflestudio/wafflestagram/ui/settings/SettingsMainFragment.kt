@@ -16,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentSettingsMainBinding
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity.Companion.IS_LOGGED_IN
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -43,15 +44,15 @@ class SettingsMainFragment: Fragment() {
 
         /** fragments in setting (implemented) **/
         binding.buttonPersonalInfo.setOnClickListener {
-            (activity as SettingsActivity).replaceFragment(SETTING_PERSONAL_INFO_FRAGMENT, 1)
+            (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_PERSONAL_INFO_FRAGMENT, 1)
         }
 
         binding.buttonSecurity.setOnClickListener {
-            (activity as SettingsActivity).replaceFragment(SETTING_SECURITY_FRAGMENT, 1)
+            (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_SECURITY_FRAGMENT, 1)
         }
 
         binding.buttonAccount.setOnClickListener {
-            (activity as SettingsActivity).replaceFragment(SETTING_ACCOUNT_FRAGMENT, 1)
+            (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_ACCOUNT_FRAGMENT, 1)
         }
 
         /** other menu in setting (not yet implemented) **/
@@ -62,6 +63,7 @@ class SettingsMainFragment: Fragment() {
             sharedPreferences.edit{
                 putString(TOKEN, "")
                 putInt(CURRENT_USER_ID, -1)
+                putBoolean(IS_LOGGED_IN, false)
             }
 
             // Facebook Sign Out
@@ -110,11 +112,6 @@ class SettingsMainFragment: Fragment() {
     }
 
     companion object {
-        const val SETTING_MAIN_FRAGMENT = 0
-        const val SETTING_PERSONAL_INFO_FRAGMENT = 1
-        const val SETTING_SECURITY_FRAGMENT = 2
-        const val SETTING_ACCOUNT_FRAGMENT = 3
-
         const val TOKEN = "token"
         const val CURRENT_USER_ID = "currentUserId"
     }

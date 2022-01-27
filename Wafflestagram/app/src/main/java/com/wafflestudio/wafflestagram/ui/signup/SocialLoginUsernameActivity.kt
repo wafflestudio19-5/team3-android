@@ -8,12 +8,15 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.wafflestudio.wafflestagram.databinding.ActivitySignUpCompleteBinding
 import com.wafflestudio.wafflestagram.databinding.ActivitySocialLoginUsernameBinding
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -63,6 +66,10 @@ class SocialLoginUsernameActivity : AppCompatActivity() {
         viewModel.fetchUserInfoResponse.observe(this, {response->
             if(response.isSuccessful){
                 binding.textInputLayoutUsername.error = null
+                sharedPreferences.edit{
+                    putBoolean(LoginActivity.IS_LOGGED_IN, true)
+                }
+                Timber.d("isLoggedIn: ${sharedPreferences.getBoolean(MainActivity.IS_LOGGED_IN, false).toString()}")
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)

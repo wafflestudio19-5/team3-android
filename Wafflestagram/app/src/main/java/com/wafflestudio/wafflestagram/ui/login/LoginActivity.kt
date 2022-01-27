@@ -65,6 +65,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Timber.d("isLoggedIn: ${sharedPreferences.getBoolean(MainActivity.IS_LOGGED_IN, false).toString()}")
+
         //login 버튼 활성화
         binding.editUsername.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -192,7 +194,7 @@ class LoginActivity : AppCompatActivity() {
                     val signInIntent = googleSignInClient.signInIntent
                     googleResultLauncher.launch(signInIntent)
                     // facebook login 버튼처럼 따로 logout 기능이 없어서 로그인 하자마자 로그아웃 시켰습니다
-                    googleSignInClient.signOut()
+                    // googleSignInClient.signOut()
                 }
                 else -> {
                     Timber.w("버튼 터치 과정에서 오류가 발생했습니다.")
@@ -228,7 +230,6 @@ class LoginActivity : AppCompatActivity() {
                 sharedPreferences.edit {
                     putString(TOKEN, response.headers()["Authentication"])
                     putInt(CURRENT_USER_ID, response.body()!!.id.toInt())
-                    putBoolean(IS_LOGGED_IN, true)
                 }
                 if(response.body()!!.username == null) {
                     // 새로 회원가입하는 경우(또는 소셜 로그인 회원가입 절차가 제대로 마무리되지 않은 경우)
@@ -239,20 +240,13 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                 } else {
                     // 기존 회원이 로그인하는 경우
+                    sharedPreferences.edit{
+                        putBoolean(IS_LOGGED_IN, true)
+                    }
                     val intent = Intent(this, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
                 }
-            }
-        })
-
-        viewModel.fetchSocialLoginUrl.observe(this, { response ->
-            if(response.isSuccessful){
-                val intent =  Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(response.raw().request.url.toString())
-                startActivity(intent)
-            } else {
-                //Toast.makeText(this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show()
             }
         })
 

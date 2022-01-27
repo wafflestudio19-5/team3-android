@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivitySettingsBinding
+import com.wafflestudio.wafflestagram.ui.settings.account.EditPersonalInfoFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,6 +19,7 @@ class SettingsActivity: AppCompatActivity() {
     private var settingsPersonalInfoFragment = SettingsPersonalInfoFragment()
     private var settingsSecurityFragment = SettingsSecurityFragment()
     private var settingsAccountFragment = SettingsAccountFragment()
+    private var settingsEditPersonalInfoFragment = EditPersonalInfoFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +73,11 @@ class SettingsActivity: AppCompatActivity() {
                 fb.addToBackStack(null)
                 fb.commit()
             }
+            SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT -> {
+                fb.replace(R.id.settings_pref, settingsEditPersonalInfoFragment)
+                fb.addToBackStack(null)
+                fb.commit()
+            }
             else -> {
                 Toast.makeText(this, "존재하지 않는 fragment입니다.", Toast.LENGTH_SHORT).show()
             }
@@ -90,6 +97,9 @@ class SettingsActivity: AppCompatActivity() {
             }
             SETTINGS_ACCOUNT_FRAGMENT -> {
                 binding.buttonSettingTitle.text = "계정"
+            }
+            SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT -> {
+                binding.buttonSettingTitle.text = "개인정보"
             }
         }
     }

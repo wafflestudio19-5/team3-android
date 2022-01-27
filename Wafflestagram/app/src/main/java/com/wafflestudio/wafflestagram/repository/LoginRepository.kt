@@ -15,10 +15,6 @@ class LoginRepository @Inject constructor(private val loginService: LoginService
         return loginService.getResponseByLogin(loginRequest)
     }
 
-    suspend fun getResponseBySocialLogin(provider: String): Response<ResponseBody> {
-        return loginService.getResponseBySocialLogin(provider)
-    }
-
     suspend fun getResponseByGoogleLogin(idToken: String): Response<User> {
         return loginService.getResponseByGoogleLogin(idToken)
     }

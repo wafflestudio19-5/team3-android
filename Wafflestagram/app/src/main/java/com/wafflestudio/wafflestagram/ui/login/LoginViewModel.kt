@@ -26,9 +26,6 @@ class LoginViewModel @Inject constructor(
     private val _fetchLoginResponse = MutableLiveData<Response<ResponseBody>>()
     var fetchLoginResponse: LiveData<Response<ResponseBody>> = _fetchLoginResponse
 
-    private val _fetchSocialLoginUrl = MutableLiveData<Response<ResponseBody>>()
-    var fetchSocialLoginUrl: LiveData<Response<ResponseBody>> = _fetchSocialLoginUrl
-
     private val _fetchSocialLoginResponse = MutableLiveData<Response<User>>()
     var fetchSocialLoginResponse: LiveData<Response<User>> = _fetchSocialLoginResponse
 
@@ -58,7 +55,6 @@ class LoginViewModel @Inject constructor(
     fun getResponseByFacebookLogin(token: String){
         viewModelScope.launch {
             try {
-                // _fetchDummy.value = token
                 val data = loginRepository.getResponseByFacebookLogin(token)
                 _fetchSocialLoginResponse.value = data
             } catch (e: IOException) {

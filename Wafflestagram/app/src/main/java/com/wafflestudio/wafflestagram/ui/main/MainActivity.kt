@@ -40,13 +40,18 @@ class MainActivity : AppCompatActivity() {
         userProfileBinding = IconUserProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Logout 상태인 경우 LoginActivity로 이동
-        if(sharedPreferences.getBoolean(IS_LOGGED_IN, false)) {
+        // Logout 된 경우 LoginActivity로 이동
+        if(!sharedPreferences.getBoolean(IS_LOGGED_IN, false)){
+            sharedPreferences.edit {
+                putBoolean(IS_LOGGED_IN, false)
+            }
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
             finish()
         }
+
+        Timber.d("isLoggedIn: ${sharedPreferences.getBoolean(IS_LOGGED_IN, false).toString()}")
 
         // set max zoom scale
         ZoomHelper.getInstance().maxScale = 3f
@@ -100,6 +105,9 @@ class MainActivity : AppCompatActivity() {
             if(response.isSuccessful){
                 Glide.with(this).load(response.body()?.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
             }else if(response.code() == 401){
+                sharedPreferences.edit {
+                    putBoolean(IS_LOGGED_IN, false)
+                }
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)

@@ -13,11 +13,6 @@ interface LoginService {
         @Body loginRequest: LoginRequest
     ): Response<ResponseBody>
 
-    @GET("/api/v1/social_login/{social_login_type}/")
-    suspend fun getResponseBySocialLogin(
-        @Path("social_login_type") provider: String
-    ): Response<ResponseBody>
-
     @POST("/api/v1/social_login/google/")
     suspend fun getResponseByGoogleLogin(
         @Header("idToken") idToken: String
