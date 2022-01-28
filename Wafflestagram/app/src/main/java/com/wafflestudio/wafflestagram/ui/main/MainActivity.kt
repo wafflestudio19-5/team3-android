@@ -106,6 +106,8 @@ class MainActivity : AppCompatActivity() {
                 Glide.with(this).load(response.body()?.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
             }else if(response.code() == 401){
                 sharedPreferences.edit {
+                    putString(TOKEN, "")
+                    putInt(CURRENT_USER_ID, -1)
                     putBoolean(IS_LOGGED_IN, false)
                 }
                 val intent = Intent(this, LoginActivity::class.java)
