@@ -309,21 +309,14 @@ class LoginActivity : AppCompatActivity() {
 
     private fun loginWithGoogleIdToken(account: GoogleSignInAccount?) {
         if(account != null){
-            setClipboard(this, account.idToken!!)
             viewModel.getResponseByGoogleLogin(account.idToken!!)
         }
     }
 
     private fun loginWithFacebookIdToken(token: AccessToken){
-        setClipboard(this, token.token)
         viewModel.getResponseByFacebookLogin(token.token)
     }
 
-    private fun setClipboard(context: Context, text: String) {
-        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = android.content.ClipData.newPlainText("Copied Text", text)
-        clipboard.setPrimaryClip(clip)
-    }
 
     companion object{
         const val NAME = "name"
