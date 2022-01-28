@@ -19,6 +19,12 @@ import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
+import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
+import com.wafflestudio.wafflestagram.ui.settings.signOut
+
+
+
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -51,7 +57,9 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        Timber.d("isLoggedIn: ${sharedPreferences.getBoolean(IS_LOGGED_IN, false).toString()}")
+        Timber.d("TOKEN: ${sharedPreferences.getString(TOKEN, "")}")
+        Timber.d("CURRENT_USER_ID: ${sharedPreferences.getInt(CURRENT_USER_ID, -1)}")
+        Timber.d("isLoggedIn: ${sharedPreferences.getBoolean(IS_LOGGED_IN, false)}")
 
         // set max zoom scale
         ZoomHelper.getInstance().maxScale = 3f
@@ -105,9 +113,7 @@ class MainActivity : AppCompatActivity() {
             if(response.isSuccessful){
                 Glide.with(this).load(response.body()?.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
             }else if(response.code() == 401){
-                sharedPreferences.edit {
-                    putBoolean(IS_LOGGED_IN, false)
-                }
+                (SettingsActivity.context as SettingsActivity).signOut()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)

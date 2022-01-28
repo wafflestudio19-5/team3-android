@@ -59,33 +59,7 @@ class SettingsMainFragment: Fragment() {
 
         // sign out button (include social login sign out)
         binding.buttonSignout.setOnClickListener {
-            // Remove Token(Sign Out)
-            sharedPreferences.edit{
-                putString(TOKEN, "")
-                putInt(CURRENT_USER_ID, -1)
-                putBoolean(IS_LOGGED_IN, false)
-            }
-
-            // Facebook Sign Out
-            val accessToken = AccessToken.getCurrentAccessToken()
-            if(accessToken != null && !accessToken.isExpired) {
-                LoginManager.getInstance().logOut()
-            }
-
-            // Google Sign Out
-            if(GoogleSignIn.getLastSignedInAccount(_context) != null) {
-                // Configure sign-in to request the user's ID, email address, and basic
-                // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.google_web_client_id))
-                    .requestEmail()
-                    .build()
-
-                // Build a GoogleSignInClient with the options specified by gso.
-                val googleSignInClient = GoogleSignIn.getClient(_context, gso)
-                googleSignInClient.signOut()
-            }
-
+            (activity as SettingsActivity).signOut()
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)

@@ -1,19 +1,34 @@
 package com.wafflestudio.wafflestagram.ui.settings
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
+import com.facebook.AccessToken
+import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivitySettingsBinding
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.settings.account.EditPersonalInfoFragment
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
     private val viewModel: SettingsViewModel by viewModels()
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     private var settingsMainFragment = SettingsMainFragment()
     private var settingsPersonalInfoFragment = SettingsPersonalInfoFragment()
@@ -25,6 +40,8 @@ class SettingsActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        context = this
 
         overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_part_exit)
 
@@ -41,7 +58,6 @@ class SettingsActivity: AppCompatActivity() {
         overridePendingTransition(R.anim.slide_left_part_enter, R.anim.slide_left_exit)
     }
 
-    // (mode) 0: Exit, 1: Enter
     fun replaceFragment(fragmentNum: Int, mode: Int){
         val fb = supportFragmentManager.beginTransaction()
         when(mode){
@@ -113,5 +129,43 @@ class SettingsActivity: AppCompatActivity() {
 
         const val EXIT = 0
         const val ENTER = 1
+
+        @SuppressLint("StaticFieldLeak")
+        var context: Context? = null
     }
+}
+
+fun SettingsActivity.signOut(){
+    // Remove Token(Sign Out)
+    sharedPreferences.edit{
+        putString(SettingsMainFragment.TOKEN, "")
+        putInt(SettingsMainFragment.CURRENT_USER_ID, -1)
+        putBoolean(LoginActivity.IS_LOGGED_IN, false)
+    }
+
+    // Facebook Sign Out
+    val accessToken = AccessToken.getCurrentAccessToken()
+    if(accessToken != null && !accessToken.isExpired) {
+        Timber.d("Facebook Sign Out")
+        LoginManager.getInstance().logOut()
+    }
+
+    // Google Sign Out
+    if(GoogleSignIn.getLastSignedInAccount(this) != null) {
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.google_web_client_id))
+            .requestEmail()
+            .build()
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+        Timber.d("Google Sign Out")
+        googleSignInClient.signOut()
+    }
+
+    Timber.d("TOKEN: ${sharedPreferences.getString(MainActivity.TOKEN, "")}")
+    Timber.d("CURRENT_USER_ID: ${sharedPreferences.getInt(MainActivity.CURRENT_USER_ID, -1)}")
+    Timber.d("IS_LOGGED_IN: ${sharedPreferences.getBoolean(MainActivity.IS_LOGGED_IN, false)}")
 }

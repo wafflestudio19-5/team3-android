@@ -71,7 +71,7 @@ class SocialLoginUsernameActivity : AppCompatActivity() {
                 }
                 Timber.d("isLoggedIn: ${sharedPreferences.getBoolean(MainActivity.IS_LOGGED_IN, false).toString()}")
                 val intent = Intent(this, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }else if(response.code() == 409){
                 binding.textInputLayoutUsername.error = "이미 사용중인 사용자 이름입니다."
