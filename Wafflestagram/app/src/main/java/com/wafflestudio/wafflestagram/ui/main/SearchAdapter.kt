@@ -31,7 +31,12 @@ class SearchAdapter(val searchInterface: SearchInterface) :RecyclerView.Adapter<
         if(holder is UserViewHolder){
             holder.binding.apply {
                 textUsername.text = data.username
-                textName.text = data.name
+                if(data.name.isNullOrBlank()){
+                    textName.visibility = View.GONE
+                }else{
+                    textName.visibility = View.VISIBLE
+                    textName.text = data.name
+                }
                 Glide.with(holder.itemView.context).load(data.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
                 //팔로우 확인 로직
                 if(data == currUser){

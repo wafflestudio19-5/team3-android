@@ -1,7 +1,5 @@
 package com.wafflestudio.wafflestagram.ui.share
 
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -30,12 +28,13 @@ class SharedFeedAdapter: RecyclerView.Adapter<SharedFeedAdapter.ImageViewHolder>
         }
         var doubleClickTime = 0L
         holder.itemView.setOnClickListener {
-            if(System.currentTimeMillis() - doubleClickTime < 500){
+            doubleClickTime = if(System.currentTimeMillis() - doubleClickTime < 500){
                 onClickedListener.onClicked(0,0)
-                doubleClickTime = 0L
+                0L
             }else{
-                doubleClickTime = System.currentTimeMillis()
+                System.currentTimeMillis()
             }
+            onClickedListener.onClickedForTag()
         }
     }
 
@@ -49,6 +48,7 @@ class SharedFeedAdapter: RecyclerView.Adapter<SharedFeedAdapter.ImageViewHolder>
 
     interface ButtonClickListener{
         fun onClicked(id: Int, position: Int)
+        fun onClickedForTag()
     }
 
     private lateinit var onClickedListener: ButtonClickListener

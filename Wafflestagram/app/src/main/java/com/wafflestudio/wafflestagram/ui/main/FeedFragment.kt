@@ -106,11 +106,20 @@ class FeedFragment : Fragment() ,FeedInterface {
                         //feedAdapter.deleteLoading()
                     }
                 }
+                val topRowVerticalPosition = if (recyclerView == null || recyclerView.childCount === 0) 0 else recyclerView.getChildAt(0).top
+                binding.refreshLayoutFeed.isEnabled = topRowVerticalPosition >= 0
             }
         })
 
         viewModel.page.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
+                if(response.body()!!.totalElements== 0){
+                    binding.layoutWelcome.visibility = View.VISIBLE
+                    binding.recyclerViewFeed.visibility = View.GONE
+                }else{
+                    binding.layoutWelcome.visibility = View.GONE
+                    binding.recyclerViewFeed.visibility = View.VISIBLE
+                }
                 isLoading = false
                 totalPage = response.body()!!.totalPages
                 pageNumber = response.body()!!.pageNumber + 1
@@ -161,6 +170,11 @@ class FeedFragment : Fragment() ,FeedInterface {
     fun clearRecyclerView(){
         //feedAdapter.clearData()
         //feedAdapter.notifyDataSetChanged()
+    }
+
+    override fun deleteFeed(id: Int, position: Int){
+        viewModel.deleteFeed(id)
+        feedAdapter.deleteData(position)
     }
 
     override fun like(id:Int ,position: Int){

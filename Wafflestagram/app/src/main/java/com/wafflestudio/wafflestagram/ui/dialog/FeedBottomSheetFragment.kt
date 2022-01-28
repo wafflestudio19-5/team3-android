@@ -48,6 +48,8 @@ class FeedBottomSheetFragment(context: Context) : BottomSheetDialogFragment() {
         val userId = arguments?.getInt("userId")
         val currUserId = arguments?.getInt("currUserId")
         position = arguments?.getInt("position")!!
+        val activityNum = arguments?.getInt("activity")
+
 
         if(userId == currUserId){
             binding.buttonDelete.visibility = View.VISIBLE
@@ -71,6 +73,7 @@ class FeedBottomSheetFragment(context: Context) : BottomSheetDialogFragment() {
             intent.putExtra("feedId", feedId)
             intent.putExtra("userId", userId)
             intent.putExtra("position", position)
+            intent.putExtra("activity", activityNum)
             startActivity(intent)
             dismiss()
         }
@@ -88,7 +91,6 @@ class FeedBottomSheetFragment(context: Context) : BottomSheetDialogFragment() {
         resizeDialog(context!!, dialog, 0.65F, 0.35F)
         dialogBinding.buttonConfirm.setOnClickListener {
             //delete feed
-            //(FragmentComponentManager.findActivity(context) as? DetailFeedActivity)?.deleteFeed(feedId)
             onClickedListener.onClicked(feedId, position)
             dialog.dismiss()
         }

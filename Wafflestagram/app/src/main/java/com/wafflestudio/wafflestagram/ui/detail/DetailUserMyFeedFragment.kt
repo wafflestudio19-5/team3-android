@@ -16,6 +16,7 @@ import com.wafflestudio.wafflestagram.ui.main.UserPhotoAdapter
 import com.wafflestudio.wafflestagram.ui.main.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,6 +30,12 @@ class DetailUserMyFeedFragment: Fragment() {
 
     private lateinit var userAdapter: DetailUserAdapter
     private lateinit var userLayoutManager: GridLayoutManager
+    private var pageNumber: Int = 0
+    private var totalPage: Int = 1
+    private var isLast: Boolean = false
+    private var isFirst: Boolean = true
+    private var isLoading: Boolean = false
+    private var userId : Int = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,27 +50,65 @@ class DetailUserMyFeedFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // val id = intent.getIntExtra("id", -1)
-        val id = arguments!!.getInt("id", -1)
+        userId = arguments!!.getInt("id", -1)
 
         // Setting Adapter and LayoutManager
         userAdapter = DetailUserAdapter{startActivity(
             Intent(activity, DetailFeedActivity::class.java)
                 .putExtra("position", it)
-                .putExtra("userId", id)
+                .putExtra("userId", userId)
         )}
-        userLayoutManager = GridLayoutManager(context, 3)
-
+        userLayoutManager = GridLayoutManager(context, 3).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+                override fun getSpanSize(position: Int): Int {
+                    return when(userAdapter.getItemViewType(position)){
+                        UserPhotoAdapter.VIEW_TYPE_LOADING -> 3
+                        UserPhotoAdapter.VIEW_TYPE_FEED -> 1
+                        else -> throw IllegalStateException("viewType must be 0 or 1")
+                    }
+                }
+            }
+        }
         binding.recyclerViewPhotos.apply {
             adapter = userAdapter
             layoutManager = userLayoutManager
         }
 
-        viewModel.getFeedsByUserId(id, 0, 50)
+        viewModel.getFeedsByUserId(userId, 0, 12)
 
         viewModel.page.observe(viewLifecycleOwner, {response ->
             if(response.isSuccessful){
-                userAdapter.updateData(response.body()!!.content)
+                isLoading = false
+                totalPage = response.body()!!.totalPages
+                pageNumber = response.body()!!.pageNumber + 1
+                if(pageNumber > 0 && userAdapter.itemCount > 0){
+                    userAdapter.deleteLoading()
+                    userAdapter.notifyItemRemoved(userAdapter.itemCount)
+                }
+                isLast = response.body()!!.last
+                isFirst = response.body()!!.fisrt
+                if(isFirst){
+                    userAdapter.updateData(response.body()!!.content.toMutableList())
+                    userAdapter.notifyDataSetChanged()
+                }else{
+                    userAdapter.addData(response.body()!!.content.toMutableList())
+                }
+                if(!response.body()!!.last){
+                    userAdapter.addLoading()
+                    userAdapter.notifyItemInserted(userAdapter.itemCount)
+                }
+            }else{
+
             }
         })
+    }
+
+    fun getFeeds(){
+        if(!isLoading){
+            if(!isLast){
+                isLoading = true
+                viewModel.getFeedsByUserId(userId, pageNumber, 12)
+            }
+        }
     }
 }

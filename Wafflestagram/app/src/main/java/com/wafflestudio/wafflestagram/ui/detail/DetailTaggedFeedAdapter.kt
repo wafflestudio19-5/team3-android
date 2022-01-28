@@ -37,7 +37,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class DetailTaggedFeedAdapter(val detailTaggedFeedInterface: DetailTaggedFeedInterface) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var feeds: MutableList<Feed> = mutableListOf()
     private lateinit var currUser: User
@@ -48,12 +48,12 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
             binding.numberIndicatorPager.alpha = 1.0f
             fadeAwayIndicatorWithDelay()
         }
-        val animator2 = ObjectAnimator.ofFloat(binding.numberIndicatorPager, "alpha", 1f, 0f).apply {
+        val animator2: ObjectAnimator = ObjectAnimator.ofFloat(binding.numberIndicatorPager, "alpha", 1f, 0f).apply {
             duration = 2000
             startDelay = 2000
         }
         private fun fadeAwayIndicatorWithDelay(){
-            if(animator2.isStarted){
+            if(animator.isStarted){
                 animator2.cancel()
                 animator2.start()
             }else{
@@ -65,7 +65,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
             binding.buttonUserTag.alpha = 1.0f
             fadeAwayIndicatorWithDelayForTag()
         }
-        val animator = ObjectAnimator.ofFloat(binding.buttonUserTag, "alpha", 1f, 0f).apply {
+        val animator: ObjectAnimator = ObjectAnimator.ofFloat(binding.buttonUserTag, "alpha", 1f, 0f).apply {
             duration = 2000
             startDelay = 2000
         }
@@ -97,13 +97,13 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = feeds[position]
 
-        var imageAdapter : ViewPagerImageAdapter = ViewPagerImageAdapter()
+        val imageAdapter : ViewPagerImageAdapter = ViewPagerImageAdapter()
 
         when(holder){
             is FeedViewHolder ->{
                 holder.binding.apply {
                     buttonUsername.text = data.author!!.username
-                    val spannable = SpannableStringBuilder(data.author!!.username)
+                    val spannable = SpannableStringBuilder(data.author.username)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     spannable.setSpan(object : ClickableSpan(){
                         override fun updateDrawState(ds: TextPaint) {
@@ -128,7 +128,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                             if(buttonLike.isSelected){
                             }else{
                                 buttonLike.isSelected = true
-                                detailFeedInterface.like(data.id.toInt(), position)
+                                detailTaggedFeedInterface.like(data.id.toInt(), position)
                                 textLike.text = (textLike.text.toString().toInt()+1).toString()
                             }
                             buttonLike.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context, R.anim.heart))
@@ -223,11 +223,11 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         buttonLike.startAnimation(AnimationUtils.loadAnimation(holder.itemView.context, R.anim.heart))
                         if(buttonLike.isSelected){
                             buttonLike.isSelected = false
-                            detailFeedInterface.unlike(data.id.toInt(), position)
+                            detailTaggedFeedInterface.unlike(data.id.toInt(), position)
                             textLike.text = (textLike.text.toString().toInt()-1).toString()
                         }else{
                             buttonLike.isSelected = true
-                            detailFeedInterface.like(data.id.toInt(), position)
+                            detailTaggedFeedInterface.like(data.id.toInt(), position)
                             textLike.text = (textLike.text.toString().toInt()+1).toString()
                         }
                     }
@@ -245,13 +245,13 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         feedBottomSheetFragment.arguments = bundle
                         feedBottomSheetFragment.setOnClickedListener(object : FeedBottomSheetFragment.ButtonClickListener{
                             override fun onClicked(id: Int, position: Int) {
-                                detailFeedInterface.deleteFeed(id, position)
+                                detailTaggedFeedInterface.deleteFeed(id, position)
                             }
                         })
-                        feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as DetailFeedActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
+                        feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as DetailTaggedFeedActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
                     }
 
-                    if(data!!.userTags.isEmpty()){
+                    if(data.userTags.isEmpty()){
                         buttonUserTag.visibility = View.GONE
                     }else{
                         buttonUserTag.visibility = View.VISIBLE
@@ -263,7 +263,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                             val bundle = Bundle()
                             bundle.putSerializable("userTags", data.userTags.toTypedArray())
                             userTagBottomSheetFragment.arguments = bundle
-                            userTagBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as DetailFeedActivity).supportFragmentManager, UserTagBottomSheetFragment.TAG)
+                            userTagBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as DetailTaggedFeedActivity).supportFragmentManager, UserTagBottomSheetFragment.TAG)
                         }
                     }
                 }
@@ -298,11 +298,6 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
         notifyDataSetChanged()
     }
 
-    fun changeData(feed: Feed, position: Int){
-        this.feeds[position] = feed
-        notifyItemChanged(position)
-    }
-
     fun deleteData(position: Int){
         this.feeds.removeAt(position)
         notifyItemRemoved(position)
@@ -320,10 +315,6 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
     fun clearData(){
         this.feeds.clear()
         notifyDataSetChanged()
-    }
-
-    fun deleteLoading(){
-        this.feeds.removeAt(feeds.lastIndex)
     }
 
     private fun getBetween(time: LocalDateTime, time2: ZonedDateTime) : String{

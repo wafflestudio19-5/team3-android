@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class FollowActivity : AppCompatActivity(), FollowInter {
+class FollowActivity : AppCompatActivity(), FollowInterface {
 
     private lateinit var binding : ActivityFollowBinding
     private val viewModel: FollowViewModel by viewModels()

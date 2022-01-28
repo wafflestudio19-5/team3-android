@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ItemLikeBinding
 import com.wafflestudio.wafflestagram.databinding.ItemSearchBinding
 import com.wafflestudio.wafflestagram.model.Follow
-import com.wafflestudio.wafflestagram.model.Like
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 
@@ -39,12 +39,17 @@ class LikeAdapter(val likeInterface: LikeInterface) :RecyclerView.Adapter<Recycl
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if(position > 0 && holder is LikeViewHolder){
-            val data = likes[position - 1]
+        if(holder is LikeViewHolder){
+            val data = likes[position]
             holder.binding.apply {
                 textUsername.text = data.username
-                textName.text = data.name
-
+                if(data.name.isNullOrBlank()){
+                    textName.visibility = View.GONE
+                }else{
+                    textName.visibility = View.VISIBLE
+                    textName.text = data.name
+                }
+                Glide.with(holder.itemView.context).load(data.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
                 if(data == currUser){
                     buttonFollow.visibility = View.GONE
                 }else{
@@ -85,15 +90,11 @@ class LikeAdapter(val likeInterface: LikeInterface) :RecyclerView.Adapter<Recycl
     }
 
     override fun getItemCount(): Int {
-        return likes.size + 1
+        return likes.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(position == 0){
-            VIEW_TYPE_SEARCH
-        }else{
-            VIEW_TYPE_LIKE
-        }
+        return VIEW_TYPE_LIKE
     }
 
     fun updateData(likes : List<User>){

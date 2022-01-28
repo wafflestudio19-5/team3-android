@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
@@ -19,6 +20,8 @@ import com.wafflestudio.wafflestagram.databinding.ActivityDetailUserBinding
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.UserMyFeedFragment
+import com.wafflestudio.wafflestagram.ui.main.UserTaggedFeedFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -29,10 +32,8 @@ class DetailUserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailUserBinding
     private val viewModel: DetailUserViewModel by viewModels()
     private var isLoading: Boolean = false
-    /*
-    private lateinit var userAdapter: DetailUserAdapter
-    private lateinit var userLayoutManager: GridLayoutManager
-     */
+    private val detailUserMyFeedFragment = DetailUserMyFeedFragment()
+    private val detailUserTaggedFeedFragment = DetailUserTaggedFeedFragment()
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -49,6 +50,8 @@ class DetailUserActivity : AppCompatActivity() {
         viewpagerUserFragmentAdapter.setId(id)
         binding.viewPager.adapter = viewpagerUserFragmentAdapter
 
+        viewpagerUserFragmentAdapter.assignFragment(listOf(detailUserMyFeedFragment, detailUserTaggedFeedFragment))
+
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { _, _ -> Unit }.attach()
 
         binding.tabLayout.getTabAt(0)!!.setIcon(R.drawable.icon_grid)
@@ -56,35 +59,14 @@ class DetailUserActivity : AppCompatActivity() {
 
 
 
-        /*
-        userAdapter = DetailUserAdapter{startActivity(
-            Intent(this, DetailFeedActivity::class.java)
-                .putExtra("position", it)
-                .putExtra("userId", id)
-        )}
-        userLayoutManager = GridLayoutManager(this, 3)
-
-        binding.recyclerViewPhotos.apply {
-            adapter = userAdapter
-            layoutManager = userLayoutManager
-        }
-         */
-
         viewModel.getMyInfo()
         viewModel.getInfoById(id)
         viewModel.getFeedCount(id)
         viewModel.getFollowerCount(id)
         viewModel.getFollowingCount(id)
-        viewModel.getFeedsById(id, 0, 50)
         viewModel.checkFollowing(id)
 
-        /*
-        viewModel.page.observe(this, {response->
-            if(response.isSuccessful){
-                userAdapter.updateData(response.body()!!.content)
-            }
-        })
-         */
+
         binding.refreshLayoutUser.setColorSchemeColors(*intArrayOf(
                 Color.parseColor("#F6F6F6"),
                 Color.parseColor("#D5D5D5"),
@@ -100,11 +82,21 @@ class DetailUserActivity : AppCompatActivity() {
                 viewModel.getFeedCount(id)
                 viewModel.getFollowerCount(id)
                 viewModel.getFollowingCount(id)
-                viewModel.getFeedsById(id, 0, 50)
+                viewModel.getFeedsById(id, 0, 12)
                 viewModel.checkFollowing(id)
                 isLoading = true
             }
         }
+
+        binding.nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if(v!!.getChildAt(v.childCount - 1) != null) {
+                    if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
+                        scrollY > oldScrollY) {
+                        detailUserMyFeedFragment.getFeeds()
+                    }
+                }
+            })
+
         viewModel.fetchUserInfo.observe(this, {response->
             if(response.isSuccessful){
                 val data = response.body()!!

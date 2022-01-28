@@ -163,6 +163,7 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
         viewModel.reply.observe(this, {response->
             if(response.isSuccessful){
                 viewModel.getFeedById(id)
+                commentAdapter.expandGroup(position, false)
             }
         })
 
@@ -195,6 +196,7 @@ class CommentActivity : AppCompatActivity(), CommentInterface{
         binding.layoutReply.visibility = View.VISIBLE
         commentId = comment.id.toInt()
         binding.textReplyUsername.text = comment.writer.username
+        this.position = position
     }
 
     override fun deleteReply(id: Int, position: Int) {

@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class ViewPagerUserFragmentAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
 
-    private val fragmentList = listOf<Fragment>(UserMyFeedFragment(), UserTaggedFeedFragment())
+    private var fragmentList : List<Fragment> = listOf()
 
     override fun getItemCount(): Int {
         return fragmentList.size
@@ -14,5 +14,9 @@ class ViewPagerUserFragmentAdapter(fragmentActivity: FragmentActivity): Fragment
 
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position]
+    }
+
+    fun assignFragment(fragments : List<Fragment>){
+        this.fragmentList = fragments
     }
 }

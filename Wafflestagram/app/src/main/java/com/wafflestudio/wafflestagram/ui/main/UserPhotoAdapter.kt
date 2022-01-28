@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
 import com.wafflestudio.wafflestagram.databinding.ItemUserPhotoBinding
 import com.wafflestudio.wafflestagram.model.Feed
+import com.wafflestudio.wafflestagram.ui.detail.DetailUserAdapter
 import timber.log.Timber
 
 // OnSelectClickListener의 param: feed의 id
@@ -38,14 +39,10 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
         val data = photos[position]
 
         if(holder is UserPhotoViewHolder){
-            // 각 feed의 첫 사진 띄우기
-            try {
-                Glide.with(holder.itemView.context)
-                    .load(data.photos[0].path)
-                    .centerCrop()
-                    .into(holder.binding.userPhoto)
-            } catch(e: Throwable) {
-                Timber.e(e)
+            holder.binding.apply {
+                if(!data.photos.isNullOrEmpty()){
+                    Glide.with(holder.itemView.context).load(data.photos.get(0).path).centerCrop().into(userPhoto)
+                }
             }
             holder.itemView.setOnClickListener{
                 onSelectClickListener(position)
@@ -64,14 +61,15 @@ class UserPhotoAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Rec
         }
     }
 
-    fun updatePhotos(photos: List<Feed>, context: Context){
-        this.photos = photos.toMutableList()
+    fun updatePhotos(photos: MutableList<Feed>, context: Context){
+        this.photos = photos
         this.context = context
         this.notifyDataSetChanged()
     }
 
-    fun addPhotos(photos: List<Feed>){
-        this.photos.addAll(photos.toMutableList())
+    fun addPhotos(photos: MutableList<Feed>){
+        this.photos.addAll(photos)
+        this.notifyDataSetChanged()
     }
 
     fun clearPhotos(){
