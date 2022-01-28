@@ -23,7 +23,7 @@ class Feed (
     @Json(name = "tags")
     val tags: List<Tag> = emptyList(),
     @Json(name = "userTags")
-    val user_tags: List<UserTag> = emptyList(),
+    val userTags: List<User> = emptyList(),
     @Json(name = "createdAt")
     val createdAt : LocalDateTime? = LocalDateTime.now(),
     @Json(name = "updatedAt")

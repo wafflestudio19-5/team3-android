@@ -1,13 +1,10 @@
 package com.wafflestudio.wafflestagram.ui.main
 
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
@@ -31,8 +28,8 @@ import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 import com.wafflestudio.wafflestagram.ui.dialog.FeedBottomSheetFragment
+import com.wafflestudio.wafflestagram.ui.dialog.UserTagBottomSheetFragment
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
-import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -49,14 +46,38 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
     inner class FeedViewHolder(val binding: ItemFeedBinding) : RecyclerView.ViewHolder(binding.root){
         fun onViewAppear(){
             binding.numberIndicatorPager.alpha = 1.0f
-            fadeAwayIndicatorWithDelay(2000, 2000)
+            fadeAwayIndicatorWithDelay()
+        }
+        val animator2 = ObjectAnimator.ofFloat(binding.numberIndicatorPager, "alpha", 1f, 0f).apply {
+            duration = 2000
+            startDelay = 2000
+        }
+        private fun fadeAwayIndicatorWithDelay(){
+
+            if(animator2.isStarted){
+                animator2.cancel()
+                animator2.start()
+            }else{
+                animator2.start()
+            }
         }
 
-        private fun fadeAwayIndicatorWithDelay(fadeDuration: Long, delay: Long){
-            ObjectAnimator.ofFloat(binding.numberIndicatorPager, "alpha", 1f, 0f).apply {
-                duration = fadeDuration
-                startDelay = delay
-            }.start()
+        fun onViewAppearForTag(){
+            binding.buttonUserTag.alpha = 1.0f
+            fadeAwayIndicatorWithDelayForTag()
+        }
+        val animator = ObjectAnimator.ofFloat(binding.buttonUserTag, "alpha", 1f, 0f).apply {
+            duration = 2000
+            startDelay = 2000
+        }
+        private fun fadeAwayIndicatorWithDelayForTag(){
+
+            if(animator.isStarted){
+                animator.cancel()
+                animator.start()
+            }else{
+                animator.start()
+            }
         }
 
     }
@@ -130,6 +151,10 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                                 avd.start()
                             }
                         }
+
+                        override fun onClickedForTag() {
+                            holder.onViewAppearForTag()
+                        }
                     })
                     viewPagerImage.apply {
                         adapter = imageAdapter
@@ -148,8 +173,10 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                             super.onPageSelected(position)
                             textCurrent.text = (position + 1).toString()
                             holder.onViewAppear()
+                            holder.onViewAppearForTag()
                         }
                     })
+
 
                     textDateCreated.text = getBetween(data.createdAt!!.plusHours(9), ZonedDateTime.now(
                         ZoneId.of("Asia/Seoul")))
@@ -216,10 +243,32 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         bundle.putInt("feedId", data.id.toInt())
                         bundle.putInt("userId", data.author.id.toInt())
                         bundle.putInt("currUserId", currUser.id.toInt())
+                        bundle.putInt("position", position)
+                        bundle.putInt("activity", 0)
                         feedBottomSheetFragment.arguments = bundle
+                        feedBottomSheetFragment.setOnClickedListener(object : FeedBottomSheetFragment.ButtonClickListener{
+                            override fun onClicked(id: Int, position: Int) {
+                                feedInterface.deleteFeed(id, position)
+                            }
+                        })
                         feedBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as MainActivity).supportFragmentManager, FeedBottomSheetFragment.TAG)
                     }
 
+                    if(data.userTags.isEmpty()){
+                        buttonUserTag.visibility = View.GONE
+                    }else{
+                        buttonUserTag.visibility = View.VISIBLE
+                    }
+
+                    buttonUserTag.setOnClickListener {
+                        if(buttonUserTag.alpha > 0){
+                            val userTagBottomSheetFragment = UserTagBottomSheetFragment()
+                            val bundle = Bundle()
+                            bundle.putSerializable("userTags", data.userTags.toTypedArray())
+                            userTagBottomSheetFragment.arguments = bundle
+                            userTagBottomSheetFragment.show((FragmentComponentManager.findActivity(holder.itemView.context) as MainActivity).supportFragmentManager, UserTagBottomSheetFragment.TAG)
+                        }
+                    }
                 }
 
             }
@@ -260,6 +309,11 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
 
     fun updateData(feeds: MutableList<Feed>){
         this.feeds = feeds
+    }
+
+    fun deleteData(position: Int){
+        this.feeds.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     fun addData(feeds: MutableList<Feed>){

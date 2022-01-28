@@ -1,5 +1,6 @@
 package com.wafflestudio.wafflestagram.ui.post
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -27,10 +28,12 @@ import timber.log.Timber
 import java.io.File
 import android.provider.MediaStore
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import com.wafflestudio.wafflestagram.BuildConfig
 import com.wafflestudio.wafflestagram.R
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.AddPostRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 
@@ -48,6 +51,7 @@ class AddPostActivity : AppCompatActivity() {
     private var position = 0
     private var imageKeys : MutableList<String> = mutableListOf()
     private var isSelect = false
+    private var users: List<User> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +69,9 @@ class AddPostActivity : AppCompatActivity() {
 
         transferUtility = TransferUtility.builder().s3Client(s3Client).context(this).build()
 
+        binding.buttonTag.setOnClickListener{
+            openAddUserTagActivityForResult()
+        }
 
         binding.imageSelected.setOnClickListener {
             val imageDialogFragment = ImageDialogFragment()
@@ -104,6 +111,26 @@ class AddPostActivity : AppCompatActivity() {
         })
     }
 
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){result ->
+        if(result.resultCode == Activity.RESULT_OK){
+            val data = result.data
+            users = (data!!.getSerializableExtra("users")!! as ArrayList<User>).toList()
+            if(users.isEmpty()){
+                binding.textTagNumber.visibility = View.GONE
+            }else{
+                binding.textTagNumber.visibility = View.VISIBLE
+            }
+            binding.textTagNumber.text = users.size.toString() + "명"
+        }
+    }
+
+    fun openAddUserTagActivityForResult(){
+        val intent = Intent(this, AddUserTagActivity::class.java)
+        intent.putExtra("images", images.toTypedArray())
+        intent.putExtra("users", users.toTypedArray())
+        resultLauncher.launch(intent)
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
@@ -111,7 +138,11 @@ class AddPostActivity : AppCompatActivity() {
     }
 
     private fun addPost(){
-        val request = AddPostRequest(binding.editContent.text.toString(), imageKeys, emptyList(), emptyList())
+        val userTags = mutableListOf<String>()
+        for(user in users){
+            userTags.add(user.username!!)
+        }
+        val request = AddPostRequest(binding.editContent.text.toString(), imageKeys, emptyList(), userTags.toList())
         viewModel.addPost(request)
     }
 
@@ -158,7 +189,7 @@ class AddPostActivity : AppCompatActivity() {
     }
 
     private fun showImagePicker(){
-        InstagramPicker(this).show(4,3,10, MultiListener { addresses ->
+        InstagramPicker(this).show(4,3,10, { addresses ->
             //저장
             images = addresses
             binding.imageSelected.setImageURI(Uri.parse(addresses[0]))
@@ -166,8 +197,10 @@ class AddPostActivity : AppCompatActivity() {
             binding.imageSelected.isEnabled = true
             isSelect = true
             binding.buttonComplete.setImageResource(R.drawable.icon_check)
+            binding.buttonTag.visibility = View.VISIBLE
         })
     }
+
 
     fun getRealPathFromURI(context: Context?, uri: Uri?): String? {
 
@@ -273,4 +306,7 @@ class AddPostActivity : AppCompatActivity() {
         return if (storages.size > 1 && storages[0] != null && storages[1] != null) storages[1].toString() else ""
     }
 
+    companion object{
+        const val REQUEST_CODE_USER_TAG = 1000
+    }
 }

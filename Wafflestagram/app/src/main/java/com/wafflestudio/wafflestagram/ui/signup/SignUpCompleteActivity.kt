@@ -118,8 +118,10 @@ class SignUpCompleteActivity : AppCompatActivity() {
                 overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
             }else if(response.code() == 400){
                 //에러 메시지
-                binding.textInputLayoutUsername.error = "이메일 또는 사용자 이름이 이미 사용 중입니다. 다시 입력해주세요."
-            }else{
+                binding.textInputLayoutUsername.error = "이미 사용 중인 이메일입니다. 다시 입력해주세요."
+            }else if(response.code() == 409){
+                binding.textInputLayoutUsername.error = "이미 사용 중인 사용자 이름입니다. 다시 입력해주세요."
+            } else{
                 binding.textInputLayoutUsername.error = "잘못된 접근입니다."
             }
         })

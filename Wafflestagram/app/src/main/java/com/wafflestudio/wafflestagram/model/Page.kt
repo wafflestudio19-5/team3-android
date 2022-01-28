@@ -16,5 +16,7 @@ class Page(
     @Json(name = "number")
     val pageNumber: Int,
     @Json(name = "numberOfElements")
-    val numberOfElements: Int
+    val numberOfElements: Int,
+    @Json(name = "totalElements")
+    val totalElements: Int
 )

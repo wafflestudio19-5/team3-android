@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ItemLikeBinding
 import com.wafflestudio.wafflestagram.databinding.ItemSearchBinding
@@ -14,7 +15,7 @@ import com.wafflestudio.wafflestagram.model.Follow
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 
-class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class FollowAdapter(val followInterface: FollowInterface) :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private var follows: List<Follow> = listOf()
     private var myFollowingList: List<Follow> = listOf()
@@ -38,13 +39,18 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if(position > 0 && holder is FollowViewHolder){
-            val data = follows[position - 1]
+        if(holder is FollowViewHolder){
+            val data = follows[position]
             holder.binding.apply {
                 textUsername.text = data.user.username
-                textName.text = data.user.name
+                if(data.user.name.isNullOrBlank()){
+                    textName.visibility = View.GONE
+                }else{
+                    textName.visibility = View.VISIBLE
+                    textName.text = data.user.name
+                }
                 //팔로우 확인 로직
-
+                Glide.with(holder.itemView.context).load(data.user.profilePhotoURL).centerCrop().into(holder.binding.imageUserProfile)
                 if(data.user == currUser){
                     buttonFollow.visibility = View.GONE
                 }else{
@@ -67,12 +73,12 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
                         buttonFollow.setTextColor(Color.parseColor("#FFFFFFFF"))
                         buttonFollow.text = "팔로우"
                         //언팔로우
-                        followInter.unfollow(data.user.id.toInt())
+                        followInterface.unfollow(data.user.id.toInt())
                     }else{
                         buttonFollow.isSelected = true
                         buttonFollow.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.black))
                         buttonFollow.text = "팔로잉"
-                        followInter.follow(data.user.id.toInt())
+                        followInterface.follow(data.user.id.toInt())
                     }
                 }
             }
@@ -86,15 +92,11 @@ class FollowAdapter(val followInter: FollowInter) :RecyclerView.Adapter<Recycler
     }
 
     override fun getItemCount(): Int {
-        return follows.size + 1
+        return follows.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(position == 0){
-            VIEW_TYPE_SEARCH
-        }else{
-            VIEW_TYPE_LIKE
-        }
+        return VIEW_TYPE_LIKE
     }
 
     fun updateData(follows : List<Follow>){

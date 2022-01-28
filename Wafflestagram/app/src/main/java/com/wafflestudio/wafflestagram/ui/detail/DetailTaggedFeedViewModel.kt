@@ -1,4 +1,4 @@
-package com.wafflestudio.wafflestagram.ui.main
+package com.wafflestudio.wafflestagram.ui.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,8 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.wafflestudio.wafflestagram.model.Feed
 import com.wafflestudio.wafflestagram.model.Page
 import com.wafflestudio.wafflestagram.model.User
-import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
-import com.wafflestudio.wafflestagram.repository.FeedRepository
+import com.wafflestudio.wafflestagram.repository.DetailTaggedFeedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -17,9 +16,9 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class FeedViewModel @Inject constructor(
-    private val feedRepository: FeedRepository
-) : ViewModel(){
+class DetailTaggedFeedViewModel @Inject constructor(
+    private val detailTaggedFeedRepository: DetailTaggedFeedRepository
+): ViewModel(){
 
     private val _page = MutableLiveData<Response<Page>>()
     val page: LiveData<Response<Page>> = _page
@@ -30,10 +29,10 @@ class FeedViewModel @Inject constructor(
     private val _likeRespone = MutableLiveData<Response<Feed>>()
     val likeResponse: LiveData<Response<Feed>> = _likeRespone
 
-    fun getFeeds(feedPageRequest: FeedPageRequest){
+    fun getTaggedFeedsByUserId(id: Int, offset: Int, limit : Int){
         viewModelScope.launch {
             try {
-                val data = feedRepository.getFeeds(feedPageRequest)
+                val data = detailTaggedFeedRepository.getTaggedFeedsByUserId(id, offset, limit)
                 _page.value = data
             }catch (e: IOException){
                 Timber.e(e)
@@ -41,11 +40,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-
     fun like(id: Int){
         viewModelScope.launch {
             try {
-                val data = feedRepository.like(id)
+                val data = detailTaggedFeedRepository.like(id)
                 _likeRespone.value = data
             }catch (e: IOException){
                 Timber.e(e)
@@ -56,7 +54,7 @@ class FeedViewModel @Inject constructor(
     fun unlike(id: Int){
         viewModelScope.launch {
             try {
-                val data = feedRepository.unlike(id)
+                val data = detailTaggedFeedRepository.unlike(id)
                 _likeRespone.value = data
             }catch (e: IOException){
                 Timber.e(e)
@@ -67,7 +65,7 @@ class FeedViewModel @Inject constructor(
     fun getMe(){
         viewModelScope.launch {
             try {
-                val data = feedRepository.getMe()
+                val data = detailTaggedFeedRepository.getMe()
                 _user.value = data
             }catch (e: IOException){
                 Timber.e(e)
@@ -78,11 +76,10 @@ class FeedViewModel @Inject constructor(
     fun deleteFeed(id: Int){
         viewModelScope.launch {
             try {
-                feedRepository.deleteFeed(id)
+                detailTaggedFeedRepository.deleteFeed(id)
             }catch (e: IOException){
                 Timber.e(e)
             }
         }
     }
-
 }

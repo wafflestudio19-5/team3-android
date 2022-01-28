@@ -165,6 +165,15 @@
                 app:layout_constraintTop_toTopOf="@+id/view_pager_image"
                 app:srcCompat="@drawable/avd_heart" />
 
+            <ImageView
+                android:id="@+id/button_user_tag"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/icon_user_tag"
+                android:layout_margin="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <LinearLayout
                 android:id="@+id/number_indicator_pager"
                 android:layout_width="wrap_content"

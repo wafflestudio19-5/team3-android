@@ -8,7 +8,7 @@ import timber.log.Timber
 
 class ViewPagerDetailUserAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
 
-    private val fragmentList = listOf<Fragment>(DetailUserMyFeedFragment(), DetailUserTaggedFeedFragment())
+    private var fragmentList = listOf<Fragment>()
     private var id = -1
 
     override fun getItemCount(): Int {
@@ -28,5 +28,9 @@ class ViewPagerDetailUserAdapter(fragmentActivity: FragmentActivity): FragmentSt
     fun setId(id: Int){
         this.id = id
         this.notifyDataSetChanged()
+    }
+
+    fun assignFragment(fragments : List<Fragment>){
+        this.fragmentList = fragments
     }
 }

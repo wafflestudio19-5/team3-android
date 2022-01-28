@@ -11,9 +11,11 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
@@ -45,6 +47,9 @@ class UserFragment: Fragment() {
     private lateinit var userPhotoAdapter: UserPhotoAdapter
     private lateinit var userLayoutManager: GridLayoutManager
     private lateinit var _context: Context
+    private val userMyFeedFragment = UserMyFeedFragment()
+    private val userTaggedFeedFragment = UserTaggedFeedFragment()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -92,10 +97,19 @@ class UserFragment: Fragment() {
                     viewModel.getMyFollowerCount()
                     viewModel.getMyFollowingCount()
                     viewModel.getMyFeedCount()
-                    viewModel.getMyFeeds(0, 100)
+                    viewModel.getMyFeeds(0, 12)
                     isLoading = true
                 }
             }
+
+            binding.nestedScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                if(v!!.getChildAt(v.childCount - 1) != null) {
+                    if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
+                        scrollY > oldScrollY) {
+                        userMyFeedFragment.getFeeds()
+                    }
+                }
+            })
 
             // profile 편집 버튼
             binding.buttonEditProfile.setOnClickListener {
@@ -130,11 +144,13 @@ class UserFragment: Fragment() {
         val viewpagerUserFragmentAdapter = ViewPagerUserFragmentAdapter(activity!!)
         binding.viewPager.adapter = viewpagerUserFragmentAdapter
 
+        viewpagerUserFragmentAdapter.assignFragment(listOf(userMyFeedFragment, userTaggedFeedFragment))
+
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { _, _ -> Unit }.attach()
 
         binding.tabLayout.getTabAt(0)!!.setIcon(R.drawable.icon_grid)
         binding.tabLayout.getTabAt(1)!!.setIcon(R.drawable.icon_tagged)
-        
+
         // 데이터 저장
 
         viewModel.fetchFollowingCount.observe(viewLifecycleOwner, { response ->

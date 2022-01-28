@@ -3,7 +3,6 @@ package com.wafflestudio.wafflestagram.repository
 import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.LoginService
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
-import com.wafflestudio.wafflestagram.network.dto.TokenResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
 import javax.inject.Inject

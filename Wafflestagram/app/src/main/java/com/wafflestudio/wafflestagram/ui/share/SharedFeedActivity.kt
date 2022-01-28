@@ -33,11 +33,10 @@ import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.ui.comment.CommentActivity
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserActivity
 import com.wafflestudio.wafflestagram.ui.dialog.FeedBottomSheetFragment
+import com.wafflestudio.wafflestagram.ui.dialog.UserTagBottomSheetFragment
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
-import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
-import com.wafflestudio.wafflestagram.ui.main.ViewPagerImageAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import timber.log.Timber
@@ -58,10 +57,23 @@ class SharedFeedActivity : AppCompatActivity() {
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
+    lateinit var animator: ObjectAnimator
+    lateinit var animator2: ObjectAnimator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySharedFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        animator2 = ObjectAnimator.ofFloat(binding.numberIndicatorPager, "alpha", 1f, 0f).apply {
+            duration = 2000
+            startDelay = 2000
+        }
+
+        animator = ObjectAnimator.ofFloat(binding.buttonUserTag, "alpha", 1f, 0f).apply {
+            duration = 2000
+            startDelay = 2000
+        }
 
         sharedFeedAdapter = SharedFeedAdapter()
         ZoomHelper.getInstance().maxScale = 3f
@@ -160,6 +172,9 @@ class SharedFeedActivity : AppCompatActivity() {
                             }
                         }
 
+                        override fun onClickedForTag() {
+                            onViewAppearForTag()
+                        }
                     })
 
                     viewPagerImage.apply {
@@ -179,6 +194,7 @@ class SharedFeedActivity : AppCompatActivity() {
                             super.onPageSelected(position)
                             textCurrent.text = (position + 1).toString()
                             onViewAppear()
+                            onViewAppearForTag()
                         }
                     })
 
@@ -224,11 +240,7 @@ class SharedFeedActivity : AppCompatActivity() {
                         ContextCompat.startActivity(this@SharedFeedActivity, intent, null)
                     }
 
-                    if(data.likes.contains(currUser)){
-                        buttonLike.isSelected = true
-                    }else{
-                        buttonLike.isSelected = false
-                    }
+                    buttonLike.isSelected = data.likes.contains(currUser)
 
                     buttonLike.setOnClickListener {
                         if(buttonLike.isSelected){
@@ -251,6 +263,7 @@ class SharedFeedActivity : AppCompatActivity() {
                         bundle.putInt("feedId", data.id.toInt())
                         bundle.putInt("userId", data.author.id.toInt())
                         bundle.putInt("currUserId", currUser.id.toInt())
+                        bundle.putInt("activity", 0)
                         feedBottomSheetFragment.arguments = bundle
                         feedBottomSheetFragment.setOnClickedListener(object : FeedBottomSheetFragment.ButtonClickListener{
                             override fun onClicked(id: Int, position: Int) {
@@ -258,6 +271,22 @@ class SharedFeedActivity : AppCompatActivity() {
                             }
                         })
                         feedBottomSheetFragment.show(supportFragmentManager, FeedBottomSheetFragment.TAG)
+                    }
+
+                    if(data.userTags.isEmpty()){
+                        buttonUserTag.visibility = View.GONE
+                    }else{
+                        buttonUserTag.visibility = View.VISIBLE
+                    }
+
+                    buttonUserTag.setOnClickListener {
+                        if(buttonUserTag.alpha > 0){
+                            val userTagBottomSheetFragment = UserTagBottomSheetFragment()
+                            val bundle = Bundle()
+                            bundle.putSerializable("userTags", data.userTags.toTypedArray())
+                            userTagBottomSheetFragment.arguments = bundle
+                            userTagBottomSheetFragment.show(supportFragmentManager, UserTagBottomSheetFragment.TAG)
+                        }
                     }
                 }
 
@@ -307,14 +336,32 @@ class SharedFeedActivity : AppCompatActivity() {
 
     fun onViewAppear(){
         binding.numberIndicatorPager.alpha = 1.0f
-        fadeAwayIndicatorWithDelay(2000, 2000)
+        fadeAwayIndicatorWithDelay()
     }
 
-    private fun fadeAwayIndicatorWithDelay(fadeDuration: Long, delay: Long){
-        ObjectAnimator.ofFloat(binding.numberIndicatorPager, "alpha", 1f, 0f).apply {
-            duration = fadeDuration
-            startDelay = delay
-        }.start()
+    private fun fadeAwayIndicatorWithDelay(){
+
+        if(animator2.isStarted){
+            animator2.cancel()
+            animator2.start()
+        }else{
+            animator2.start()
+        }
+    }
+
+    fun onViewAppearForTag(){
+        binding.buttonUserTag.alpha = 1.0f
+        fadeAwayIndicatorWithDelayForTag()
+    }
+
+    private fun fadeAwayIndicatorWithDelayForTag(){
+
+        if(animator.isStarted){
+            animator.cancel()
+            animator.start()
+        }else{
+            animator.start()
+        }
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

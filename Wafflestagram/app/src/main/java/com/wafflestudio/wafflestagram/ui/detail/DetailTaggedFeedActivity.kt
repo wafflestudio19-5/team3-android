@@ -14,41 +14,34 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aghajari.zoomhelper.ZoomHelper
-import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.R
-import com.wafflestudio.wafflestagram.databinding.ActivityDetailFeedBinding
-import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
+import com.wafflestudio.wafflestagram.databinding.ActivityDetailTaggedFeedBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
-import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
-@AndroidEntryPoint
-class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
+class DetailTaggedFeedActivity : AppCompatActivity(), DetailTaggedFeedInterface {
 
-    private lateinit var binding: ActivityDetailFeedBinding
-    private val viewModel: DetailFeedViewModel by viewModels()
-    private lateinit var feedAdapter: DetailFeedAdapter
+    private lateinit var binding: ActivityDetailTaggedFeedBinding
+    private val viewModel: DetailTaggedFeedViewModel by viewModels()
+    private lateinit var feedAdapter: DetailTaggedFeedAdapter
     private lateinit var feedLayoutManager: LinearLayoutManager
     private var isFirstCall: Boolean = true
     private var itemPosition : Int = -1
-    private var pageNumber: Int = 0
-    private var totalPage: Int = 1
-    private var isLast: Boolean = false
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDetailFeedBinding.inflate(layoutInflater)
+        binding = ActivityDetailTaggedFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_exit)
 
         ZoomHelper.getInstance().maxScale = 3f
 
-        feedAdapter = DetailFeedAdapter(this)
+        feedAdapter = DetailTaggedFeedAdapter(this)
         feedLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
         binding.recyclerViewFeed.apply {
@@ -60,7 +53,7 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
         val position = intent.getIntExtra("position" , 0)
 
         viewModel.getMe()
-        viewModel.getFeedsByUserId(userId, 0, 100)
+        viewModel.getTaggedFeedsByUserId(userId, 0, 100)
 
 
         binding.buttonBack.setOnClickListener {
@@ -75,7 +68,7 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
             Color.parseColor("#D5D5D5")))
         binding.refreshLayoutFeed.setOnRefreshListener {
             feedAdapter.clearData()
-            viewModel.getFeedsByUserId(userId, 0, 100)
+            viewModel.getTaggedFeedsByUserId(userId, 0, 100)
             isFirstCall = false
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.refreshLayoutFeed.setRefreshing(false)
@@ -96,7 +89,6 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
                 if(isFirstCall){
                     binding.recyclerViewFeed.scrollToPosition(position)
                 }
-                //feedAdapter.updateData(response.body()!!.content[0].author)
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
                 sharedPreferences.edit {
@@ -117,8 +109,6 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
 
             }
         })
-
-
     }
 
     override fun onBackPressed() {

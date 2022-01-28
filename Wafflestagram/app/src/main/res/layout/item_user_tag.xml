@@ -18,48 +18,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/text_username"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:text="username"
+        android:textColor="@color/black"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image_user_profile"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/text_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="username"
-            android:textColor="@color/black"
-            android:textSize="15sp"
-            />
-
-        <TextView
-            android:id="@+id/text_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="김이름"
-            android:textSize="15sp"
-            />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_follow"
-        android:layout_width="wrap_content"
-        android:layout_height="28dp"
-        android:layout_margin="15dp"
-        android:background="@drawable/button_follow"
-        android:paddingHorizontal="35dp"
-        android:text="팔로우"
-        android:textColor="@color/white"
-        android:textSize="14sp"
+    <ImageButton
+        android:id="@+id/button_cancel"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/icon_close"
+        android:padding="18dp"
+        app:tint="@color/grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

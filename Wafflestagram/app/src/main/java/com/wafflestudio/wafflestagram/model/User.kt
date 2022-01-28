@@ -2,6 +2,7 @@ package com.wafflestudio.wafflestagram.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 @JsonClass(generateAdapter = true)
 class User(
@@ -21,7 +22,7 @@ class User(
     val public: Boolean = true,
     @Json(name = "website")
     val website: String? = null
-){
+) : Serializable{
     override fun equals(other: Any?): Boolean {
         return if(other is User)
             other.id == this.id

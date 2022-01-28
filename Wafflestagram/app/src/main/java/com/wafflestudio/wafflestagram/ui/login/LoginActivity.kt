@@ -37,6 +37,7 @@ import com.wafflestudio.wafflestagram.databinding.ActivityLoginBinding
 import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
 import com.wafflestudio.wafflestagram.ui.signup.SocialLoginUsernameActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -224,6 +225,7 @@ class LoginActivity : AppCompatActivity() {
                 showDialog("입력하신 이메일\n혹은 비밀번호가\n잘못되었습니다.")
             }
         })
+
 
         viewModel.fetchSocialLoginResponse.observe(this, { response ->
             if(response.isSuccessful){
