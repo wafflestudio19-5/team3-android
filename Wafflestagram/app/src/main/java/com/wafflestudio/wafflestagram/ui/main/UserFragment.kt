@@ -10,12 +10,10 @@ import android.os.Looper
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
@@ -26,6 +24,8 @@ import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
 import com.wafflestudio.wafflestagram.ui.post.AddPostActivity
+import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
+import com.wafflestudio.wafflestagram.ui.settings.signOut
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import javax.inject.Inject
@@ -44,8 +44,6 @@ class UserFragment: Fragment() {
     lateinit var sharedPreferences: SharedPreferences
     private var currentUserId: Int = -1 // -1: default value
 
-    private lateinit var userPhotoAdapter: UserPhotoAdapter
-    private lateinit var userLayoutManager: GridLayoutManager
     private lateinit var _context: Context
     private val userMyFeedFragment = UserMyFeedFragment()
     private val userTaggedFeedFragment = UserTaggedFeedFragment()
@@ -124,7 +122,6 @@ class UserFragment: Fragment() {
             }
 
             binding.buttonMenu.setOnClickListener {
-                // TODO: bottombar 나오도록 하기
                 val menuBottomSheetFragment = MenuBottomSheetFragment(_context)
                 menuBottomSheetFragment.show((FragmentComponentManager.findActivity(_context) as MainActivity).supportFragmentManager, MenuBottomSheetFragment.TAG)
             }
@@ -209,9 +206,7 @@ class UserFragment: Fragment() {
                 isLoading = false
             } else if(response.code() == 401){
                 Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
-                sharedPreferences.edit {
-                    putString(FeedFragment.TOKEN, "")
-                }
+                (SettingsActivity.context as SettingsActivity).signOut()
                 val intent = Intent(context, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)

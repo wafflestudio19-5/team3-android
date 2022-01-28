@@ -10,12 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.wafflestudio.wafflestagram.databinding.FragmentDetailUserMyFeedBinding
-import com.wafflestudio.wafflestagram.databinding.FragmentUserMyFeedBinding
-import com.wafflestudio.wafflestagram.ui.main.UserFragment
-import com.wafflestudio.wafflestagram.ui.main.UserPhotoAdapter
-import com.wafflestudio.wafflestagram.ui.main.UserViewModel
+import com.wafflestudio.wafflestagram.ui.main.UserFeedAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -28,7 +24,7 @@ class DetailUserMyFeedFragment: Fragment() {
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
-    private lateinit var userAdapter: DetailUserAdapter
+    private lateinit var userFeedAdapter: DetailUserFeedAdapter
     private lateinit var userLayoutManager: GridLayoutManager
     private var pageNumber: Int = 0
     private var totalPage: Int = 1
@@ -53,7 +49,7 @@ class DetailUserMyFeedFragment: Fragment() {
         userId = arguments!!.getInt("id", -1)
 
         // Setting Adapter and LayoutManager
-        userAdapter = DetailUserAdapter{startActivity(
+        userFeedAdapter = DetailUserFeedAdapter{startActivity(
             Intent(activity, DetailFeedActivity::class.java)
                 .putExtra("position", it)
                 .putExtra("userId", userId)
@@ -61,41 +57,41 @@ class DetailUserMyFeedFragment: Fragment() {
         userLayoutManager = GridLayoutManager(context, 3).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
                 override fun getSpanSize(position: Int): Int {
-                    return when(userAdapter.getItemViewType(position)){
-                        UserPhotoAdapter.VIEW_TYPE_LOADING -> 3
-                        UserPhotoAdapter.VIEW_TYPE_FEED -> 1
+                    return when(userFeedAdapter.getItemViewType(position)){
+                        UserFeedAdapter.VIEW_TYPE_LOADING -> 3
+                        UserFeedAdapter.VIEW_TYPE_FEED -> 1
                         else -> throw IllegalStateException("viewType must be 0 or 1")
                     }
                 }
             }
         }
         binding.recyclerViewPhotos.apply {
-            adapter = userAdapter
+            adapter = userFeedAdapter
             layoutManager = userLayoutManager
         }
 
         viewModel.getFeedsByUserId(userId, 0, 12)
 
-        viewModel.page.observe(viewLifecycleOwner, {response ->
+        viewModel.myPage.observe(viewLifecycleOwner, { response ->
             if(response.isSuccessful){
                 isLoading = false
                 totalPage = response.body()!!.totalPages
                 pageNumber = response.body()!!.pageNumber + 1
-                if(pageNumber > 0 && userAdapter.itemCount > 0){
-                    userAdapter.deleteLoading()
-                    userAdapter.notifyItemRemoved(userAdapter.itemCount)
+                if(pageNumber > 0 && userFeedAdapter.itemCount > 0){
+                    userFeedAdapter.deleteLoading()
+                    userFeedAdapter.notifyItemRemoved(userFeedAdapter.itemCount)
                 }
                 isLast = response.body()!!.last
                 isFirst = response.body()!!.fisrt
                 if(isFirst){
-                    userAdapter.updateData(response.body()!!.content.toMutableList())
-                    userAdapter.notifyDataSetChanged()
+                    userFeedAdapter.updateData(response.body()!!.content.toMutableList())
+                    userFeedAdapter.notifyDataSetChanged()
                 }else{
-                    userAdapter.addData(response.body()!!.content.toMutableList())
+                    userFeedAdapter.addData(response.body()!!.content.toMutableList())
                 }
                 if(!response.body()!!.last){
-                    userAdapter.addLoading()
-                    userAdapter.notifyItemInserted(userAdapter.itemCount)
+                    userFeedAdapter.addLoading()
+                    userFeedAdapter.notifyItemInserted(userFeedAdapter.itemCount)
                 }
             }else{
 

@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
 import com.wafflestudio.wafflestagram.databinding.FragmentUserTaggedFeedBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
+import com.wafflestudio.wafflestagram.ui.detail.DetailUserFeedAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,8 +27,14 @@ class UserTaggedFeedFragment: Fragment() {
     lateinit var sharedPreferences: SharedPreferences
     private var currentUserId: Int = -1 // -1: default value
 
-    private lateinit var userPhotoAdapter: UserPhotoAdapter
+    private lateinit var userTaggedFeedAdapter: UserFeedAdapter
     private lateinit var userLayoutManager: GridLayoutManager
+    private var pageNumber: Int = 0
+    private var totalPage: Int = 1
+    private var isLast: Boolean = false
+    private var isFirst: Boolean = true
+    private var isLoading: Boolean = false
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,37 +44,71 @@ class UserTaggedFeedFragment: Fragment() {
         binding = FragmentUserTaggedFeedBinding.inflate(inflater, container, false)
         return binding.root
     }
-/*
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         currentUserId = sharedPreferences.getInt(UserFragment.CURRENT_USER_ID, -1)
+        Timber.d(currentUserId.toString())
 
         // Setting Adapter and LayoutManager
-        userPhotoAdapter = UserPhotoAdapter {
-            startActivity(
-                Intent(context, DetailFeedActivity::class.java)
-                    .putExtra("position", it)
-                    .putExtra("userId", currentUserId)
-            )
+        userTaggedFeedAdapter = UserFeedAdapter{startActivity(
+            Intent(activity, DetailFeedActivity::class.java)
+                .putExtra("position", it)
+                .putExtra("userId", currentUserId)
+        )}
+        userLayoutManager = GridLayoutManager(context, 3).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+                override fun getSpanSize(position: Int): Int {
+                    return when(userTaggedFeedAdapter.getItemViewType(position)){
+                        UserFeedAdapter.VIEW_TYPE_LOADING -> 3
+                        UserFeedAdapter.VIEW_TYPE_FEED -> 1
+                        else -> throw IllegalStateException("viewType must be 0 or 1")
+                    }
+                }
+            }
         }
-        // recyclerView -> 3행 Grid 형식으로 지정
-        userLayoutManager = GridLayoutManager(context, 3)
-        binding.recyclerViewPhotos.apply {
-            adapter = userPhotoAdapter
+        binding.recyclerViewTaggedPhotos.apply {
+            adapter = userTaggedFeedAdapter
             layoutManager = userLayoutManager
         }
-        viewModel.getMyFeeds(0, 100)
 
-        viewModel.page.observe(viewLifecycleOwner, {response ->
+        viewModel.getTaggedFeedsByUserId(currentUserId, 0, 12)
+
+        viewModel.taggedPage.observe(viewLifecycleOwner, { response ->
             if(response.isSuccessful){
-                userPhotoAdapter.updatePhotos(response.body()!!.content, context!!)
+                isLoading = false
+                totalPage = response.body()!!.totalPages
+                pageNumber = response.body()!!.pageNumber + 1
+                if(pageNumber > 0 && userTaggedFeedAdapter.itemCount > 0){
+                    userTaggedFeedAdapter.deleteLoading()
+                    userTaggedFeedAdapter.notifyItemRemoved(userTaggedFeedAdapter.itemCount)
+                }
+                isLast = response.body()!!.last
+                isFirst = response.body()!!.fisrt
+                if(isFirst){
+                    userTaggedFeedAdapter.updateData(response.body()!!.content.toMutableList(), context!!)
+                    userTaggedFeedAdapter.notifyDataSetChanged()
+                }else{
+                    userTaggedFeedAdapter.addData(response.body()!!.content.toMutableList())
+                }
+                if(!response.body()!!.last){
+                    userTaggedFeedAdapter.addLoading()
+                    userTaggedFeedAdapter.notifyItemInserted(userTaggedFeedAdapter.itemCount)
+                }
             }else{
 
             }
-
         })
     }
 
- */
+    fun getFeeds(){
+        if(!isLoading){
+            if(!isLast){
+                isLoading = true
+                viewModel.getTaggedFeedsByUserId(currentUserId, pageNumber, 12)
+            }
+        }
+    }
 }

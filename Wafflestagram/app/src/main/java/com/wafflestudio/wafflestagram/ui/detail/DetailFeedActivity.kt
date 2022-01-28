@@ -10,18 +10,15 @@ import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aghajari.zoomhelper.ZoomHelper
-import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailFeedBinding
-import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
-import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
+import com.wafflestudio.wafflestagram.ui.settings.signOut
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -90,7 +87,7 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
             }
         })
 
-        viewModel.page.observe(this, {response->
+        viewModel.myPage.observe(this, { response->
             if(response.isSuccessful){
                 feedAdapter.addData(response.body()!!.content.toMutableList())
                 if(isFirstCall){
@@ -99,9 +96,7 @@ class DetailFeedActivity : AppCompatActivity() ,DetailFeedInterface {
                 //feedAdapter.updateData(response.body()!!.content[0].author)
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
-                sharedPreferences.edit {
-                    putString(FeedFragment.TOKEN, "")
-                }
+                (SettingsActivity.context as SettingsActivity).signOut()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
