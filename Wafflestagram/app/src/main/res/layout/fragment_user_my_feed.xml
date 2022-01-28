@@ -9,7 +9,7 @@
         android:id="@+id/recycler_view_photos"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        tools:listitem="@layout/item_user_photo"
+        tools:listitem="@layout/item_user_feed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

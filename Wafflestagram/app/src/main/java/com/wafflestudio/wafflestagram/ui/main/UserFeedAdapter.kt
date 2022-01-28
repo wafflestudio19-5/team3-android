@@ -1,28 +1,31 @@
-package com.wafflestudio.wafflestagram.ui.detail
+package com.wafflestudio.wafflestagram.ui.main
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wafflestudio.wafflestagram.databinding.ItemLoadingBinding
-import com.wafflestudio.wafflestagram.databinding.ItemUserPhotoBinding
+import com.wafflestudio.wafflestagram.databinding.ItemUserFeedBinding
 import com.wafflestudio.wafflestagram.model.Feed
-import com.wafflestudio.wafflestagram.ui.main.UserPhotoAdapter
 
-class DetailUserAdapter(private val onSelectClickListener: (Int) -> (Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+// OnSelectClickListener의 param: feed의 id
+class UserFeedAdapter(private val onSelectClickListener: (Int) -> (Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var feeds : MutableList<Feed> = mutableListOf()
+    private var feeds: MutableList<Feed> = mutableListOf()
+    private lateinit var context: Context
 
-    inner class FeedViewHolder(val binding: ItemUserPhotoBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class UserFeedViewHolder(val binding: ItemUserFeedBinding): RecyclerView.ViewHolder(binding.root)
     inner class LoadingViewHolder(val binding: ItemLoadingBinding) : RecyclerView.ViewHolder(binding.root)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType){
             VIEW_TYPE_FEED ->{
-                val binding = ItemUserPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                FeedViewHolder(binding)
+                val binding = ItemUserFeedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                UserFeedViewHolder(binding)
             }
-           VIEW_TYPE_LOADING ->{
+            VIEW_TYPE_LOADING ->{
                 val binding = ItemLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 LoadingViewHolder(binding)
             }
@@ -32,7 +35,8 @@ class DetailUserAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Re
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = feeds[position]
-        if(holder is FeedViewHolder){
+
+        if(holder is UserFeedViewHolder){
             holder.binding.apply {
                 if(!data.photos.isNullOrEmpty()){
                     Glide.with(holder.itemView.context).load(data.photos.get(0).path).centerCrop().into(userPhoto)
@@ -42,7 +46,6 @@ class DetailUserAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Re
                 onSelectClickListener(position)
             }
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -56,18 +59,19 @@ class DetailUserAdapter(private val onSelectClickListener: (Int) -> (Unit)) : Re
         }
     }
 
-    fun updateData(feeds: MutableList<Feed>){
+    fun updateData(feeds: MutableList<Feed>, context: Context){
         this.feeds = feeds
+        this.context = context
         this.notifyDataSetChanged()
     }
 
-    fun addData(photos: MutableList<Feed>){
-        this.feeds.addAll(photos)
+    fun addData(feeds: MutableList<Feed>){
+        this.feeds.addAll(feeds)
         this.notifyDataSetChanged()
     }
 
     fun clearData(){
-        this.feeds.clear()
+        this.feeds = mutableListOf()
         notifyDataSetChanged()
     }
 

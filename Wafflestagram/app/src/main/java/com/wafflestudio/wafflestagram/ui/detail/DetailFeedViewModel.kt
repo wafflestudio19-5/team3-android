@@ -20,20 +20,34 @@ class DetailFeedViewModel @Inject constructor(
     private val detailFeedRepository: DetailFeedRepository
 ): ViewModel(){
 
-    private val _page = MutableLiveData<Response<Page>>()
-    val page: LiveData<Response<Page>> = _page
+    private val _myPage = MutableLiveData<Response<Page>>()
+    val myPage: LiveData<Response<Page>> = _myPage
+
+    private val _taggedPage = MutableLiveData<Response<Page>>()
+    val taggedPage: LiveData<Response<Page>> = _taggedPage
 
     private val _user = MutableLiveData<Response<User>>()
     val user: LiveData<Response<User>> = _user
 
-    private val _likeRespone = MutableLiveData<Response<Feed>>()
-    val likeResponse: LiveData<Response<Feed>> = _likeRespone
+    private val _likeResponse = MutableLiveData<Response<Feed>>()
+    val likeResponse: LiveData<Response<Feed>> = _likeResponse
 
     fun getFeedsByUserId(id: Int, offset: Int, limit : Int){
         viewModelScope.launch {
             try {
                 val data = detailFeedRepository.getFeedsByUserId(id, offset, limit)
-                _page.value = data
+                _myPage.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getTaggedFeedsByUserId(id: Int, offset: Int, limit: Int){
+        viewModelScope.launch {
+            try {
+                val data = detailFeedRepository.getTaggedFeedsByUserId(id, offset, limit)
+                _taggedPage.value = data
             }catch (e: IOException){
                 Timber.e(e)
             }
@@ -44,7 +58,7 @@ class DetailFeedViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val data = detailFeedRepository.like(id)
-                _likeRespone.value = data
+                _likeResponse.value = data
             }catch (e: IOException){
                 Timber.e(e)
             }
@@ -55,7 +69,7 @@ class DetailFeedViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val data = detailFeedRepository.unlike(id)
-                _likeRespone.value = data
+                _likeResponse.value = data
             }catch (e: IOException){
                 Timber.e(e)
             }

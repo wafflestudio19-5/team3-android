@@ -9,10 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.wafflestudio.wafflestagram.databinding.FragmentUserMyFeedBinding
-import com.wafflestudio.wafflestagram.network.dto.FeedPageRequest
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -29,7 +26,7 @@ class UserMyFeedFragment: Fragment() {
     lateinit var sharedPreferences: SharedPreferences
     private var currentUserId: Int = -1 // -1: default value
 
-    private lateinit var userPhotoAdapter: UserPhotoAdapter
+    private lateinit var userFeedAdapter: UserFeedAdapter
     private lateinit var userLayoutManager: GridLayoutManager
     private var pageNumber: Int = 0
     private var totalPage: Int = 1
@@ -53,7 +50,7 @@ class UserMyFeedFragment: Fragment() {
         Timber.d(currentUserId.toString())
 
         // Setting Adapter and LayoutManager
-        userPhotoAdapter = UserPhotoAdapter {
+        userFeedAdapter = UserFeedAdapter {
             startActivity(
                 Intent(context, DetailFeedActivity::class.java)
                     .putExtra("position", it)
@@ -64,16 +61,16 @@ class UserMyFeedFragment: Fragment() {
         userLayoutManager = GridLayoutManager(context, 3).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
                 override fun getSpanSize(position: Int): Int {
-                    return when(userPhotoAdapter.getItemViewType(position)){
-                        UserPhotoAdapter.VIEW_TYPE_LOADING -> 3
-                        UserPhotoAdapter.VIEW_TYPE_FEED -> 1
+                    return when(userFeedAdapter.getItemViewType(position)){
+                        UserFeedAdapter.VIEW_TYPE_LOADING -> 3
+                        UserFeedAdapter.VIEW_TYPE_FEED -> 1
                         else -> throw IllegalStateException("viewType must be 0 or 1")
                     }
                 }
             }
         }
         binding.recyclerViewPhotos.apply {
-            adapter = userPhotoAdapter
+            adapter = userFeedAdapter
             layoutManager = userLayoutManager
         }
 
@@ -95,27 +92,27 @@ class UserMyFeedFragment: Fragment() {
          */
         viewModel.getMyFeeds(0, 12)
 
-        viewModel.page.observe(viewLifecycleOwner, {response ->
+        viewModel.myPage.observe(viewLifecycleOwner, { response ->
             if(response.isSuccessful){
                 isLoading = false
                 totalPage = response.body()!!.totalPages
                 pageNumber = response.body()!!.pageNumber + 1
-                if(pageNumber > 0 && userPhotoAdapter.itemCount > 0){
-                    userPhotoAdapter.deleteLoading()
-                    userPhotoAdapter.notifyItemRemoved(userPhotoAdapter.itemCount)
+                if(pageNumber > 0 && userFeedAdapter.itemCount > 0){
+                    userFeedAdapter.deleteLoading()
+                    userFeedAdapter.notifyItemRemoved(userFeedAdapter.itemCount)
                 }
                 isLast = response.body()!!.last
                 isFirst = response.body()!!.fisrt
                 if(isFirst){
-                    userPhotoAdapter.updatePhotos(response.body()!!.content.toMutableList(), context!!)
-                    userPhotoAdapter.notifyDataSetChanged()
+                    userFeedAdapter.updateData(response.body()!!.content.toMutableList(), context!!)
+                    userFeedAdapter.notifyDataSetChanged()
                 }else{
-                    userPhotoAdapter.addPhotos(response.body()!!.content.toMutableList())
-                    userPhotoAdapter.notifyItemRangeInserted((response.body()!!.pageNumber) * 10, response.body()!!.numberOfElements)
+                    userFeedAdapter.addData(response.body()!!.content.toMutableList())
+                    userFeedAdapter.notifyItemRangeInserted((response.body()!!.pageNumber) * 10, response.body()!!.numberOfElements)
                 }
                 if(!response.body()!!.last){
-                    userPhotoAdapter.addLoading()
-                    userPhotoAdapter.notifyItemInserted(userPhotoAdapter.itemCount)
+                    userFeedAdapter.addLoading()
+                    userFeedAdapter.notifyItemInserted(userFeedAdapter.itemCount)
                 }
             }else{
 

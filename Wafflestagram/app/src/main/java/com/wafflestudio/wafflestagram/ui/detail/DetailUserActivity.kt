@@ -14,14 +14,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailUserBinding
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.UserFragment
 import com.wafflestudio.wafflestagram.ui.main.UserMyFeedFragment
 import com.wafflestudio.wafflestagram.ui.main.UserTaggedFeedFragment
+import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
+import com.wafflestudio.wafflestagram.ui.settings.signOut
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -37,6 +42,8 @@ class DetailUserActivity : AppCompatActivity() {
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
+
+    private var tabPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,10 +61,8 @@ class DetailUserActivity : AppCompatActivity() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { _, _ -> Unit }.attach()
 
-        binding.tabLayout.getTabAt(0)!!.setIcon(R.drawable.icon_grid)
-        binding.tabLayout.getTabAt(1)!!.setIcon(R.drawable.icon_tagged)
-
-
+        binding.tabLayout.getTabAt(UserFragment.MY_FEED)!!.setIcon(R.drawable.icon_grid)
+        binding.tabLayout.getTabAt(UserFragment.TAGGED_FEED)!!.setIcon(R.drawable.icon_tagged)
 
         viewModel.getMyInfo()
         viewModel.getInfoById(id)
@@ -65,7 +70,6 @@ class DetailUserActivity : AppCompatActivity() {
         viewModel.getFollowerCount(id)
         viewModel.getFollowingCount(id)
         viewModel.checkFollowing(id)
-
 
         binding.refreshLayoutUser.setColorSchemeColors(*intArrayOf(
                 Color.parseColor("#F6F6F6"),
@@ -92,10 +96,28 @@ class DetailUserActivity : AppCompatActivity() {
                 if(v!!.getChildAt(v.childCount - 1) != null) {
                     if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
                         scrollY > oldScrollY) {
-                        detailUserMyFeedFragment.getFeeds()
+                        when(tabPosition) {
+                            UserFragment.MY_FEED ->
+                                detailUserMyFeedFragment.getFeeds()
+
+                            UserFragment.TAGGED_FEED ->
+                                detailUserTaggedFeedFragment.getFeeds()
+                        }
                     }
                 }
             })
+
+        binding.tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tabPosition = tab.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
 
         viewModel.fetchUserInfo.observe(this, {response->
             if(response.isSuccessful){
@@ -123,9 +145,7 @@ class DetailUserActivity : AppCompatActivity() {
                 isLoading = false
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
-                sharedPreferences.edit {
-                    putString(FeedFragment.TOKEN, "")
-                }
+                (SettingsActivity.context as SettingsActivity).signOut()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)

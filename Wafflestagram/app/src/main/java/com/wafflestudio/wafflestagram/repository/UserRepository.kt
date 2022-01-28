@@ -50,4 +50,8 @@ class UserRepository @Inject constructor(private val userService: UserService){
     suspend fun getMyFeeds(offset :Int, number: Int): Response<Page>{
         return userService.getMyFeeds(offset, number)
     }
+
+    suspend fun getTaggedFeedsByUserId(id: Int, offset : Int, limit: Int):Response<Page>{
+        return userService.getTaggedFeedsByUserId(id, offset, limit)
+    }
 }

@@ -16,6 +16,10 @@ class DetailFeedRepository @Inject constructor(private val feedService: FeedServ
         return feedService.getFeedsByUserId(id, offset, limit)
     }
 
+    suspend fun getTaggedFeedsByUserId(id: Int, offset : Int, limit: Int):Response<Page>{
+        return feedService.getTaggedFeedsByUserId(id, offset, limit)
+    }
+
     suspend fun like(id: Int): Response<Feed>{
         return feedService.like(id)
     }

@@ -20,8 +20,11 @@ class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
 ): ViewModel() {
 
-    private val _page = MutableLiveData<Response<Page>>()
-    val page: LiveData<Response<Page>> = _page
+    private val _myPage = MutableLiveData<Response<Page>>()
+    val myPage: LiveData<Response<Page>> = _myPage
+
+    private val _taggedPage = MutableLiveData<Response<Page>>()
+    val taggedPage: LiveData<Response<Page>> = _taggedPage
 
     private val _fetchUserInfo = MutableLiveData<Response<User>>()
     val fetchUserInfo: LiveData<Response<User>> = _fetchUserInfo
@@ -125,11 +128,23 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    // Feed 정보 가져오기
     fun getMyFeeds(offset : Int, number: Int){
         viewModelScope.launch {
             try {
                 val data = userRepository.getMyFeeds(offset, number)
-                _page.value = data
+                _myPage.value = data
+            }catch (e: IOException){
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getTaggedFeedsByUserId(id: Int, offset: Int, limit: Int){
+        viewModelScope.launch {
+            try {
+                val data = userRepository.getTaggedFeedsByUserId(id, offset, limit)
+                _taggedPage.value = data
             }catch (e: IOException){
                 Timber.e(e)
             }
