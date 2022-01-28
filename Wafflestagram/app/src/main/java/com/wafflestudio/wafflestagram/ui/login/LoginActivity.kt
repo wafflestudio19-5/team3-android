@@ -237,6 +237,7 @@ class LoginActivity : AppCompatActivity() {
                     intent.putExtra(NAME, response.body()!!.name)
                     intent.putExtra(WEBSITE, response.body()!!.website)
                     intent.putExtra(BIO, response.body()!!.bio)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
                 } else {
                     // 기존 회원이 로그인하는 경우
