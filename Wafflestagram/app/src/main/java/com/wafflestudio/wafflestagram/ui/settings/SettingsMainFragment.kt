@@ -8,12 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
+import com.facebook.AccessToken
+import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentSettingsMainBinding
+import com.wafflestudio.wafflestagram.ui.login.LoginActivity.Companion.IS_LOGGED_IN
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -37,28 +40,52 @@ class SettingsMainFragment: Fragment() {
         _context = container!!.context
         binding = FragmentSettingsMainBinding.inflate(inflater, container, false)
 
-        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTING_MAIN_FRAGMENT)
+        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTINGS_MAIN_FRAGMENT)
 
         /** fragments in setting (implemented) **/
         binding.buttonPersonalInfo.setOnClickListener {
-            (activity as SettingsActivity).replaceFragment(SETTING_PERSONAL_INFO_FRAGMENT, 1)
+            (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_PERSONAL_INFO_FRAGMENT, 1)
         }
 
         binding.buttonSecurity.setOnClickListener {
-            (activity as SettingsActivity).replaceFragment(SETTING_SECURITY_FRAGMENT, 1)
+            (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_SECURITY_FRAGMENT, 1)
         }
 
         binding.buttonAccount.setOnClickListener {
-            (activity as SettingsActivity).replaceFragment(SETTING_ACCOUNT_FRAGMENT, 1)
+            (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_ACCOUNT_FRAGMENT, 1)
         }
 
         /** other menu in setting (not yet implemented) **/
 
+        // sign out button (include social login sign out)
         binding.buttonSignout.setOnClickListener {
+            // Remove Token(Sign Out)
             sharedPreferences.edit{
                 putString(TOKEN, "")
                 putInt(CURRENT_USER_ID, -1)
+                putBoolean(IS_LOGGED_IN, false)
             }
+
+            // Facebook Sign Out
+            val accessToken = AccessToken.getCurrentAccessToken()
+            if(accessToken != null && !accessToken.isExpired) {
+                LoginManager.getInstance().logOut()
+            }
+
+            // Google Sign Out
+            if(GoogleSignIn.getLastSignedInAccount(_context) != null) {
+                // Configure sign-in to request the user's ID, email address, and basic
+                // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.google_web_client_id))
+                    .requestEmail()
+                    .build()
+
+                // Build a GoogleSignInClient with the options specified by gso.
+                val googleSignInClient = GoogleSignIn.getClient(_context, gso)
+                googleSignInClient.signOut()
+            }
+
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
@@ -85,11 +112,6 @@ class SettingsMainFragment: Fragment() {
     }
 
     companion object {
-        const val SETTING_MAIN_FRAGMENT = 0
-        const val SETTING_PERSONAL_INFO_FRAGMENT = 1
-        const val SETTING_SECURITY_FRAGMENT = 2
-        const val SETTING_ACCOUNT_FRAGMENT = 3
-
         const val TOKEN = "token"
         const val CURRENT_USER_ID = "currentUserId"
     }

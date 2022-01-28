@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivitySettingsBinding
+import com.wafflestudio.wafflestagram.ui.settings.account.EditPersonalInfoFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,6 +19,7 @@ class SettingsActivity: AppCompatActivity() {
     private var settingsPersonalInfoFragment = SettingsPersonalInfoFragment()
     private var settingsSecurityFragment = SettingsSecurityFragment()
     private var settingsAccountFragment = SettingsAccountFragment()
+    private var settingsEditPersonalInfoFragment = EditPersonalInfoFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,7 @@ class SettingsActivity: AppCompatActivity() {
 
         overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_part_exit)
 
-        replaceFragment(SETTING_MAIN_FRAGMENT, 1)
+        replaceFragment(SETTINGS_MAIN_FRAGMENT, 1)
 
         // back
         binding.buttonBack.setOnClickListener {
@@ -53,22 +54,27 @@ class SettingsActivity: AppCompatActivity() {
         }
 
         when(fragmentNum){
-            SETTING_MAIN_FRAGMENT -> {
+            SETTINGS_MAIN_FRAGMENT -> {
                 fb.replace(R.id.settings_pref, settingsMainFragment)
                 fb.commit()
             }
-            SETTING_PERSONAL_INFO_FRAGMENT -> {
+            SETTINGS_PERSONAL_INFO_FRAGMENT -> {
                 fb.replace(R.id.settings_pref, settingsPersonalInfoFragment)
                 fb.addToBackStack(null)
                 fb.commit()
             }
-            SETTING_SECURITY_FRAGMENT -> {
+            SETTINGS_SECURITY_FRAGMENT -> {
                 fb.replace(R.id.settings_pref, settingsSecurityFragment)
                 fb.addToBackStack(null)
                 fb.commit()
             }
-            SETTING_ACCOUNT_FRAGMENT -> {
+            SETTINGS_ACCOUNT_FRAGMENT -> {
                 fb.replace(R.id.settings_pref, settingsAccountFragment)
+                fb.addToBackStack(null)
+                fb.commit()
+            }
+            SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT -> {
+                fb.replace(R.id.settings_pref, settingsEditPersonalInfoFragment)
                 fb.addToBackStack(null)
                 fb.commit()
             }
@@ -80,26 +86,30 @@ class SettingsActivity: AppCompatActivity() {
 
     fun replaceTitle(fragmentNum: Int) {
         when(fragmentNum){
-            SETTING_MAIN_FRAGMENT -> {
+            SETTINGS_MAIN_FRAGMENT -> {
                 binding.buttonSettingTitle.text = "설정"
             }
-            SETTING_PERSONAL_INFO_FRAGMENT -> {
+            SETTINGS_PERSONAL_INFO_FRAGMENT -> {
                 binding.buttonSettingTitle.text = "개인정보 보호"
             }
-            SETTING_SECURITY_FRAGMENT -> {
+            SETTINGS_SECURITY_FRAGMENT -> {
                 binding.buttonSettingTitle.text = "보안"
             }
-            SETTING_ACCOUNT_FRAGMENT -> {
+            SETTINGS_ACCOUNT_FRAGMENT -> {
                 binding.buttonSettingTitle.text = "계정"
+            }
+            SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT -> {
+                binding.buttonSettingTitle.text = "개인정보"
             }
         }
     }
 
     companion object {
-        const val SETTING_MAIN_FRAGMENT = 0
-        const val SETTING_PERSONAL_INFO_FRAGMENT = 1
-        const val SETTING_SECURITY_FRAGMENT = 2
-        const val SETTING_ACCOUNT_FRAGMENT = 3
+        const val SETTINGS_MAIN_FRAGMENT = 0
+        const val SETTINGS_PERSONAL_INFO_FRAGMENT = 1
+        const val SETTINGS_SECURITY_FRAGMENT = 2
+        const val SETTINGS_ACCOUNT_FRAGMENT = 3
+        const val SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT = 31
 
         const val EXIT = 0
         const val ENTER = 1

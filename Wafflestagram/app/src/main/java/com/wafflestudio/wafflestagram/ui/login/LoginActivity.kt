@@ -38,6 +38,7 @@ import com.wafflestudio.wafflestagram.databinding.DialogBinding
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
 import com.wafflestudio.wafflestagram.ui.signup.SignUpActivity
+import com.wafflestudio.wafflestagram.ui.signup.SocialLoginUsernameActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -53,9 +54,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var facebookResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var googleResultLauncher: ActivityResultLauncher<Intent>
 
-    // Google Login Request Code
+    // Facebook Login Request Code
     private val FACEBOOK_RC_SIGN_IN = 1
-    private val GOOGLE_RC_SIGN_IN = 2
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -64,6 +64,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Timber.d("isLoggedIn: ${sharedPreferences.getBoolean(MainActivity.IS_LOGGED_IN, false).toString()}")
 
         //login 버튼 활성화
         binding.editUsername.addTextChangedListener(object : TextWatcher{
@@ -184,7 +186,6 @@ class LoginActivity : AppCompatActivity() {
                     loginWithGoogleIdToken(null)
                 }
             }
-            // result canceled됨...
         }
 
         binding.buttonSocialLoginGoogle.setOnClickListener { result ->
@@ -193,7 +194,7 @@ class LoginActivity : AppCompatActivity() {
                     val signInIntent = googleSignInClient.signInIntent
                     googleResultLauncher.launch(signInIntent)
                     // facebook login 버튼처럼 따로 logout 기능이 없어서 로그인 하자마자 로그아웃 시켰습니다
-                    googleSignInClient.signOut()
+                    // googleSignInClient.signOut()
                 }
                 else -> {
                     Timber.w("버튼 터치 과정에서 오류가 발생했습니다.")
@@ -214,6 +215,7 @@ class LoginActivity : AppCompatActivity() {
                 sharedPreferences.edit {
                     putString(TOKEN, response.headers()["Authentication"])
                     putInt(CURRENT_USER_ID, response.body()!!.string().toInt())
+                    putBoolean(IS_LOGGED_IN, true)
                 }
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -223,13 +225,28 @@ class LoginActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.fetchSocialLoginUrl.observe(this, { response ->
+        viewModel.fetchSocialLoginResponse.observe(this, { response ->
             if(response.isSuccessful){
-                val intent =  Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(response.raw().request.url.toString())
-                startActivity(intent)
-            } else {
-                //Toast.makeText(this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show()
+                sharedPreferences.edit {
+                    putString(TOKEN, response.headers()["Authentication"])
+                    putInt(CURRENT_USER_ID, response.body()!!.id.toInt())
+                }
+                if(response.body()!!.username == null) {
+                    // 새로 회원가입하는 경우(또는 소셜 로그인 회원가입 절차가 제대로 마무리되지 않은 경우)
+                    val intent = Intent(this, SocialLoginUsernameActivity::class.java)
+                    intent.putExtra(NAME, response.body()!!.name)
+                    intent.putExtra(WEBSITE, response.body()!!.website)
+                    intent.putExtra(BIO, response.body()!!.bio)
+                    startActivity(intent)
+                } else {
+                    // 기존 회원이 로그인하는 경우
+                    sharedPreferences.edit{
+                        putBoolean(IS_LOGGED_IN, true)
+                    }
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
             }
         })
 
@@ -307,7 +324,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     companion object{
+        const val NAME = "name"
+        const val WEBSITE = "website"
+        const val BIO = "bio"
         const val TOKEN = "token"
         const val CURRENT_USER_ID = "currentUserId"
+        const val IS_LOGGED_IN = "isLoggedIn"
     }
 }

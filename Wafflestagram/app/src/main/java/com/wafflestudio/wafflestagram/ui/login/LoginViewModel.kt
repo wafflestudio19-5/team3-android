@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wafflestudio.wafflestagram.model.User
 import com.wafflestudio.wafflestagram.network.dto.LoginRequest
 import com.wafflestudio.wafflestagram.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +26,8 @@ class LoginViewModel @Inject constructor(
     private val _fetchLoginResponse = MutableLiveData<Response<ResponseBody>>()
     var fetchLoginResponse: LiveData<Response<ResponseBody>> = _fetchLoginResponse
 
-    private val _fetchSocialLoginUrl = MutableLiveData<Response<ResponseBody>>()
-    var fetchSocialLoginUrl: LiveData<Response<ResponseBody>> = _fetchSocialLoginUrl
+    private val _fetchSocialLoginResponse = MutableLiveData<Response<User>>()
+    var fetchSocialLoginResponse: LiveData<Response<User>> = _fetchSocialLoginResponse
 
     fun getResponseByLogin(loginRequest: LoginRequest) {
         viewModelScope.launch {
@@ -42,11 +43,9 @@ class LoginViewModel @Inject constructor(
     fun getResponseByGoogleLogin(idToken: String) {
         viewModelScope.launch {
             try {
-                _fetchDummy.value = idToken
-                /*
+                // _fetchDummy.value = idToken
                 val data = loginRepository.getResponseByGoogleLogin(idToken)
-                _fetchLoginResponse.value = data
-*/
+                _fetchSocialLoginResponse.value = data
             } catch (e: IOException) {
                 Timber.e(e)
             }
@@ -56,11 +55,8 @@ class LoginViewModel @Inject constructor(
     fun getResponseByFacebookLogin(token: String){
         viewModelScope.launch {
             try {
-                _fetchDummy.value = token
-/*
                 val data = loginRepository.getResponseByFacebookLogin(token)
-                _fetchLoginResponse.value = data
-*/
+                _fetchSocialLoginResponse.value = data
             } catch (e: IOException) {
                 Timber.e(e)
             }
