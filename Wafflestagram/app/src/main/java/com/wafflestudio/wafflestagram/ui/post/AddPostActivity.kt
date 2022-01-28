@@ -62,7 +62,9 @@ class AddPostActivity : AppCompatActivity() {
         binding.imageSelected.isClickable = false
         binding.imageSelected.isEnabled = false
 
-        showImagePicker()
+        if(!isSelect){
+            showImagePicker()
+        }
 
         awsCredentials = BasicAWSCredentials(BuildConfig.AWS_S3_ACCESS_KEY, BuildConfig.AWS_S3_SECRET_KEY)
         s3Client = AmazonS3Client(awsCredentials, Region.getRegion(Regions.AP_NORTHEAST_2))
@@ -171,7 +173,7 @@ class AddPostActivity : AppCompatActivity() {
                     //Timber.e(fileName)
                     Handler(Looper.getMainLooper()).postDelayed({
                         continueUpload()
-                    }, 400)
+                    }, 300)
                 }else if(state == TransferState.FAILED || state == TransferState.WAITING_FOR_NETWORK){
                     Toast.makeText(this@AddPostActivity, "연결이 불안정합니다", Toast.LENGTH_LONG).show()
                 }

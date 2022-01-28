@@ -26,13 +26,20 @@
         android:theme="@style/Theme.Wafflestagram">
         <activity
             android:name=".ui.detail.DetailTaggedFeedActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".ui.post.SearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".ui.post.AddUserTagActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".ui.share.SharedFeedActivity"
             android:exported="true"
@@ -71,7 +78,8 @@
             android:name=".ui.post.AddPostActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity"
+            android:hardwareAccelerated="false"/>
         <activity
             android:name=".ui.detail.DetailFeedActivity"
             android:exported="false"
@@ -169,14 +177,25 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name="ir.shahabazimi.instagrampicker.gallery.SelectActivity" />
-        <activity android:name="ir.shahabazimi.instagrampicker.filter.FilterActivity" />
-        <activity android:name="ir.shahabazimi.instagrampicker.gallery.MultiSelectActivity" />
+        <activity android:name="ir.shahabazimi.instagrampicker.gallery.SelectActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name="ir.shahabazimi.instagrampicker.filter.FilterActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name="ir.shahabazimi.instagrampicker.gallery.MultiSelectActivity"
+            android:hardwareAccelerated="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity"
+            android:hardwareAccelerated="false"/>
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"

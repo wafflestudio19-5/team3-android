@@ -25,6 +25,7 @@
             android:background="@drawable/button_pressed"
             android:text="비밀번호"
             android:drawableLeft="@drawable/icon_key_resize"
+            android:drawableTint="@color/black"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
             android:paddingHorizontal="15dp"

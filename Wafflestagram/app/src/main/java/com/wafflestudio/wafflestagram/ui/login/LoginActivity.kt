@@ -233,7 +233,7 @@ class LoginActivity : AppCompatActivity() {
                     putString(TOKEN, response.headers()["Authentication"])
                     putInt(CURRENT_USER_ID, response.body()!!.id.toInt())
                 }
-                if(response.body()!!.username == null) {
+                if(response.body()!!.username.isNullOrEmpty()) {
                     // 새로 회원가입하는 경우(또는 소셜 로그인 회원가입 절차가 제대로 마무리되지 않은 경우)
                     val intent = Intent(this, SocialLoginUsernameActivity::class.java)
                     intent.putExtra(NAME, response.body()!!.name)
