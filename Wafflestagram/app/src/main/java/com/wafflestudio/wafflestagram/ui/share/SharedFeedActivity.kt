@@ -190,6 +190,7 @@ class SharedFeedActivity : AppCompatActivity() {
                         numberIndicatorPager.visibility = View.GONE
                     }else{
                         indicatorImage.visibility = View.VISIBLE
+                        numberIndicatorPager.visibility = View.VISIBLE
                     }
                     indicatorImage.setViewPager(viewPagerImage)
                     textTotal.text = sharedFeedAdapter.itemCount.toString()

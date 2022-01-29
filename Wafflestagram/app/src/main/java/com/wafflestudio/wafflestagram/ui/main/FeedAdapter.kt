@@ -165,6 +165,7 @@ class FeedAdapter(val feedInterface: FeedInterface) : RecyclerView.Adapter<Recyc
                         numberIndicatorPager.visibility = View.GONE
                     }else{
                         indicatorImage.visibility = View.VISIBLE
+                        numberIndicatorPager.visibility = View.VISIBLE
                     }
                     indicatorImage.setViewPager(viewPagerImage)
                     textTotal.text = imageAdapter.itemCount.toString()

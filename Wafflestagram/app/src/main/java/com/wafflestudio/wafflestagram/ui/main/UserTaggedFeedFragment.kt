@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.wafflestudio.wafflestagram.databinding.FragmentUserTaggedFeedBinding
 import com.wafflestudio.wafflestagram.ui.detail.DetailFeedActivity
+import com.wafflestudio.wafflestagram.ui.detail.DetailTaggedFeedActivity
 import com.wafflestudio.wafflestagram.ui.detail.DetailUserFeedAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -54,7 +55,7 @@ class UserTaggedFeedFragment: Fragment() {
 
         // Setting Adapter and LayoutManager
         userTaggedFeedAdapter = UserFeedAdapter{startActivity(
-            Intent(activity, DetailFeedActivity::class.java)
+            Intent(activity, DetailTaggedFeedActivity::class.java)
                 .putExtra("position", it)
                 .putExtra("userId", currentUserId)
         )}

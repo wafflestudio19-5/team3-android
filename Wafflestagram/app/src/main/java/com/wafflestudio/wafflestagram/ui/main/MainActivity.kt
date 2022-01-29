@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Logout 된 경우 LoginActivity로 이동
-        if(!sharedPreferences.getBoolean(IS_LOGGED_IN, false)){
+        if(!sharedPreferences.getBoolean(IS_LOGGED_IN, false) || sharedPreferences.getString(TOKEN, "") == ""){
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)

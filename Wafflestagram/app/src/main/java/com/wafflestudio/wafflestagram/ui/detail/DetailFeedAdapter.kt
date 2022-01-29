@@ -163,6 +163,7 @@ class DetailFeedAdapter(val detailFeedInterface: DetailFeedInterface) : Recycler
                         numberIndicatorPager.visibility = View.GONE
                     }else{
                         indicatorImage.visibility = View.VISIBLE
+                        numberIndicatorPager.visibility = View.VISIBLE
                     }
                     indicatorImage.setViewPager(viewPagerImage)
                     textTotal.text = imageAdapter.itemCount.toString()

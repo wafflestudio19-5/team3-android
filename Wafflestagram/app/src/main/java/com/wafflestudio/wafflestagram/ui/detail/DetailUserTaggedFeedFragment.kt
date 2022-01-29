@@ -50,7 +50,7 @@ class DetailUserTaggedFeedFragment: Fragment() {
 
         // Setting Adapter and LayoutManager
         userTaggedFeedAdapter = DetailUserFeedAdapter{startActivity(
-            Intent(activity, DetailFeedActivity::class.java)
+            Intent(activity, DetailTaggedFeedActivity::class.java)
                 .putExtra("position", it)
                 .putExtra("userId", userId)
         )}

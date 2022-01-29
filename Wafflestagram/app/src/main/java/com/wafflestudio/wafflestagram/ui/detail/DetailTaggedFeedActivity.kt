@@ -10,15 +10,20 @@ import android.view.MotionEvent
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aghajari.zoomhelper.ZoomHelper
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailTaggedFeedBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
+import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 import com.wafflestudio.wafflestagram.ui.main.SocialLoginSignOutUtils
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailTaggedFeedActivity : AppCompatActivity(), DetailTaggedFeedInterface {
 
     private lateinit var binding: ActivityDetailTaggedFeedBinding
@@ -90,6 +95,11 @@ class DetailTaggedFeedActivity : AppCompatActivity(), DetailTaggedFeedInterface 
                 }
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
+                }
                 SocialLoginSignOutUtils.signOut(this)
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

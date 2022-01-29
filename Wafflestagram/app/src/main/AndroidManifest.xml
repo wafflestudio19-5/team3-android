@@ -189,7 +189,7 @@
             android:hardwareAccelerated="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        
+
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
