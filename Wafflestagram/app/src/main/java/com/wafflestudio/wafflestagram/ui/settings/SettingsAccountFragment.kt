@@ -27,8 +27,11 @@ class SettingsAccountFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        /*
         binding.buttonAccountPersonalInfo.setOnClickListener {
             (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT, 1)
         }
+
+         */
     }
 }
