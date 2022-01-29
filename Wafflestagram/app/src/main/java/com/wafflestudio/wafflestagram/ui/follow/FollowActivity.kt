@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityFollowBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
-import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.main.SocialLoginSignOutUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -60,10 +61,14 @@ class FollowActivity : AppCompatActivity(), FollowInterface {
             if(response.isSuccessful){
                 followAdapter.updateData(response.body()!!.content)
             }else if(response.code() == 401){
-                sharedPreferences.edit {
-                    putString(FeedFragment.TOKEN, "")
+                SocialLoginSignOutUtils.signOut(this)
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
                 }
-                val intent = Intent(this, LoginActivity::class.java)
+                SocialLoginSignOutUtils.signOut(this)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
             }else{

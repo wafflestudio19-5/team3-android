@@ -18,6 +18,7 @@ import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentSettingsMainBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity.Companion.IS_LOGGED_IN
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.main.SocialLoginSignOutUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -59,7 +60,13 @@ class SettingsMainFragment: Fragment() {
 
         // sign out button (include social login sign out)
         binding.buttonSignout.setOnClickListener {
-            (activity as SettingsActivity).signOut()
+            // Remove Token(Sign Out)
+            sharedPreferences.edit{
+                putString(MainActivity.TOKEN, "")
+                putInt(MainActivity.CURRENT_USER_ID, -1)
+                putBoolean(MainActivity.IS_LOGGED_IN, false)
+            }
+            SocialLoginSignOutUtils.signOut(context!!)
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)

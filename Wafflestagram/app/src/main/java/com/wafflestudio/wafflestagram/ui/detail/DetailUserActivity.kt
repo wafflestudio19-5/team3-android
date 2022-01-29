@@ -21,14 +21,10 @@ import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityDetailUserBinding
 import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
-import com.wafflestudio.wafflestagram.ui.main.FeedFragment
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.main.SocialLoginSignOutUtils
 import com.wafflestudio.wafflestagram.ui.main.UserFragment
-import com.wafflestudio.wafflestagram.ui.main.UserMyFeedFragment
-import com.wafflestudio.wafflestagram.ui.main.UserTaggedFeedFragment
-import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
-import com.wafflestudio.wafflestagram.ui.settings.signOut
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -145,7 +141,14 @@ class DetailUserActivity : AppCompatActivity() {
                 isLoading = false
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
-                (SettingsActivity.context as SettingsActivity).signOut()
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
+                }
+                SocialLoginSignOutUtils.signOut(this)
+
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)

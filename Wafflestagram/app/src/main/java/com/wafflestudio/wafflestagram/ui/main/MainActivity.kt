@@ -2,7 +2,6 @@ package com.wafflestudio.wafflestagram.ui.main
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.viewModels
@@ -20,7 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
-import com.wafflestudio.wafflestagram.ui.settings.signOut
 
 
 
@@ -110,7 +108,13 @@ class MainActivity : AppCompatActivity() {
             if(response.isSuccessful){
                 Glide.with(this).load(response.body()?.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
             }else if(response.code() == 401){
-                (SettingsActivity.context as SettingsActivity).signOut()
+                SocialLoginSignOutUtils.signOut(this)
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(TOKEN, "")
+                    putInt(CURRENT_USER_ID, -1)
+                    putBoolean(IS_LOGGED_IN, false)
+                }
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)

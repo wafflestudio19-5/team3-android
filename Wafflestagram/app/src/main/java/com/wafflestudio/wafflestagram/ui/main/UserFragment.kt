@@ -10,11 +10,12 @@ import android.os.Looper
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.FragmentUserBinding
@@ -24,8 +25,6 @@ import com.wafflestudio.wafflestagram.ui.follow.FollowActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.profile.EditProfileActivity
 import com.wafflestudio.wafflestagram.ui.post.AddPostActivity
-import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
-import com.wafflestudio.wafflestagram.ui.settings.signOut
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.internal.managers.FragmentComponentManager
 import javax.inject.Inject
@@ -48,6 +47,7 @@ class UserFragment: Fragment() {
     private val userMyFeedFragment = UserMyFeedFragment()
     private val userTaggedFeedFragment = UserTaggedFeedFragment()
 
+    private var tabPosition: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,8 +104,25 @@ class UserFragment: Fragment() {
                 if(v!!.getChildAt(v.childCount - 1) != null) {
                     if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
                         scrollY > oldScrollY) {
-                        userMyFeedFragment.getFeeds()
+                        when(tabPosition) {
+                            MY_FEED ->
+                                userMyFeedFragment.getFeeds()
+                            TAGGED_FEED ->
+                                userTaggedFeedFragment.getFeeds()
+                        }
                     }
+                }
+            })
+
+            binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    tabPosition = tab.position
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
                 }
             })
 
@@ -206,7 +223,13 @@ class UserFragment: Fragment() {
                 isLoading = false
             } else if(response.code() == 401){
                 Toast.makeText(context, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
-                (SettingsActivity.context as SettingsActivity).signOut()
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
+                }
+                SocialLoginSignOutUtils.signOut(context!!)
                 val intent = Intent(context, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)

@@ -28,6 +28,7 @@ class EditPersonalInfoFragment: Fragment() {
     ): View? {
         binding = FragmentEditPersonalInfoBinding.inflate(inflater, container, false)
 
+        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT)
         return binding.root
     }
 
