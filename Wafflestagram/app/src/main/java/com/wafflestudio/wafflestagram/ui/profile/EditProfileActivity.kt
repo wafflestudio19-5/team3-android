@@ -29,8 +29,8 @@ import com.wafflestudio.wafflestagram.databinding.ActivityEditProfileBinding
 import com.wafflestudio.wafflestagram.network.dto.SetProfilePhotoRequest
 import com.wafflestudio.wafflestagram.network.dto.UpdateUserRequest
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
-import com.wafflestudio.wafflestagram.ui.main.FeedFragment
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.main.SocialLoginSignOutUtils
 import com.wafflestudio.wafflestagram.ui.settings.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import ir.shahabazimi.instagrampicker.InstagramPicker
@@ -117,9 +117,13 @@ class EditProfileActivity: AppCompatActivity() {
                 Glide.with(this).load(response.body()!!.profilePhotoURL).centerCrop().into(binding.buttonUserImage)
             }else if(response.code() == 401){
                 Toast.makeText(this, "다시 로그인해주세요", Toast.LENGTH_SHORT).show()
-                sharedPreferences.edit {
-                    putString(FeedFragment.TOKEN, "")
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
                 }
+                SocialLoginSignOutUtils.signOut(this)
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)

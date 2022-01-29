@@ -23,7 +23,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsActivity: AppCompatActivity() {
-
     private lateinit var binding: ActivitySettingsBinding
     private val viewModel: SettingsViewModel by viewModels()
 
@@ -36,16 +35,17 @@ class SettingsActivity: AppCompatActivity() {
     private var settingsAccountFragment = SettingsAccountFragment()
     private var settingsEditPersonalInfoFragment = EditPersonalInfoFragment()
 
+    private var initFragment = SETTINGS_MAIN_FRAGMENT
+    private var currentFragment = SETTINGS_MAIN_FRAGMENT
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        context = this
-
+        initFragment = intent.getIntExtra("fragmentNum", SETTINGS_MAIN_FRAGMENT)
         overridePendingTransition(R.anim.slide_right_enter, R.anim.slide_right_part_exit)
-
-        replaceFragment(SETTINGS_MAIN_FRAGMENT, 1)
+        replaceFragment(initFragment, 1)
 
         // back
         binding.buttonBack.setOnClickListener {
@@ -55,6 +55,9 @@ class SettingsActivity: AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+        if(supportFragmentManager.backStackEntryCount == 0 && initFragment == currentFragment){
+            finish()
+        }
         overridePendingTransition(R.anim.slide_left_part_enter, R.anim.slide_left_exit)
     }
 
@@ -69,6 +72,7 @@ class SettingsActivity: AppCompatActivity() {
             }
         }
 
+        currentFragment = fragmentNum
         when(fragmentNum){
             SETTINGS_MAIN_FRAGMENT -> {
                 fb.replace(R.id.settings_pref, settingsMainFragment)
@@ -129,43 +133,5 @@ class SettingsActivity: AppCompatActivity() {
 
         const val EXIT = 0
         const val ENTER = 1
-
-        @SuppressLint("StaticFieldLeak")
-        var context: Context? = null
     }
-}
-
-fun SettingsActivity.signOut(){
-    // Remove Token(Sign Out)
-    sharedPreferences.edit{
-        putString(SettingsMainFragment.TOKEN, "")
-        putInt(SettingsMainFragment.CURRENT_USER_ID, -1)
-        putBoolean(LoginActivity.IS_LOGGED_IN, false)
-    }
-
-    // Facebook Sign Out
-    val accessToken = AccessToken.getCurrentAccessToken()
-    if(accessToken != null && !accessToken.isExpired) {
-        Timber.d("Facebook Sign Out")
-        LoginManager.getInstance().logOut()
-    }
-
-    // Google Sign Out
-    if(GoogleSignIn.getLastSignedInAccount(this) != null) {
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.google_web_client_id))
-            .requestEmail()
-            .build()
-
-        // Build a GoogleSignInClient with the options specified by gso.
-        val googleSignInClient = GoogleSignIn.getClient(this, gso)
-        Timber.d("Google Sign Out")
-        googleSignInClient.signOut()
-    }
-
-    Timber.d("TOKEN: ${sharedPreferences.getString(MainActivity.TOKEN, "")}")
-    Timber.d("CURRENT_USER_ID: ${sharedPreferences.getInt(MainActivity.CURRENT_USER_ID, -1)}")
-    Timber.d("IS_LOGGED_IN: ${sharedPreferences.getBoolean(MainActivity.IS_LOGGED_IN, false)}")
 }

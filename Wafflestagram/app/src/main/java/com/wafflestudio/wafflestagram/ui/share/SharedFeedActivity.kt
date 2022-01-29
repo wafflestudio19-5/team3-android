@@ -37,8 +37,8 @@ import com.wafflestudio.wafflestagram.ui.dialog.UserTagBottomSheetFragment
 import com.wafflestudio.wafflestagram.ui.like.LikeActivity
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
 import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.main.SocialLoginSignOutUtils
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.internal.managers.FragmentComponentManager
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -113,9 +113,13 @@ class SharedFeedActivity : AppCompatActivity() {
                 currUser = response.body()!!
             }else if(response.code() == 401){
                 Toast.makeText(this, "해당 게시물을 보려면 로그인을 먼저 해주세요.", Toast.LENGTH_LONG).show()
-                sharedPreferences.edit {
-                    putString(TOKEN, "")
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
                 }
+                SocialLoginSignOutUtils.signOut(this)
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -293,9 +297,13 @@ class SharedFeedActivity : AppCompatActivity() {
 
             }else if(response.code() == 401){
                 Toast.makeText(this, "해당 게시물을 보려면 로그인을 먼저 해주세요.", Toast.LENGTH_LONG).show()
-                sharedPreferences.edit {
-                    putString(TOKEN, "")
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
                 }
+                SocialLoginSignOutUtils.signOut(this)
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()

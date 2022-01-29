@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.wafflestudio.wafflestagram.R
 import com.wafflestudio.wafflestagram.databinding.ActivityLikeBinding
 import com.wafflestudio.wafflestagram.ui.login.LoginActivity
-import com.wafflestudio.wafflestagram.ui.main.FeedFragment
-import com.wafflestudio.wafflestagram.ui.main.UserFragment
+import com.wafflestudio.wafflestagram.ui.main.MainActivity
+import com.wafflestudio.wafflestagram.ui.main.SocialLoginSignOutUtils
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Response
 import javax.inject.Inject
@@ -56,9 +56,13 @@ class LikeActivity : AppCompatActivity() , LikeInterface{
             if(response.isSuccessful){
                 likeAdapter.updateData(response.body()!!.likes)
             }else if(response.code() == 401){
-                sharedPreferences.edit {
-                    putString(FeedFragment.TOKEN, "")
+                // Remove Token(Sign Out)
+                sharedPreferences.edit{
+                    putString(MainActivity.TOKEN, "")
+                    putInt(MainActivity.CURRENT_USER_ID, -1)
+                    putBoolean(MainActivity.IS_LOGGED_IN, false)
                 }
+                SocialLoginSignOutUtils.signOut(this)
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)

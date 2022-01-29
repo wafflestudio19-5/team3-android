@@ -23,10 +23,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
+import com.facebook.*
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -129,6 +126,8 @@ class LoginActivity : AppCompatActivity() {
         /** facebook login **/
         // Create Callback Manager
         val facebookCallbackManager = CallbackManager.Factory.create()
+
+        Timber.d("Faebook hash key: ${FacebookSdk.getApplicationSignature(this)}")
 
         // Set Permission
         binding.buttonSocialLoginFacebook.setPermissions("email", "public_profile")

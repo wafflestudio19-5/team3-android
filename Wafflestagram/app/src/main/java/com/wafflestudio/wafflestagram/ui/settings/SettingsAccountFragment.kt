@@ -1,6 +1,5 @@
 package com.wafflestudio.wafflestagram.ui.settings
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,19 +20,15 @@ class SettingsAccountFragment: Fragment() {
     ): View? {
         binding = FragmentSettingsAccountBinding.inflate(inflater, container, false)
 
-        (activity as SettingsActivity).replaceTitle(SETTING_ACCOUNT_FRAGMENT)
-
+        (activity as SettingsActivity).replaceTitle(SettingsActivity.SETTINGS_ACCOUNT_FRAGMENT)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    }
 
-    companion object {
-        const val SETTING_MAIN_FRAGMENT = 0
-        const val SETTING_PERSONAL_INFO_FRAGMENT = 1
-        const val SETTING_SECURITY_FRAGMENT = 2
-        const val SETTING_ACCOUNT_FRAGMENT = 3
+        binding.buttonAccountPersonalInfo.setOnClickListener {
+            (activity as SettingsActivity).replaceFragment(SettingsActivity.SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT, 1)
+        }
     }
 }
