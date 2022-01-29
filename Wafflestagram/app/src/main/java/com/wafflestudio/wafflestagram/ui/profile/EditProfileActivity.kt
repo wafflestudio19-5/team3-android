@@ -105,12 +105,15 @@ class EditProfileActivity: AppCompatActivity() {
             }
         }
 
+        /*
         binding.buttonPersonalInfo.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             intent.putExtra("fragmentNum", SettingsActivity.SETTINGS_EDIT_PERSONAL_INFO_FRAGMENT)
             Timber.d(intent.getIntExtra("fragmentNum", 1).toString())
             startActivity(intent)
         }
+
+         */
 
         viewModel.image.observe(this, {response->
             if(response.isSuccessful){
