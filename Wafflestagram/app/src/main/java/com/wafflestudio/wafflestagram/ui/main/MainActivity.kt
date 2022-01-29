@@ -104,11 +104,6 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        // Test bug code
-        sharedPreferences.edit {
-            putString(TOKEN, "abcabc")
-        }
-
         viewModel.myInfo.observe(this, { response->
             if(response.isSuccessful){
                 Glide.with(this).load(response.body()?.profilePhotoURL).centerCrop().into(userProfileBinding.imageProfile)
